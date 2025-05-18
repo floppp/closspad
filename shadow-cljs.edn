@@ -3,5 +3,5 @@
  :builds
  {:app
   {:target :browser
-   :modules {:main {:init-fn qoback.closspad.dev/main}}
+   :modules {:main {:init-fn qoback.closspad.core/init!}}
    :dev {:output-dir "resources/public/js"}}}}
