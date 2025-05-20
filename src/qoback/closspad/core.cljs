@@ -4,10 +4,31 @@
             [qoback.closspad.state.db :refer [!state !dispatcher]]
             [qoback.closspad.state.events :refer [event-handler]]))
 
+(def options ["03/03/2025" "06/03/2025" "11/04/2025" "21/04/2025" "03/05/2025"])
+
+(defn arrow-selector []
+  [:div.flex.items-center.gap-4
+   [:button.btn.btn-circle.btn-outline
+    {:on {:click (fn [ev] (.log js/console ev))}}
+    [:svg {:xmlns "http://www.w3.org/2000/svg" :class ["h-6" "w-6"] :fill "none" :viewBox "0 0 24 24" :stroke "currentColor"}
+     [:path {:stroke-linecap "round" :stroke-linejoin "round" :stroke-width "2" :d "M15 19l-7-7 7-7"}]]]
+
+       ;; Current Label
+   [:div.text-xl.font-semibold.min-w-120.text-center
+    (nth options 2)]
+
+       ;; Right Arrow Button
+   [:button.btn.btn-circle.btn-outline
+    {:on {:click (fn [ev] (.log js/console ev))}}
+    [:svg {:xmlns "http://www.w3.org/2000/svg" :class ["h-6" "w-6"] :fill "none" :viewBox "0 0 24 24" :stroke "currentColor"}
+     [:path {:stroke-linecap "round" :stroke-linejoin "round" :stroke-width "2" :d "M9 5l7 7-7 7"}]]]])
+
 (defn match-view
   [match]
-  [:div "Match"
-   [:p match]])
+  [:div
+   (arrow-selector)
+   [:p match]
+   [:button.btn.btn-success "Success"]])
 
 (defn not-found-view
   []
