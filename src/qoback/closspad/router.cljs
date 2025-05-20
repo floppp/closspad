@@ -1,13 +1,12 @@
 (ns qoback.closspad.router
   (:require [reitit.frontend :as rfr]
-            [reitit.frontend.easy :as rfe]
-            [reitit.coercion.spec :as rss]))
+            [reitit.frontend.easy :as rfe]))
 
 
 (def routes
   [
-   ["/match" {:name :route/match}]
-   #_["/matches/:id" {:name :route/match
+   #_["/match" {:name :route/match}]
+   ["/match/:id" {:name :route/match
                   :path [:id number?]}]
    ["/classification/:day" {:name :route/classification
                             :path [:day string?]}]
@@ -23,7 +22,7 @@
    ["/" {:name :route/home}]
    ])
 
-(defn- get-route-actions 
+(defn- get-route-actions
   [{:keys [data path-params]}]
   (case (:name data)
     :route/home [[:route/home]]
