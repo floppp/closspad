@@ -34,5 +34,4 @@
       (reset! !state new-state))
     (when effects
       (doseq [effect effects]
-        ;;(when js/goog.DEBUG (js/console.debug "Triggered effect" effect))
         (perform-effect! replicant-data effect)))))

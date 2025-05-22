@@ -10,11 +10,11 @@
     (dispatcher nil [[:db/assoc :page/navigated {:page :home}]])))
 
 (defn navigated-match-page
-  [{:keys [id]}]
+  [{:keys [date]}]
   (let [dispatcher (get-dispatcher)]
     (dispatcher
      nil
-     [[:db/assoc :page/navigated {:page :match :match id}]])))
+     [[:db/assoc :page/navigated {:page :match :date date}]])))
 
 
 (defn perform-effect!

@@ -6,8 +6,8 @@
 (def routes
   [
    #_["/match" {:name :route/match}]
-   ["/match/:id" {:name :route/match
-                  :path [:id number?]}]
+   ["/match/:day" {:name :route/match
+                    :path [:day string?]}]
    ["/classification/:day" {:name :route/classification
                             :path [:day string?]}]
    ["/login" {:name :route/login
@@ -26,8 +26,8 @@
   [{:keys [data path-params]}]
   (case (:name data)
     :route/home [[:route/home]]
-    :route/match (let [id (int (:id path-params))]
-                   [[:route/match {:id id}]])
+    :route/match (let [date ^js (js/Date. (:day path-params))]
+                   [[:route/match {:date date}]])
     :route/classification (let [day (keyword (:day path-params))]
                             [[:route/classification {:day day}]])
     :route/login [[:route/login]]
@@ -36,7 +36,7 @@
 
 (defn start! [routes dispatch!]
   (rfe/start!
-   (rfr/router routes {:default-handler {:name :route/home}})
+   (rfr/router routes)
    (fn do-routing [m]
      (dispatch! nil (get-route-actions m)))
    {:use-fragment true}))
