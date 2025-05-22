@@ -328,7 +328,7 @@ const matches = [
   {
     coupleA: ["Becario", "Fernando"],
     coupleB: ["Raúl", "Guapo"],
-    date: new Date("2025-03-24"),
+    date: new Date("2025-04-07"),
     result: [
       [6, 4],
       [7, 6],
