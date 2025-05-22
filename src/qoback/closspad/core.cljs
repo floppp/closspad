@@ -42,10 +42,27 @@
 
 (defn match-view
   [state]
-  (let [match-date (:date (:page/navigated state))]
+  (let [match-date (:date (:page/navigated state))
+        matches (:results (:match state))]
     [:div.flex.flex-col.gap-4
      (arrow-selector match-date)
-     [:button.btn.btn-success "Success"]]))
+     [:button.btn.btn-success
+      {:on {:click [[:data/query [1 2]]]}}
+      "Success"]
+     [:div.matches
+      (for [match matches]
+        [:div.match
+         [:p.players
+          (for [pl (:couple_a match)]
+            [:span pl])
+          [:span (:result match)]
+          (for [pl (:couple_b match)]
+            [:span pl])]])
+      #_(mapv (fn [m]
+                [:p
+                 [:span (:couple_a m)]
+                 [:span (:couple_b m)]])
+              matches)]]))
 
 (defn not-found-view
   []

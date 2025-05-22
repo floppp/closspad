@@ -1,5 +1,6 @@
 (ns qoback.closspad.state.effects
-  (:require [qoback.closspad.state.db :refer [get-dispatcher]]))
+  (:require [qoback.closspad.state.db :refer [get-dispatcher]]
+            [qoback.closspad.network.query :as network]))
 
 (defn navigated-not-found-page []
   (let [dispatcher (get-dispatcher)]
@@ -23,6 +24,5 @@
     :route/not-found (navigated-not-found-page)
     :route/home (navigated-home-page)
     :route/match (navigated-match-page (-> args first first))
-    :else (js/console.error "Unknown effect" effect)))
-
-
+    :data/query (network/query-backend {:query/kind :query/matches :query/data args })
+    (js/console.log "Unknown effect" effect)))

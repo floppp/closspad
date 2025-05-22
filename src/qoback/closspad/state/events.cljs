@@ -13,8 +13,10 @@
       :route/not-found {:effects [[:route/not-found]]}
       :route/home {:effects [[:route/home]]}
       :route/match {:effects [[:route/match args]]}
+      :data/query {:effects [[:data/query {:state state :args args}]]}
       ;; :route/classification (navigated-product-page (assoc (second enriched-action) :state @!state))
       ;; :route/login (navigated-new-product-page (assoc (second enriched-action) :state @!state))
+      (.log js/console "Unknown event " action-name "with arguments" args )
       )))
 
 (defn- handle-events
