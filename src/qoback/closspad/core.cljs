@@ -6,40 +6,51 @@
             [qoback.closspad.state.db :refer [!state !dispatcher get-dispatcher]]
             [qoback.closspad.state.events :refer [event-handler]]))
 
+(defn date-only [^js/Date js-date]
+  (doto (js/Date. (.getTime js-date))
+    (.setHours 0 0 0 0)))
+
+(defn add-day [current-date match-dates]
+  (let [current-day (date-only current-date)]
+    (some #(when (> (.getTime %) (.getTime current-day)) %)
+          (->> match-dates
+              (map date-only)
+              (sort-by #(.getTime %)))
+          #_(sort-by #(.getTime %)
+                   (map date-only match-dates)))))
+
 
 (defn- arrow-button
   [path cb]
   (let [date (cb)]
     [:a.btn.btn-circle
-     {;;:on {:click #(cb)} ;; podemos con dispatcher pero es bastante más lioso y obliga a caminos extra. Al hacerlo por url entra el router que llama a su vez al dispatcher con camino ya conocido.
-      :href (str "#/match/" date)}
+     {:href (when date (str "#/match/" date))
+      :class (when-not date "cursor-not-allowed")}
      [:svg {:xmlns "http://www.w3.org/2000/svg" :class ["h-6" "w-6"] :fill "none" :viewBox "0 0 24 24" :stroke "currentColor"}
       [:path {:stroke-linecap "round" :stroke-linejoin "round" :stroke-width "2" :d path}]]]))
 
 (defn arrow-left
-  [date]
+  [date match-dates]
   (letfn [(substract-day []
-            (let [new-date (h/substract-days date)]
-              (h/format-iso-date new-date)))]
+            (let [prev-date-with-match (last (filter #(< % date) match-dates))]
+              (when prev-date-with-match
+                (h/format-iso-date prev-date-with-match))))]
     (arrow-button "M15 19l-7-7 7-7" substract-day)))
 
 (defn arrow-right
-  [date]
-  (letfn [(add-day []
-            (let [new-date (h/format-iso-date (h/add-days date))]
-              (h/format-iso-date new-date)))]
-    (arrow-button "M9 5l7 7-7 7" add-day)))
+  [date match-dates]
+  (letfn [(tmp [] (add-day date match-dates))]
+    (arrow-button "M9 5l7 7-7 7" tmp)))
 
 (defn arrow-selector
   [date match-dates]
-  (.log js/console match-dates)
   [:div.flex.justify-center.items-center.gap-4
-   (arrow-left date)
+   (arrow-left date match-dates)
 
    [:div.text-xl.font-semibold.min-w-120.text-center
     (h/datetime->date->str date)]
 
-   (arrow-right date)])
+   (arrow-right date match-dates)])
 
 (defn match-component [{:keys [couple_a couple_b result]}]
   (let [f (first result)
@@ -73,7 +84,9 @@
         day-matches (filter #(= match-date-str (h/datetime->date->str (js/Date. (:played_at %)))) all-matches)]
     [:div.flex.flex-col.gap-4
      {:style {:min-width "400px"}}
-     (arrow-selector match-date (map :played_at all-matches))
+     (arrow-selector match-date (->> all-matches
+                                     (map (comp #(js/Date. %) :played_at))
+                                     sort))
      [:button.btn.btn-success
       {:on {:click [[:data/query [1 2]]]}}
       "Success"]

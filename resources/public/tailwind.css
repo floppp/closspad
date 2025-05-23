@@ -1153,8 +1153,8 @@ html {
   margin-top: 0px;
 }
 
-.mb-4 {
-  margin-bottom: 1rem;
+.mb-6 {
+  margin-bottom: 1.5rem;
 }
 
 .mt-10 {
@@ -1163,10 +1163,6 @@ html {
 
 .mt-5 {
   margin-top: 1.25rem;
-}
-
-.mb-6 {
-  margin-bottom: 1.5rem;
 }
 
 .flex {
@@ -1211,6 +1207,10 @@ html {
 
 .border-collapse {
   border-collapse: collapse;
+}
+
+.cursor-not-allowed {
+  cursor: not-allowed;
 }
 
 .flex-col {
