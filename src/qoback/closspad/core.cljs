@@ -14,11 +14,10 @@
   (let [current-day (date-only current-date)]
     (some #(when (> (.getTime %) (.getTime current-day)) %)
           (->> match-dates
-              (map date-only)
-              (sort-by #(.getTime %)))
+               (map date-only)
+               (sort-by #(.getTime %)))
           #_(sort-by #(.getTime %)
-                   (map date-only match-dates)))))
-
+                     (map date-only match-dates)))))
 
 (defn- arrow-button
   [path cb]
@@ -75,7 +74,6 @@
        [:td.text-center.py-2 (if t (second s) (second f))]
        [:td.text-center.py-2 (if t (second t) (second s))]]]]))
 
-
 (defn match-view
   [state]
   (let [match-date (:date (:page/navigated state))
@@ -87,9 +85,9 @@
      (arrow-selector match-date (->> all-matches
                                      (map (comp #(js/Date. %) :played_at))
                                      sort))
-     [:button.btn.btn-success
-      {:on {:click [[:data/query [1 2]]]}}
-      "Success"]
+     #_[:button.btn.btn-success
+        {:on {:click [[:data/query [1 2]]]}}
+        "Success"]
      [:div.matches
       (for [match day-matches]
         (match-component match))]]))
@@ -109,8 +107,8 @@
   [_state]
   [:div.flex
    [:div.flex-grow.p-4
-    [:h1.text-3xl.font-bold.text-center.mt-5 "Clasificación Pádel"]
-    [:h2.text-xl.font-bold.text-center.mt-10 "Elige día para ver partidos"]]])
+    [:h1.text-3xl.font-bold.text-center.mt-5 "Clasificación Kurdistán"]
+    #_[:h2.text-xl.font-bold.text-center.mt-10 "Elige día para ver partidos"]]])
 
 (defn view [state]
   [:div.flex.h-screen
@@ -127,7 +125,8 @@
    (js/document.getElementById "app")
    (view state)))
 
-(defn ^{:dev/after-load true :export true} start! []
+(defn ^{:dev/after-load true :export true} start!
+  []
   (render! @!state))
 
 (defn watch! [render!]
@@ -141,4 +140,5 @@
   (swap! !dispatcher assoc :dispatcher event-handler)
   (router/start! router/routes event-handler)
   (watch! render!)
+  (event-handler nil [[:data/query [1 2]]])
   (start!))

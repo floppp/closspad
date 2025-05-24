@@ -26,3 +26,4 @@
     :route/match (navigated-match-page (-> args first first))
     :data/query (network/query-backend {:query/kind :query/matches :query/data args })
     (js/console.log "Unknown effect" effect)))
+ 

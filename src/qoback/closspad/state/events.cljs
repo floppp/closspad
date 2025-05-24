@@ -8,14 +8,11 @@
     (case action-name
       :dom/prevent-default {:effects [[:dom/fx.prevent-default]]} ;;(.preventDefault js-event)
       :db/assoc {:new-state (apply assoc state args)}
-      ;; :db/assoc-in {:new-state (apply swap! !state assoc-in args)}
       :db/dissoc {:new-state (apply dissoc state args)}
       :route/not-found {:effects [[:route/not-found]]}
       :route/home {:effects [[:route/home]]}
       :route/match {:effects [[:route/match args]]}
       :data/query {:effects [[:data/query {:state state :args args}]]}
-      ;; :route/classification (navigated-product-page (assoc (second enriched-action) :state @!state))
-      ;; :route/login (navigated-new-product-page (assoc (second enriched-action) :state @!state))
       (.log js/console "Unknown event " action-name "with arguments" args )
       )))
 
@@ -33,7 +30,8 @@
 (defn event-handler [replicant-data actions]
   (let [{:keys [new-state effects]} (handle-events @!state replicant-data actions)]
     (when new-state
-      (reset! !state new-state))
+      (reset! !state new-state)
+      (.log js/console "New state" @!state))
     (when effects
       (doseq [effect effects]
         (perform-effect! replicant-data effect)))))

@@ -1,4 +1,4 @@
-(ns padel-rating.core
+
   (:require [cljs.spec.alpha :as s]
             [clojure.string :as str]))
 

@@ -1,6 +1,7 @@
 (ns qoback.closspad.network.query
   (:require [cljs.reader :as reader]
-            [qoback.closspad.state.db :refer [get-dispatcher]]))
+            [qoback.closspad.state.db :refer [get-dispatcher]]
+            [qoback.closspad.rating-system :refer [process-matches]]))
 
 (defn take-until [f xs]
   (loop [res []
@@ -66,7 +67,11 @@
 (defn query->http-request [{:query/keys [kind data]}]
   (case kind
     :query/matches
-    [:get "v1/CLOSSPAD_match?select=*"]
+    [:get "v1/CLOSSPAD_match?select=*&order=played_at.asc"
+     (fn [dispatcher it]
+       (let [ratings (process-matches it)]
+         (dispatcher nil [[:db/assoc :classification {:ratings ratings}]]))
+       it)]
     :query/user
     [:get (str "/api/todo/users/" (:user-id data))]))
 
@@ -74,7 +79,7 @@
 ;; el `dispatcher`.
 (defn query-backend
   [params]
-  (let [[method url] (query->http-request params)
+  (let [[method url callback] (query->http-request params)
         dispatcher (get-dispatcher)]
     (-> (js/fetch (str base-url url)
                   (clj->js {:method (name method)
@@ -83,5 +88,6 @@
         (.then #(.json %))
         (.then #(js->clj % {:keywordize-keys true}))
         (.then (fn [ms]
+                 (callback dispatcher ms)
                  (dispatcher nil [[:db/assoc :match {:results ms}]])))
         (.catch #(.log js/console %)))))
