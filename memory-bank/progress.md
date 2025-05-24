@@ -12,6 +12,7 @@ Functional padel match tracking system with:
 - Rating calculations
 - Supabase integration
 - Classification views
+- Versioned JS file deployment
 
 ## What's Left
 - Row animations
