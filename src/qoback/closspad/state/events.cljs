@@ -1,8 +1,7 @@
 (ns qoback.closspad.state.events
   (:require [clojure.walk :as walk]
             [qoback.closspad.state.db :refer [!state]]
-            [qoback.closspad.state.effects :refer [perform-effect!]]
-            [qoback.closspad.utils :as u]))
+            [qoback.closspad.state.effects :refer [perform-effect!]]))
 
 (defn- enrich-action-from-event [{:replicant/keys [js-event node]} actions]
   (walk/postwalk

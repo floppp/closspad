@@ -1,9 +1,16 @@
 {:deps {:aliases [:dev]}
  :dev-http {8082 ["resources/public" "classpath:public"]}
  :builds
+
  {:app
   {:target :browser
    :modules {:main {:init-fn qoback.closspad.core/init!}}
    :dev {:output-dir "resources/public/js"}
    :release {} ;; configuración para producción
-   }}}
+   }
+
+  :test
+  {:target    :node-test
+   :output-to "out/tests.js"
+   :ns-regexp "-test$"
+   :autorun   true}}}

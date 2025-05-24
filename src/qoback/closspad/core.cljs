@@ -1,5 +1,6 @@
 (ns qoback.closspad.core
   (:require [replicant.dom :as r-dom]
+            [gadget.inspector :as inspector]
             [qoback.closspad.router :as router]
             [qoback.closspad.pages.views :as v]
             [qoback.closspad.state.db :refer [!state !dispatcher]]
@@ -21,6 +22,7 @@
                           (render! new-state)))))
 
 (defn ^:export init! []
+  (inspector/inspect "App state" !state)
   (r-dom/set-dispatch! event-handler)
   (swap! !dispatcher assoc :dispatcher event-handler)
   (router/start! router/routes event-handler)
