@@ -1,4 +1,4 @@
-We are going to use supabase but querying it through api so no js client needed.
+We are going to use supabase but querying it through api so no js client needed and changing to other system would be easier.
 
 ** Queries
 
@@ -13,6 +13,9 @@ curl 'https://orqwiubnozfouaqyywah.supabase.co/rest/v1/CLOSSPAD_match?select=*&o
 
 
 ** Tasks [0/6]
+
+*** TODO [#A] BUG next day
+when clicked in the last one 1-1-1970 is selected, and no disable working
 *** TODO [#A] Review code
 /event-handler/ code structure in replicant examples to use some of the ideas there.
 *** TODO [#A] Rows animations

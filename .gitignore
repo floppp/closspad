@@ -30,3 +30,4 @@ pom.xml.asc
 /scrap/
 /replicant-todomvc/
 resources/public/js
+/resources/public/tailwind.css

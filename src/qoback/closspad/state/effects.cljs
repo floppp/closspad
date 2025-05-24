@@ -19,8 +19,9 @@
 
 
 (defn perform-effect!
-  [{:keys [^js replicant/js-event]} [effect & args]]
+  [{:replicant/keys [^js js-event] :as replicant-data} [effect & args]]
   (case effect
+    :dom/prevent-default (.preventDefaul js-event)
     :route/not-found (navigated-not-found-page)
     :route/home (navigated-home-page)
     :route/match (navigated-match-page (-> args first first))

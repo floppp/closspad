@@ -27,7 +27,7 @@
   [[name, points]]
   (let [cl (player-color? points)]
     [:div.flex.justify-between.items-center.p-4.rounded-lg.shadow-sm
-     {:class (into [] cl)}
+     {:class (concat cl ["transition-all" "duration-300" "ease-in-out"])}
      [:span.font-medium.text-gray-800 name]
      [:span.font-bold.text-lg (str points)]]))
 
