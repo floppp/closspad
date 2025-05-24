@@ -5,7 +5,7 @@
   (let [f (first result)
         s (second result)
         t (get result 2)]
-    [:table.table-auto.w-full.border-collapse.mb-6
+    [:table.table-auto.w-full.border-collapse
      [:thead
       [:tr.border-b.border-gray-200
        {:style {:display "grid" :grid-template-columns "3fr 1fr 1fr 1fr"}}

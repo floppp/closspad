@@ -9,32 +9,43 @@
 
 (defn- home-view
   []
-  [:div [:div "Home"
-         [:ul
-          [:li "foo"]
-          [:li "bar"]]]])
+  [:div
+   [:div "Home"
+    [:ul
+     [:li "foo"]
+     [:li "bar"]]]])
+
+(defn player-color?
+  [points]
+  (cond
+    (>= points 60) ["bg-green-100" "border-l-4" "border-green-500"]
+    (< points 40) ["bg-red-100" "border-l-4" "border-red-500"]
+    (< points 50) ["bg-orange-100" "border-l-4" "border-orange-500"]
+    :else ["bg-gray-50" "border-l-4" "border-gray-300"]))
+
+(defn- player
+  [[name, points]]
+  (let [cl (player-color? points)]
+    [:div.flex.justify-between.items-center.p-4.rounded-lg.shadow-sm
+     {:class (into [] cl)}
+     [:span.font-medium.text-gray-800 name]
+     [:span.font-bold.text-lg (str points)]]))
 
 (defn classification-view
   [state]
   (let [day (:date (:page/navigated state))
         day-str (h/datetime->date->str day)
         ratings (:ratings (:classification state))
-        day-ratings (first (filter (fn [[d _]]
-                                     (= day-str (h/datetime->date->str (js/Date. d))))
-                                   ratings))
+        day-ratings (first
+                     (filter
+                      (fn [[d _]]
+                        (= day-str (h/datetime->date->str (js/Date. d))))
+                      ratings))
         players (second day-ratings)]
-    [:div
-     [:h2.text-2xl.font-bold.text-center.mt-4.mb-2 "Clasificación"]
-     [:div.flex.flex-col
-      (for [[name, points] players]
-        (let [cl (cond
-                   (>= points 60) "bg-green-200"
-                   (< points 40) "bg-red-200"
-                   (< points 50) "bg-orange-200")]
-          [:p.flex.justify-between.pt-2.pb-2.p
-           {:class cl}
-           [:span.font-bold name]
-           [:span points]]))]]))
+    [:div.bg-white.rounded-b-lg.shadow-md.p-8
+     [:h2.text-3xl.font-bold.text-center.mb-6.text-gray-800 "Clasificación"]
+     [:div.space-y-3
+      (map player players)]]))
 
 (defn match-view
   [state]
@@ -48,14 +59,15 @@
                              js/Date.
                              h/datetime->date->str))
                      all-matches)]
-    [:div.flex.flex-col.gap-4
-     {:style {:min-width "400px"}}
-     (w/arrow-selector match-date (->> all-matches
-                                     (map (comp #(js/Date. %) :played_at))
-                                     sort))
-     [:div.matches
+    [:div.bg-white.rounded-t-lg.shadow-md.p-8
+     [:div.mb-6
+      (w/arrow-selector match-date (->> all-matches
+                                        (map (comp #(js/Date. %) :played_at))
+                                        sort))]
+     [:div.space-y-4
       (for [match day-matches]
-        (match/component match))]]))
+        [:div.border.border-gray-200.rounded-lg.p-4.shadow-sm
+         (match/component match)])]]))
 
 (defn view [state]
   [:div.flex.h-screen
@@ -65,6 +77,6 @@
      (case (:page (:page/navigated state))
        :not-found (not-found-view)
        :home (home-view)
-       :match [:div
+       :match [:div {:class ["w-1/2" "min-w-[500px]"]}
                (match-view state)
                (classification-view state)])]]])
