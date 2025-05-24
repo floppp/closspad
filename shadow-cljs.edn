@@ -1,17 +1,11 @@
-{:deps {:aliases [:dev]}
+{:deps {:aliases [:dev]},
  :dev-http {8082 ["resources/public" "classpath:public"]}
  :builds
- 
  {:app
   {:target :browser
-   :modules {:main {:init-fn qoback.closspad.core/init!
-                   :output-to "resources/public/js/main.v#{:version}.js"}}
-   :dev {:output-dir "resources/public/js"}
+   :output-dir "resources/public/js"
+   :asset-path "/js"
+   :modules {:main {:init-fn qoback.closspad.core/init!}}
    :release {:build-options
-             {:ns-aliases {qoback.closspad.core qoback.closspad.core}}}}
-
-  :test
-  {:target    :node-test
-   :output-to "out/tests.js"
-   :ns-regexp "-test$"
-   :autorun   true}}}
+             {:compiler-options {:optimizations :advanced}}}}
+}}

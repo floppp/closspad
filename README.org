@@ -12,13 +12,13 @@ curl 'https://orqwiubnozfouaqyywah.supabase.co/rest/v1/CLOSSPAD_match?select=*&o
 #+END_SRC
 
 
-** Tasks [2/7]
+** Tasks [3/7]
 
 *** DONE [#A] BUG next day
 when clicked in the last one 1-1-1970 is selected, and no disable working
 *** DONE [#A] Review code
 /event-handler/ code structure in replicant examples to use some of the ideas there.
-*** TODO [#A] BUG deploy.sh
+*** DONE [#A] BUG deploy.sh
 main.js no se están versionando/modificando -> subiendo
 *** TODO [#A] Better keywordization
 so =played_at= becomes =played-at=. Do not use libraries but code from scratch.
@@ -35,3 +35,4 @@ through some dialog or expandible widget.
 
 *** =GET= Matches/classification
 /match/2025-04-07
+merge
