@@ -193,11 +193,25 @@ if [[ $compile ]]; then
     printf "Checking index.html after update:\n" >&2
     grep "<script src=\"js/main" resources/public/index.html >&2
 
-    npx shadow-cljs release app --config-merge "{:release-version \"v$version\"}"
+    # Clean old versions
+    rm -f resources/public/js/main.v*.js
+    rm -f resources/public/js/manifest.edn
+
+    # Build with version
+    npx shadow-cljs release app --config-merge "{:version \"$version\"}"
     if [ $? -ne 0 ]; then
         echo "Error: Shadow-cljs compilation failed"
         exit 1
     fi
+
+    # Verify new version was created
+    if [ ! -f "resources/public/js/main.$version_with_v.js" ]; then
+        echo "Error: Versioned JS file not created"
+        exit 1
+    fi
+
+    # Update manifest
+    echo "{\"main.js\": \"js/main.$version_with_v.js\"}" > resources/public/js/manifest.edn
 fi
 
 

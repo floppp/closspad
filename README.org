@@ -12,16 +12,18 @@ curl 'https://orqwiubnozfouaqyywah.supabase.co/rest/v1/CLOSSPAD_match?select=*&o
 #+END_SRC
 
 
-** Tasks [0/6]
+** Tasks [2/7]
 
-*** TODO [#A] BUG next day
+*** DONE [#A] BUG next day
 when clicked in the last one 1-1-1970 is selected, and no disable working
-*** TODO [#A] Review code
+*** DONE [#A] Review code
 /event-handler/ code structure in replicant examples to use some of the ideas there.
-*** TODO [#A] Rows animations
-using some js library so I can learn js interop too.
+*** TODO [#A] BUG deploy.sh
+main.js no se están versionando/modificando -> subiendo
 *** TODO [#A] Better keywordization
 so =played_at= becomes =played-at=. Do not use libraries but code from scratch.
+*** TODO [#B] Rows animations
+using some js library so I can learn js interop too.
 *** TODO [#B] Adding configuration
 and save into local storage with some /effect/.
 *** TODO [#C] Rating system configurable
