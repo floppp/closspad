@@ -1,0 +1,32 @@
+We are going to use supabase but querying it through api so no js client needed.
+
+** Queries
+
+**** Matches
+They are sorted by /played_at/ field.
+
+#+BEGIN_SRC bash
+curl 'https://orqwiubnozfouaqyywah.supabase.co/rest/v1/CLOSSPAD_match?select=*&order=played_at.asc' \
+    -H "apikey: SUPABASE_CLIENT_ANON_KEY" \
+    -H "Authorization: Bearer SUPABASE_CLIENT_ANON_KEY"
+#+END_SRC
+
+
+** Tasks [0/6]
+*** TODO [#A] Review code
+/event-handler/ code structure in replicant examples to use some of the ideas there.
+*** TODO [#A] Rows animations
+using some js library so I can learn js interop too.
+*** TODO [#A] Better keywordization
+so =played_at= becomes =played-at=. Do not use libraries but code from scratch.
+*** TODO [#B] Adding configuration
+and save into local storage with some /effect/.
+*** TODO [#C] Rating system configurable
+through some dialog or expandible widget.
+
+
+
+** Pages
+
+*** =GET= Matches/classification
+/match/2025-04-07
