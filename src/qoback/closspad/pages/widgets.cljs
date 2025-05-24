@@ -7,18 +7,16 @@
    [:div.flex-grow.p-4
     [:h1.text-3xl.font-bold.text-center.mb-2 "Clasificación Kurdistán"]]])
 
-(defn date-only [^js/Date js-date]
+(defn- date-only [^js/Date js-date]
   (doto (js/Date. (.getTime js-date))
     (.setHours 0 0 0 0)))
 
-(defn add-day [current-date match-dates]
+(defn- add-day [current-date match-dates]
   (let [current-day (date-only current-date)]
     (some #(when (> (.getTime %) (.getTime current-day)) %)
           (->> match-dates
                (map date-only)
-               (sort-by #(.getTime %)))
-          #_(sort-by #(.getTime %)
-                     (map date-only match-dates)))))
+               (sort-by #(.getTime %))))))
 
 (defn- arrow-button
   [path cb]
@@ -29,7 +27,12 @@
      [:svg {:xmlns "http://www.w3.org/2000/svg" :class ["h-6" "w-6"] :fill "none" :viewBox "0 0 24 24" :stroke "currentColor"}
       [:path {:stroke-linecap "round" :stroke-linejoin "round" :stroke-width "2" :d path}]]]))
 
-(defn arrow-left
+(defn- double-arrow-left
+  [match-dates]
+  (letfn [(first-day-fn [] (h/format-iso-date (first match-dates)))]
+    (arrow-button "M19 5 l-7 7 7 7 M10 5 l-7 7 7 7" first-day-fn)))
+
+(defn- arrow-left
   [date match-dates]
   (letfn [(substract-day []
             (let [prev-date-with-match (last (filter #(< % date) match-dates))]
@@ -37,7 +40,12 @@
                 (h/format-iso-date prev-date-with-match))))]
     (arrow-button "M15 19l-7-7 7-7" substract-day)))
 
-(defn arrow-right
+(defn- double-arrow-right
+  [match-dates]
+  (letfn [(add-day-fn [] (h/format-iso-date (last match-dates)))]
+    (arrow-button "M7 5 l7 7 -7 7 M16 5 l7 7 -7 7" add-day-fn)))
+
+(defn- arrow-right
   [date match-dates]
   (letfn [(add-day-fn [] (h/format-iso-date (add-day date match-dates)))]
     (arrow-button "M9 5l7 7-7 7" add-day-fn)))
@@ -45,10 +53,13 @@
 (defn arrow-selector
   [date match-dates]
   [:div.flex.justify-center.items-center.gap-4
+   (double-arrow-left match-dates)
+
    (arrow-left date match-dates)
 
    [:div.text-xl.font-semibold.min-w-120.text-center
     (h/datetime->date->str date)]
 
-   (arrow-right date match-dates)])
+   (arrow-right date match-dates)
 
+   (double-arrow-right match-dates)])

@@ -4,4 +4,6 @@
  {:app
   {:target :browser
    :modules {:main {:init-fn qoback.closspad.core/init!}}
-   :dev {:output-dir "resources/public/js"}}}}
+   :dev {:output-dir "resources/public/js"}
+   :release {} ;; configuración para producción
+   }}}
