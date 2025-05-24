@@ -1,5 +1,6 @@
 (ns qoback.closspad.network.query
-  (:require [cljs.reader :as reader]
+  (:require [cljs.core.async :as async]
+            [cljs.core.async.interop :refer [<p!]]
             [qoback.closspad.state.db :refer [get-dispatcher]]
             [qoback.closspad.rating-system :refer [process-matches]]))
 
@@ -64,30 +65,53 @@
 
 (def base-url "https://orqwiubnozfouaqyywah.supabase.co/rest/")
 
-(defn query->http-request [{:query/keys [kind data]}]
+(defn query->http-request
+  [{:query/keys [kind data]}]
   (case kind
     :query/matches
-    [:get "v1/CLOSSPAD_match?select=*&order=played_at.asc"
-     (fn [dispatcher it]
-       (let [ratings (process-matches it)]
-         (dispatcher nil [[:db/assoc :classification {:ratings ratings}]]))
-       it)]
+    {:method  :get
+     :url     "v1/CLOSSPAD_match?select=*&order=played_at.asc"
+     :options {:method (name :get)
+               :headers
+               {:apiKey anon-key
+                :Authorization (str "Bearer " anon-key)}}
+     :callback (fn [ms]
+                 (let [ratings (process-matches ms)
+                       dispatcher (get-dispatcher)]
+                   (dispatcher nil [[:db/assoc :classification {:ratings ratings}]
+                                    [:db/assoc :match {:results ms}]])))}
     :query/user
     [:get (str "/api/todo/users/" (:user-id data))]))
 
-;; TODO: tengo que emitir evento que se encargue de actualizar, por lo que hay que obtener (o pasarle)
-;; el `dispatcher`.
-(defn query-backend
+(defn query-fetch
   [params]
-  (let [[method url callback] (query->http-request params)
-        dispatcher (get-dispatcher)]
-    (-> (js/fetch (str base-url url)
-                  (clj->js {:method (name method)
-                            :headers {:apiKey anon-key
-                                      :Authorization (str "Bearer " anon-key)}}))
+  (let [{:keys [url options callback]} (query->http-request params)]
+    (-> (js/fetch (str base-url url) (clj->js options))
         (.then #(.json %))
         (.then #(js->clj % {:keywordize-keys true}))
-        (.then (fn [ms]
-                 (callback dispatcher ms)
-                 (dispatcher nil [[:db/assoc :match {:results ms}]])))
-        (.catch #(.log js/console %)))))
+        (.then callback)
+        (.catch #(js/console.warn (ex-cause %))))))
+
+
+(defn GET
+  ([url] (GET url nil))
+  ([url options]
+   (let [ch (async/chan)]
+     (async/go
+       (try
+         (let [response (<p! (js/fetch url (clj->js options)))
+               json (-> response .json .then <p!)]
+           (async/>! ch (js->clj json {:keywordize-keys true})))
+         (catch js/Error err (js/console.warn (ex-cause err)))))
+     ch)))
+
+(def method-handler {:get #'GET})
+
+(defn query-async
+  [params]
+  (let [{:keys [method url options callback]} (query->http-request params)
+        chan ((method method-handler) (str base-url url) options)]
+    (async/go
+      (let [data (async/<! chan)]
+        (when callback (callback data))))))
+

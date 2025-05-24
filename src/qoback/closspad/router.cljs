@@ -7,7 +7,7 @@
   [
    #_["/match" {:name :route/match}]
    ["/match/:day" {:name :route/match
-                    :path [:day string?]}]
+                    :path [:day string?]}] ;; format: YYYY-MM-DD
    ["/classification/:day" {:name :route/classification
                             :path [:day string?]}]
    ["/login" {:name :route/login

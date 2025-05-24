@@ -38,8 +38,8 @@
 
 (defn arrow-right
   [date match-dates]
-  (letfn [(tmp [] (add-day date match-dates))]
-    (arrow-button "M9 5l7 7-7 7" tmp)))
+  (letfn [(add-day-fn [] (h/format-iso-date (add-day date match-dates)))]
+    (arrow-button "M9 5l7 7-7 7" add-day-fn)))
 
 (defn arrow-selector
   [date match-dates]
@@ -74,6 +74,8 @@
        [:td.text-center.py-2 (if t (second s) (second f))]
        [:td.text-center.py-2 (if t (second t) (second s))]]]]))
 
+
+
 (defn match-view
   [state]
   (let [match-date (:date (:page/navigated state))
@@ -86,11 +88,22 @@
                                      (map (comp #(js/Date. %) :played_at))
                                      sort))
      #_[:button.btn.btn-success
-        {:on {:click [[:data/query [1 2]]]}}
+        {:on {:click [[:data/query]]}}
         "Success"]
      [:div.matches
       (for [match day-matches]
         (match-component match))]]))
+
+(defn classification-view
+  [state]
+  (let [day (:date (:page/navigated state))
+        ratings (:rattings (:classification state))
+        ]
+    (.log js/console ratings)
+    [:div
+     [:p (count ratings)]
+     #_(for [c cs]
+         [:p (:date c)])]))
 
 (defn not-found-view
   []

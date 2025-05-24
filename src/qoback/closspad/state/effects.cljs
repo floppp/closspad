@@ -24,6 +24,6 @@
     :route/not-found (navigated-not-found-page)
     :route/home (navigated-home-page)
     :route/match (navigated-match-page (-> args first first))
-    :data/query (network/query-backend {:query/kind :query/matches :query/data args })
+    :data/query (network/query-async {:query/kind :query/matches :query/data args })
+    ;; :data/query2 (network/query-async {:query/kind :query/matches :query/data args })
     (js/console.log "Unknown effect" effect)))
- 
