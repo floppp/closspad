@@ -97,13 +97,24 @@
 (defn classification-view
   [state]
   (let [day (:date (:page/navigated state))
-        ratings (:rattings (:classification state))
-        ]
-    (.log js/console ratings)
+        day-str (h/datetime->date->str day)
+        ratings (:ratings (:classification state))
+        day-ratings (first (filter (fn [[d _]]
+                                     (= day-str (h/datetime->date->str (js/Date. d))))
+                                   ratings))
+        players (second day-ratings)]
     [:div
-     [:p (count ratings)]
-     #_(for [c cs]
-         [:p (:date c)])]))
+     [:h2.text-2xl.font-bold.text-center.mt-4.mb-2 "Clasificación"]
+     [:div.flex.flex-col
+      (for [[name, points] players]
+        (let [cl (cond
+                   (>= points 60) "bg-green-200"
+                   (< points 40) "bg-red-200"
+                   (< points 50) "bg-orange-200")]
+          [:p.flex.justify-between.pt-2.pb-2.p
+           {:class cl}
+           [:span.font-bold name]
+           [:span points]]))]]))
 
 (defn not-found-view
   []
@@ -120,7 +131,7 @@
   [_state]
   [:div.flex
    [:div.flex-grow.p-4
-    [:h1.text-3xl.font-bold.text-center.mt-5 "Clasificación Kurdistán"]
+    [:h1.text-3xl.font-bold.text-center.mb-2 "Clasificación Kurdistán"]
     #_[:h2.text-xl.font-bold.text-center.mt-10 "Elige día para ver partidos"]]])
 
 (defn view [state]
@@ -131,7 +142,9 @@
      (case (:page (:page/navigated state))
        :not-found (not-found-view)
        :home (home-view)
-       :match (match-view state #_(:match (:page/navigated state))))]]])
+       :match [:div
+               (match-view state)
+               (classification-view state)])]]])
 
 (defn- render! [state]
   (r-dom/render

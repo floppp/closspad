@@ -1,6 +1,8 @@
-(ns qoback.closspad.network.query
+(ns qoback.closspad.network.core-async
   (:require [cljs.core.async :as async]
             [cljs.core.async.interop :refer [<p!]]
+            [qoback.closspad.state.db :refer [get-dispatcher]]
+            [qoback.closspad.rating-system :refer [process-matches]]
             [qoback.closspad.network.domain :refer [base-url query->http-request]]))
 
 (defn GET
