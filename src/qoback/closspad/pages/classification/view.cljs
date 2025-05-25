@@ -2,6 +2,22 @@
   (:require [qoback.closspad.helpers :as h]
             [qoback.closspad.pages.classification.order :refer [animate-reorder]]))
 
+(def prev-order (atom nil))
+
+(when goog.DEBUG
+  (add-tap
+   (fn [x]
+     (doseq [idx (range (count x))]
+       (let [[name points] (nth x idx)]
+         (.log js/console (str idx " points: " points " " name)))))
+   #_(partial println "tap>")))
+
+(defn change-prev [x]
+  (when goog.DEBUG
+    (tap> @prev-order))
+  (reset! prev-order x)
+  x)
+
 (defn player-color?
   [points]
   (cond
@@ -30,11 +46,8 @@
                         (= day-str (h/datetime->date->str (js/Date. d))))
                       ratings))
         players (->> (second day-ratings)
-                     (sort-by second >) ;; Sort by points descending
-                     (map-indexed
-                      (fn [idx [name points]]
-                        (.log js/console (str "Player: " name " Position: " idx))
-                        [name points])))]
+                     (sort-by second >)
+                     (change-prev))]
     [:div.bg-white.rounded-b-lg.shadow-md.p-8
      [:h2.text-3xl.font-bold.text-center.mb-6.text-gray-800 "Clasificación"]
      [:div.space-y-3

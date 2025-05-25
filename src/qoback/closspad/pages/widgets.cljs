@@ -5,7 +5,7 @@
   [_state]
   [:div.flex
    [:div.flex-grow.p-4
-    [:h1.text-3xl.font-bold.text-center.mb-2 "Clasificación Kurdistán"]]])
+    [:h1.text-3xl.font-bold.text-center.mb-2 "FIK"]]])
 
 (defn- arrow-button
   [path cb]
