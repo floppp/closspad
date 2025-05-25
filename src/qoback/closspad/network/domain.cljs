@@ -1,12 +1,9 @@
 (ns qoback.closspad.network.domain
-  (:require [cljs.core.async :as async]
-            [cljs.core.async.interop :refer [<p!]]
-            [qoback.closspad.state.db :refer [get-dispatcher]]
+  (:require [qoback.closspad.state.db :refer [get-dispatcher]]
             [qoback.closspad.rating-system :refer [process-matches]]))
 
-(def anon-key "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ycXdpdWJub3pmb3VhcXl5d2FoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjEzOTkzNzgsImV4cCI6MjAzNjk3NTM3OH0.6vRnb5W7DHSxpt-gQmbL9q_wRJzNW_tgks9Tu16vq1E")
-
-(def base-url "https://orqwiubnozfouaqyywah.supabase.co/rest/")
+(goog-define base-url "")
+(goog-define anon-key "")
 
 (defn query->http-request
   [{:query/keys [kind data]}]
@@ -22,7 +19,6 @@
                  (let [ratings (process-matches ms)
                        dispatcher (get-dispatcher)
                        ratings (filter (comp some? first) ratings)]
-                   (.log js/console ratings)
                    (dispatcher nil [[:db/assoc :classification {:ratings ratings}]
                                     [:db/assoc :match {:results ms}]])))}
     :query/user
