@@ -32,7 +32,7 @@
       :dom/prevent-default {:effects [[:dom/fx.prevent-default]]} ;;(.preventDefault js-event)
       :db/assoc {:new-state (apply assoc state args)}
       :db/dissoc {:new-state (apply dissoc state args)}
-      :route/not-found {:effects [[:route/not-found]]}
+      :route/not-found {:effects [[:route/not-found state]]}
       :route/home {:effects [[:route/home]]}
       :route/match {:effects [[:route/match args]]}
       :data/query {:effects [[:data/query {:state state :args args}]]}

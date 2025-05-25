@@ -1,3 +1,13 @@
+v0.0.11 ac16dcadd28b06736f5426b0e9d24c7e5ce232cf
+    >> feat: wrong date moves to last day with match
+    >> feat: taping indexes
+    >> wip: printing player order
+    >> wip: players are animated, no sense for now
+    >> feat: supabase strings into config
+    >> wip: animation working in toy example with gsap
+    >> wip: working in versioning
+
+
 v0.0.10 04cc75f5e4123f8863e3fc7c4c517fb21b2cbe5d
     >> wip: working in versioning
 

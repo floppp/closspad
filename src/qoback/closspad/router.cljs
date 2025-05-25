@@ -2,12 +2,16 @@
   (:require [reitit.frontend :as rfr]
             [reitit.frontend.easy :as rfe]))
 
+#_(defn redirect-middleware [handler]
+  (fn [match]
+    (if match
+      (handler match)
+      (rfe/push-state :route/home)))) ; or your 404 page
 
 (def routes
   [
-   #_["/match" {:name :route/match}]
    ["/match/:day" {:name :route/match
-                    :path [:day string?]}] ;; format: YYYY-MM-DD
+                   :path [:day string?]}] ;; format: YYYY-MM-DD
    ["/classification/:day" {:name :route/classification
                             :path [:day string?]}]
    ["/login" {:name :route/login
@@ -19,8 +23,7 @@
                 :stop
                 (fn [& _]
                   (.log js/console "Leaving login page"))}]}]
-   ["/" {:name :route/home}]
-   ])
+   ["/" {:name :route/home}]])
 
 (defn- get-route-actions
   [{:keys [data path-params]}]
@@ -31,8 +34,7 @@
     :route/classification (let [day (keyword (:day path-params))]
                             [[:route/classification {:day day}]])
     :route/login [[:route/login]]
-    [[:route/not-found]]
-      ))
+    [[:route/not-found]]))
 
 (defn start! [routes dispatch!]
   (rfe/start!
