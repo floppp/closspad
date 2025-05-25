@@ -1,11 +1,11 @@
 (ns qoback.closspad.pages.classification.order
   (:require ["gsap" :as G]))
 
-(def state (atom
+#_(def state (atom
             {:items (mapv #(hash-map :id % :text (str "Item " %))
                           (range 1 21))}))
 
-(defn shuffle-array [arr]
+#_(defn shuffle-array [arr]
   (let [arr (into [] arr)]
     (loop [i (dec (count arr)) arr arr]
       (if (<= i 0)
@@ -34,7 +34,7 @@
         (.set gsap item #js{:x invert-x :y invert-y})
         (.to gsap item #js{:x 0 :y 0 :duration 0.5 :ease "power2.out"})))))
 
-(defn item-view [{:keys [id text]}]
+#_(defn item-view [{:keys [id text]}]
   [:p {:key id
        :style {:padding "10px"
                :background "#eee"
@@ -42,7 +42,7 @@
                :will-change "transform"}}
    text])
 
-(defn app []
+#_(defn app []
   (let [state @state]
     [:div
      [:div.container

@@ -1,6 +1,6 @@
 (ns qoback.closspad.pages.classification.view
   (:require [qoback.closspad.helpers :as h]
-            [qoback.closspad.pages.classification.order :refer [animate-reorder shuffle-array]]))
+            [qoback.closspad.pages.classification.order :refer [animate-reorder]]))
 
 (defn player-color?
   [points]
@@ -29,13 +29,13 @@
                       (fn [[d _]]
                         (= day-str (h/datetime->date->str (js/Date. d))))
                       ratings))
-        players (second day-ratings)
-        new-order (shuffle-array (range (count players)))]
-    (.log js/console "new order: " new-order)
-    (animate-reorder
-     (js/document.querySelectorAll ".container div")
-     new-order)
+        players (->> (second day-ratings)
+                     (sort-by second >) ;; Sort by points descending
+                     (map-indexed
+                      (fn [idx [name points]]
+                        (.log js/console (str "Player: " name " Position: " idx))
+                        [name points])))]
     [:div.bg-white.rounded-b-lg.shadow-md.p-8
      [:h2.text-3xl.font-bold.text-center.mb-6.text-gray-800 "Clasificación"]
-     [:div.space-y-3.container
+     [:div.space-y-3
       (map player players)]]))

@@ -179,5 +179,6 @@
            [(:date state)
             (->> (:players state)
                  (map (fn [[id player]] [id (/ (Math/round (* 2 (:points player))) 2)]))
-                 (sort-by second >))])
+                 #_(sort-by second >)
+                 (sort-by first >))])
          states)))
