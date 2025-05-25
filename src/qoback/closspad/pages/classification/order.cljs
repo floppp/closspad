@@ -60,7 +60,7 @@
       "Shuffle Items"]]))
 
 ;; Mount with Replicant
-(defn mount []
+#_(defn mount []
   (r-dom/render
    (js/document.getElementById "app")
    (app))
