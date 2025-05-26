@@ -29,15 +29,18 @@
                              (enrich-action-from-state state))
         [action-name & args] enrichted-event]
     (case action-name
-      :dom/prevent-default {:effects [[:dom/fx.prevent-default]]} ;;(.preventDefault js-event)
+      :event/prevent-default {:effects [[:dom/fx.prevent-default]]} ;;(.preventDefault js-event)
       :db/assoc {:new-state (apply assoc state args)}
       :db/dissoc {:new-state (apply dissoc state args)}
+      :db/login (let [[_ value element] enrichted-event]
+                  {:new-state (assoc-in state [:db/login element] value)})
       :route/not-found {:effects [[:route/not-found state]]}
-      :route/home {:effects [[:route/home]]}
-      :route/match {:effects [[:route/match args]]}
-      :data/query {:effects [[:data/query {:state state :args args}]]}
-      (when goog.DEBUG
-        (.log js/console "Unknown event " action-name "with arguments" args)))))
+      :route/home {:effects [[:route/fx.home]]}
+      :route/login {:effects [[:route/fx.login]]}
+      :route/match {:effects [[:route/fx.match args]]}
+      :data/query {:effects [[:data/fx.query {:state state :args args}]]}
+      :fetch/login {:new-state (assoc state :login true)}
+      (.log js/console "Unknown event " action-name "with arguments" args))))
 
 (defn- handle-events
   [state replicant-data events]
@@ -55,8 +58,7 @@
   (let [{:keys [new-state effects]} (handle-events @!state replicant-data events)]
     (when new-state
       (reset! !state new-state)
-      (when goog.DEBUG
-        (.log js/console ">>>>> new state" @!state)))
+      (.log js/console "+++++++++++++" @!state))
     (when effects
       (doseq [effect effects]
         (perform-effect! replicant-data effect)))))

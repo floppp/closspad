@@ -20,8 +20,7 @@
 (defn query-async
   [params]
   (let [{:keys [method url options callback]} (query->http-request params)
-        chan ((method method-handler) (str base-url url) options)]
+        chan ((method method-handler) (str base-url "rest/" url) options)]
     (async/go
       (let [data (async/<! chan)]
         (when callback (callback data))))))
-

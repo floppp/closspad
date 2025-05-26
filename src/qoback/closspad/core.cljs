@@ -6,6 +6,9 @@
             [qoback.closspad.state.db :refer [!state !dispatcher]]
             [qoback.closspad.state.events :refer [event-handler]]))
 
+#_(when goog.DEBUG
+  (add-tap #(.log js/console %)))
+
 (defn- render! [state]
   (r-dom/render
    (js/document.getElementById "app")

@@ -4,17 +4,8 @@
 
 (def prev-order (atom nil))
 
-(when goog.DEBUG
-  (add-tap
-   (fn [x]
-     (doseq [idx (range (count x))]
-       (let [[name points] (nth x idx)]
-         (.log js/console (str idx " points: " points " " name)))))
-   #_(partial println "tap>")))
-
 (defn change-prev [x]
-  (when goog.DEBUG
-    (tap> @prev-order))
+  (tap> @prev-order)
   (reset! prev-order x)
   x)
 

@@ -16,7 +16,7 @@
                             :path [:day string?]}]
    ["/login" {:name :route/login
               :controllers
-              [{:start
+              [{:startm
                 (fn [_]
                   (let [is-logged? true]
                     (.log js/console "is logged? " is-logged?)))

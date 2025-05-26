@@ -1,5 +1,6 @@
 (ns qoback.closspad.pages.views
   (:require [qoback.closspad.pages.widgets :as w]
+            [qoback.closspad.pages.login.view :as login]
             [qoback.closspad.pages.match.view :as match]
             [qoback.closspad.pages.classification.view :as classification]))
 
@@ -15,13 +16,15 @@
      [:li "foo"]
      [:li "bar"]]]])
 
-(defn view [state]
+(defn view
+  [state]
   [:div.flex.h-screen
    [:div.flex-grow.p-4
     [:div.flex.flex-col.items-center.min-h-screen.mt-10
      (w/header state)
      (case (:page (:page/navigated state))
        :not-found (not-found-view)
+       :login (login/view state)
        :home (home-view)
        :match [:div {:class ["w-1/3" "min-w-[500px]"]}
                (match/view state)

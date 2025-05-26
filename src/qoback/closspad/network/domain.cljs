@@ -1,9 +1,12 @@
 (ns qoback.closspad.network.domain
   (:require [qoback.closspad.state.db :refer [get-dispatcher]]
-            [qoback.closspad.rating-system :refer [process-matches]]))
+            [qoback.closspad.rating-system :refer [process-matches]]
+            ["@supabase/supabase-js" :refer [createClient]]))
 
 (goog-define base-url "")
 (goog-define anon-key "")
+
+(defonce supabase (createClient base-url anon-key))
 
 (defn query->http-request
   [{:query/keys [kind data]}]
