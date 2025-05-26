@@ -14,17 +14,23 @@
 
 (defn navigated-match-page
   [{:keys [date]}]
-  (.log js/console "date " date)
   (let [dispatcher (get-dispatcher)]
     (dispatcher
      nil
      [[:db/assoc :page/navigated {:page :match :date date}]])))
 
 
+(defn goto->login
+  []
+  (let [dispatcher (get-dispatcher)]
+    (dispatcher
+     nil
+     [[:db/assoc :page/navigated {:page :login}]])))
+
 (defn perform-effect!
   [{:replicant/keys [^js js-event] :as replicant-data} [effect & args]]
   (case effect
-    :dom/prevent-default (.preventDefaul js-event)
+    :dom/fx.prevent-default (.preventDefault js-event)
     :route/not-found
     (let [date (-> args
                    first
@@ -34,7 +40,8 @@
                    :played_at)]
       (when date
         (rfe/push-state :route/match {:day (h/format-iso-date date)})))
-    :route/home (navigated-home-page)
-    :route/match (navigated-match-page (-> args first first))
-    :data/query (network/query-async {:query/kind :query/matches :query/data args})
-    (js/console.log "Unknown effect" effect)))
+    :route/fx.home (navigated-home-page)
+    :route/fx.login (goto->login)
+    :route/fx.match (navigated-match-page (-> args first first))
+    :data/fx.query (network/query-async {:query/kind :query/matches :query/data args})
+    (tap> (str "Unknown effect" effect))))
