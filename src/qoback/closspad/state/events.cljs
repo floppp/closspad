@@ -28,6 +28,7 @@
                              (enrich-action-from-event replicant-data)
                              (enrich-action-from-state state))
         [action-name & args] enrichted-event]
+    (.log js/console action-name)
     (case action-name
       :event/prevent-default {:effects [[:dom/fx.prevent-default]]} ;;(.preventDefault js-event)
       :db/assoc {:new-state (apply assoc state args)}
