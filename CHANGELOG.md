@@ -1,3 +1,10 @@
+v0.0.12 1c6c880c897d022d28d730993e3454ef01c987ab
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> wip: starting with login
+    >> wip: starting with login
+    >> feat: wrong date moves to last day with match
+
+
 v0.0.11 ac16dcadd28b06736f5426b0e9d24c7e5ce232cf
     >> feat: wrong date moves to last day with match
     >> feat: taping indexes
