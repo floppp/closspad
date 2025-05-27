@@ -5,32 +5,30 @@
             [qoback.closspad.network.domain :refer [supabase]]))
 
 
-;; (defn handle-supabase-auth
-;;   [auth-fn {:keys [email password on-success on-failure]}]
-;;   (async/go
-;;     (try
-;;       (let [response (<p! (auth-fn #js {:email email :password password}))
-;;             error (.-error response)
-;;             data (js->clj (.-data response) {:keywordize-keys true})]
-;;         (if error
-;;           (re-frame/dispatch (conj on-failure error))
-;;           (re-frame/dispatch (conj on-success data))))
-;;       (catch js/Error err
-;;         (re-frame/dispatch (conj on-failure (ex-cause err)))
-;; ))))
+(defn handle-supabase-auth
+  [auth-fn {:keys [email password]}]
+  (async/go
+    (try
+      (let [response (<p! (auth-fn #js {:email email :password password}))
+            error (.-error response)
+            data (js->clj (.-data response) {:keywordize-keys true})]
+        (if error
+          {:error error}
+          {:success data}))
+      (catch js/Error err
+        {:error (ex-cause err)}))))
 
-;; (re-frame/reg-fx
-;;  :auth/supabase-login
-;;  (fn [params]
-;;    (handle-supabase-auth
-;;     (fn [credentials]
-;;       (-> supabase .-auth (.signInWithPassword credentials)))
-;;     params)))
-
-;; (re-frame/reg-fx
-;;  :auth/supabase-signup
-;;  (fn [params]
-;;    (handle-supabase-auth
-;;     (fn [credentials]
-;;       (-> supabase .-auth (.signUp credentials)))
-;;     params)))
+(defn login
+  [[email pass]]
+  (async/go
+    (let [dispatcher (get-dispatcher)
+          auth-fn #(-> supabase .-auth (.signInWithPassword %))
+          result (async/<! (handle-supabase-auth auth-fn {:email email :password pass}))
+          {:keys [success error]} result]
+      (.log js/console success)
+      (if error
+        (dispatcher nil [[:db/dissoc :db/login]
+                         [:db/assoc-in [:db/login :error error]]])
+        (dispatcher nil [[:db/dissoc :db/login]
+                         [:db/assoc-in [:db/login :user (get-in success [:user :email])]]
+                         [:route/match {:date (js/Date.)}]])))))

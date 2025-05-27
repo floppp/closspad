@@ -31,7 +31,7 @@
           :on {:input [[:db/login :event/target.value :password]]}}]]
 
        [:button.w-full.bg-blue-600.text-white.py-2.px-4.rounded-md.hover:bg-blue-700.transition-colors
-        (cond-> {:type "submit" :on {:click [[:fetch/login email password]]}}
+        (cond-> {:on {:click [[:fetch/login email password]]}}
           (or (empty? email) (empty? password))
           (merge {:disabled true :class "cursor-not-allowed"}))
         "Entrar"]]]]))

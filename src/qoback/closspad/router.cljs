@@ -1,12 +1,16 @@
 (ns qoback.closspad.router
   (:require [reitit.frontend :as rfr]
-            [reitit.frontend.easy :as rfe]))
+            [reitit.frontend.easy :as rfe]
+            [reitit.frontend.controllers :as rfc]
+            [qoback.closspad.helpers :as h]
+            [qoback.closspad.state.db :refer [get-dispatcher]]))
 
+;; (def dispatcher (get-dispatcher))
 #_(defn redirect-middleware [handler]
-  (fn [match]
-    (if match
-      (handler match)
-      (rfe/push-state :route/home)))) ; or your 404 page
+    (fn [match]
+      (if match
+        (handler match)
+        (rfe/push-state :route/home)))) ; or your 404 page
 
 (def routes
   [
@@ -14,11 +18,16 @@
                    :path [:day string?]}] ;; format: YYYY-MM-DD
    ["/classification/:day" {:name :route/classification
                             :path [:day string?]}]
+   ["/add-match" {:name :route/add-match}]
    ["/login" {:name :route/login
               :controllers
-              [{:startm
+              [{:start
                 (fn [_]
-                  (let [is-logged? true]
+                  (let [is-logged? true
+                        dispatcher (get-dispatcher)]
+                    ;; Esto podemos hacerlo con dispatch también.
+                    ;; (rfe/push-state :route/match {:day (h/format-iso-date (js/Date.))})
+                    (dispatcher nil [[:route/home]])
                     (.log js/console "is logged? " is-logged?)))
                 :stop
                 (fn [& _]
@@ -39,6 +48,8 @@
 (defn start! [routes dispatch!]
   (rfe/start!
    (rfr/router routes)
-   (fn do-routing [m]
+   (fn do-routing [{:keys [data] :as m}]
+     ;; (.log js/console (:controllers data))
+     (rfc/apply-controllers nil m)
      (dispatch! nil (get-route-actions m)))
    {:use-fragment true}))

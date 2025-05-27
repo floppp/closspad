@@ -2,7 +2,8 @@
   (:require [reitit.frontend.easy :as rfe]
             [qoback.closspad.state.db :refer [get-dispatcher]]
             [qoback.closspad.network.query :as network]
-            [qoback.closspad.helpers :as h]))
+            [qoback.closspad.helpers :as h]
+            [qoback.closspad.state.supabase :as supabase]))
 
 (defn navigated-not-found-page []
   (let [dispatcher (get-dispatcher)]
@@ -44,4 +45,5 @@
     :route/fx.login (goto->login)
     :route/fx.match (navigated-match-page (-> args first first))
     :data/fx.query (network/query-async {:query/kind :query/matches :query/data args})
+    :fetch/fx.login (supabase/login (first args))
     (tap> (str "Unknown effect" effect))))
