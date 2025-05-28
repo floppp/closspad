@@ -29,13 +29,14 @@
 (defn view
   [state]
   (let [day (:date (:page/navigated state))
-        day-str (h/datetime->date->str day)
+        day-str (h/format-iso-date day)
         ratings (:ratings (:classification state))
-        day-ratings (first
-                     (filter
-                      (fn [[d _]]
-                        (= day-str (h/datetime->date->str (js/Date. d))))
-                      ratings))
+        day-ratings (filter
+                     (fn [[d _]]
+                       (<= (js/Date. (h/format-iso-date (js/Date. d)))
+                           (js/Date. day-str)))
+                     ratings)
+        day-ratings (last (sort-by first day-ratings))
         players (->> (second day-ratings)
                      (sort-by second >)
                      (change-prev))]

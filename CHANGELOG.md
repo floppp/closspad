@@ -1,3 +1,11 @@
+v0.0.13 42d535483c729b554c1dac73c339dcbac846ec10
+    >> feat: when a date is selected the previous classificaiton is shown
+    >> feat: not home but current day classification
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> feat: using supabase client for login
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+
+
 v0.0.12 1c6c880c897d022d28d730993e3454ef01c987ab
     >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
     >> wip: starting with login
