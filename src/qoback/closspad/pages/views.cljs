@@ -26,6 +26,11 @@
        :not-found (not-found-view)
        :login (login/view state)
        :home (home-view)
-       :match [:div {:class ["w-1/3" "min-w-[500px]"]}
+       :match [:div {:class ["w-full"
+                             "md:w-3/4"
+                             "lg:w-2/3"
+                             "xl:w-1/2"
+                             "2xl:w-1/3"
+]}
                (match/view state)
                (classification/view state)])]]])

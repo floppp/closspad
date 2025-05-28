@@ -27,8 +27,7 @@
                         dispatcher (get-dispatcher)]
                     ;; Esto podemos hacerlo con dispatch también.
                     ;; (rfe/push-state :route/match {:day (h/format-iso-date (js/Date.))})
-                    (dispatcher nil [[:route/home]])
-                    (.log js/console "is logged? " is-logged?)))
+                    (dispatcher nil [[:route/home]])))
                 :stop
                 (fn [& _]
                   (.log js/console "Leaving login page"))}]}]
@@ -49,12 +48,9 @@
   (rfe/start!
    (rfr/router routes)
    (fn do-routing [{:keys [data] :as m}]
-     (.log js/console m)
      (if m
        (do
          (rfc/apply-controllers nil m)
-         (.log js/console (get-route-actions m))
          (dispatch! nil (get-route-actions m)))
-       (dispatch! nil [[:route/not-found]]))
-     #_(.log js/console (:controllers data)))
+       (dispatch! nil [[:route/not-found]])))
    {:use-fragment true}))

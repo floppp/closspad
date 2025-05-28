@@ -25,7 +25,6 @@
           auth-fn #(-> supabase .-auth (.signInWithPassword %))
           result (async/<! (handle-supabase-auth auth-fn {:email email :password pass}))
           {:keys [success error]} result]
-      (.log js/console success)
       (if error
         (dispatcher nil [[:db/dissoc :db/login]
                          [:db/assoc-in [:db/login :error error]]])
