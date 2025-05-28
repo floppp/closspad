@@ -32,12 +32,12 @@
                 :stop
                 (fn [& _]
                   (.log js/console "Leaving login page"))}]}]
-   ["/" {:name :route/home}]])
+   #_["/" {:name :route/home}]])
 
 (defn- get-route-actions
   [{:keys [data path-params]}]
   (case (:name data)
-    :route/home [[:route/home]]
+    ;; :route/home [[:route/home]]
     :route/match (let [date ^js (js/Date. (:day path-params))]
                    [[:route/match {:date date}]])
     :route/classification (let [day (keyword (:day path-params))]
@@ -49,7 +49,12 @@
   (rfe/start!
    (rfr/router routes)
    (fn do-routing [{:keys [data] :as m}]
-     ;; (.log js/console (:controllers data))
-     (rfc/apply-controllers nil m)
-     (dispatch! nil (get-route-actions m)))
+     (.log js/console m)
+     (if m
+       (do
+         (rfc/apply-controllers nil m)
+         (.log js/console (get-route-actions m))
+         (dispatch! nil (get-route-actions m)))
+       (dispatch! nil [[:route/not-found]]))
+     #_(.log js/console (:controllers data)))
    {:use-fragment true}))

@@ -39,8 +39,9 @@
                    :results
                    last
                    :played_at)]
-      (when date
-        (rfe/push-state :route/match {:day (h/format-iso-date date)})))
+      (rfe/push-state
+       :route/match
+       {:day (h/format-iso-date (if date date (js/Date.)))}))
     :route/fx.home (navigated-home-page)
     :route/fx.login (goto->login)
     :route/fx.match (navigated-match-page (-> args first first))
