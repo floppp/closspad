@@ -1,3 +1,8 @@
+v0.0.16 6bba2765230ca8e3b6eed5ffc5ed548e9a5efa24
+    >> fix: date arrows width and gap
+    >> fix: zoom out on init because of arrow button size
+
+
 v0.0.15 cc10995636f5430aa7a27bf845a4e97a68757a7f
     >> fix: zoom out on init because of arrow button size
     >> fix: cleaning logs and better size management

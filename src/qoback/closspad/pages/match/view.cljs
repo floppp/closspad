@@ -16,7 +16,7 @@
                              h/datetime->date->str))
                      all-matches)]
     [:div.bg-white.rounded-t-lg.shadow-md.p-8
-     [:div.mb-6
+     [:div.mb-6.flex.justify-center
       (w/arrow-selector match-date (->> all-matches
                                         (map (comp #(js/Date. %) :played_at))
                                         sort))]

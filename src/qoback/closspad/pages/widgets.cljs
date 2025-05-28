@@ -53,8 +53,8 @@
 
 (defn arrow-selector
   [date match-dates]
-  [:div.flex.justify-center.gap-3.items-center
-   {:class "sm:items-start"}
+  [:div.flex.justify-center.gap-3.items-center.w-full
+   {:class ["max-w-[400px]""sm:items-start"]}
    (double-arrow-left match-dates)
 
    (arrow-left date match-dates)
