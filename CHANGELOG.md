@@ -1,3 +1,8 @@
+v0.0.15 cc10995636f5430aa7a27bf845a4e97a68757a7f
+    >> fix: zoom out on init because of arrow button size
+    >> fix: cleaning logs and better size management
+
+
 v0.0.14 95c2b1c2297790cf77a2d6858eaec35b625a6d63
     >> fix: cleaning logs and better size management
     >> feat: when a date is selected the previous classificaiton is shown

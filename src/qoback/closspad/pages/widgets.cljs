@@ -10,7 +10,7 @@
 (defn- arrow-button
   [path cb]
   (let [date (cb)]
-    [:a.btn.btn-circle
+    [:a
      {:href (when date (str "#/match/" date))
       :class (when-not date "cursor-not-allowed")}
      [:svg {:xmlns "http://www.w3.org/2000/svg" :class ["h-6" "w-6"] :fill "none" :viewBox "0 0 24 24" :stroke "currentColor"}
@@ -53,12 +53,15 @@
 
 (defn arrow-selector
   [date match-dates]
-  [:div.flex.justify-center.items-center.gap-4
+  [:div.flex.justify-center.gap-3.items-center
+   {:class "sm:items-start"}
    (double-arrow-left match-dates)
 
    (arrow-left date match-dates)
 
-   [:div.text-xl.font-semibold.min-w-120.text-center
+   [:div
+    {:class
+     ["text-lg" "font-semibold" "min-w-120" "text-center" "sm:text-xl"]}
     (h/datetime->date->str date)]
 
    (arrow-right date match-dates)
