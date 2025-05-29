@@ -3,9 +3,21 @@
 
 (defn header
   [_state]
-  [:div.flex
-   [:div.flex-grow.p-4
-    #_[:h1.text-3xl.font-bold.text-center.mb-2 "FIK"]]])
+  [:div.bg-white.rounded-lg.shadow-md.p-4.mb-6
+   [:div.flex.flex-grow.gap-8.items-center
+    [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out
+     {:href "/#"
+      :class "hover:scale-105 hover:underline hover:underline-offset-4"}
+     "Inicio"]
+    [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out
+     {:href "/#/explanation"
+      :title "para llorones"
+      :class "hover:scale-105 hover:underline hover:underline-offset-4"}
+     "Explicación"]
+    [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out
+     {:href "/#/login"
+      :class "hover:scale-105 hover:underline hover:underline-offset-4"}
+     "Login"]]])
 
 (defn- arrow-button
   [path cb]

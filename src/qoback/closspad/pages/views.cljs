@@ -24,8 +24,8 @@
 (defn view
   [state]
   [:div.flex.h-screen
-   [:div.flex-grow.p-4
-    [:div.flex.flex-col.items-center.min-h-screen.mt-10
+   [:div.flex-grow
+    [:div.flex.flex-col.items-center.min-h-screen.mt-5
      (w/header state)
      (case (:page (:page/navigated state))
        :not-found (not-found-view)
