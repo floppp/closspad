@@ -23,19 +23,21 @@
 
 (defn view
   [state]
-  [:div.flex.h-screen
-   [:div.flex-grow
-    [:div.flex.flex-col.items-center.min-h-screen.mt-5
-     (w/header state)
-     (case (:page (:page/navigated state))
-       :not-found (not-found-view)
-       :login (login/view state)
-       :home (home-view)
-       :explanation (explanation-view)
-       :match [:div {:class ["w-full"
-                             "md:w-3/4"
-                             "lg:w-2/3"
-                             "xl:w-1/2"
-                             "2xl:w-1/3"]}
-               (match/view state)
-               (classification/view state)])]]])
+  (case (:page (:page/navigated state))
+    :login (login/view state)
+    [:div.flex.h-screen
+     [:div.flex-grow
+      [:div.flex.flex-col.items-center.min-h-screen.mt-5
+       (w/header state)
+       [:div {:class ["w-full"
+                      "md:w-3/4"
+                      "lg:w-2/3"
+                      "xl:w-1/2"
+                      "2xl:w-1/3"]}
+        (case (:page (:page/navigated state))
+          :not-found (not-found-view)
+          :home (home-view)
+          :explanation (explanation-view)
+          :match [:div
+                  (match/view state)
+                  (classification/view state)])]]]]))

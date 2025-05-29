@@ -3,7 +3,7 @@
 (defn- render-login-form [state]
   (let [{:db/keys [login]} state
         {:keys [email password]} login]
-    [:div.mt-10
+    [:div.mt-10.flex.justify-center
      [:div.bg-white.rounded-lg.shadow-lg.p-8.w-full.max-w-md
 
       ;; FIX-ME:

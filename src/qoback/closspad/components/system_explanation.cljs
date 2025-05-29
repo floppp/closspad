@@ -2,7 +2,7 @@
 
 (defn component
   []
-  [:div.bg-white.rounded-lg.shadow-md.p-6.max-w-4xl.mx-auto
+  [:div.bg-white.rounded-lg.shadow-md.p-6.max-w-4xl.mx-auto.w-full
    [:h1.text-3xl.font-bold.text-gray-800.mb-6
     "Sistema de Puntuación de Pádel"]
 

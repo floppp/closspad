@@ -10,7 +10,8 @@
             "lg:w-2/3"
             "xl:w-1/2"
             "2xl:w-1/3"]}
-   [:div.flex.items-center.md:hidden.justify-center
+   [:div.flex.items-center.md:hidden
+    {:class (when header "justify-center")}
     [:button.text-gray-700.hover:text-gray-900
      {:on {:click [[:ui/header]]} :aria-label "Toggle menu"}
      [:svg.w-6.h-6
@@ -37,23 +38,25 @@
      "Login"]]
 
    (when header
-     [:div.flex.flex-col.gap-4.p-4.md:hidden
-      [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out.text-center
-       {:href "/#"
-        :class ["hover:scale-105" "hover:underline" "hover:underline-offset-4"]
-        :on {:click [[:ui/header]]}}
-       "Inicio"]
-      [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out.text-center
-       {:href "/#/explanation"
-        :title "para llorones"
-        :class ["hover:scale-105" "hover:underline" "hover:underline-offset-4"]
-        :on {:click [[:ui/header]]}}
-       "Explicación"]
-      [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out.text-center
-       {:href "/#/login"
-        :class ["hover:scale-105" "hover:underline" "hover:underline-offset-4"]
-        :on {:click [[:ui/header]]}}
-       "Login"]])]
+     [:div.overflow-hidden.transition-all.duration-300.ease-in-out
+      {:class (if header "max-h-96" "max-h-0")}
+      [:div.flex.flex-col.gap-4.p-4.items-center.md:hidden
+       [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out
+        {:href "/#"
+         :class ["hover:scale-105" "hover:underline" "hover:underline-offset-4"]
+         :on {:click [[:ui/header]]}}
+        "Inicio"]
+       [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out
+        {:href "/#/explanation"
+         :title "para llorones"
+         :class ["hover:scale-105" "hover:underline" "hover:underline-offset-4"]
+         :on {:click [[:ui/header]]}}
+        "Explicación"]
+       [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out
+        {:href "/#/login"
+         :class ["hover:scale-105" "hover:underline" "hover:underline-offset-4"]
+         :on {:click [[:ui/header]]}}
+        "Login"]]])]
   #_[:div.bg-white.rounded-lg.shadow-md.p-4.mb-5.sticky.top-0
      {:class ["w-full"
               "md:w-3/4"
