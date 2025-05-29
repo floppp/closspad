@@ -38,6 +38,7 @@
                   {:new-state (assoc-in state [:db/login element] value)})
       :route/not-found {:effects [[:route/not-found state]]}
       :route/home {:effects [[:route/fx.home]]}
+      :route/explanation {:effects [[:route/fx.explanation]]}
       :route/login {:effects [[:route/fx.login]]}
       :route/match {:effects [[:route/fx.match args]]}
       :data/query {:effects [[:data/fx.query {:state state :args args}]]}

@@ -3,6 +3,7 @@
             [qoback.closspad.rating-system :refer [process-matches]]
             ["@supabase/supabase-js" :refer [createClient]]))
 
+(goog-define organization "")
 (goog-define base-url "")
 (goog-define anon-key "")
 
@@ -13,7 +14,7 @@
   (case kind
     :query/matches
     {:method  :get
-     :url     "v1/CLOSSPAD_match?select=*&order=played_at.asc"
+     :url     (str "v1/CLOSSPAD_match?select=*&order=played_at.asc&organization=eq." organization)
      :options {:method (name :get)
                :headers
                {:apiKey anon-key

@@ -19,14 +19,12 @@
    ["/classification/:day" {:name :route/classification
                             :path [:day string?]}]
    ["/add-match" {:name :route/add-match}]
+   ["/explanation" {:name :route/explanation}]
    ["/login" {:name :route/login
               :controllers
               [{:start
                 (fn [_]
-                  (let [is-logged? true
-                        dispatcher (get-dispatcher)]
-                    ;; Esto podemos hacerlo con dispatch también.
-                    ;; (rfe/push-state :route/match {:day (h/format-iso-date (js/Date.))})
+                  (let [dispatcher (get-dispatcher)]
                     (dispatcher nil [[:route/home]])))
                 :stop
                 (fn [& _]
@@ -41,6 +39,7 @@
                    [[:route/match {:date date}]])
     :route/classification (let [day (keyword (:day path-params))]
                             [[:route/classification {:day day}]])
+    :route/explanation [[:route/explanation]]
     :route/login [[:route/login]]
     [[:route/not-found]]))
 

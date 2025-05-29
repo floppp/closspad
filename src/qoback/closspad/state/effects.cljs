@@ -5,14 +5,6 @@
             [qoback.closspad.helpers :as h]
             [qoback.closspad.state.supabase :as supabase]))
 
-(defn navigated-not-found-page []
-  (let [dispatcher (get-dispatcher)]
-    (dispatcher nil [[:db/assoc :page/navigated {:page :not-found}]])))
-
-(defn navigated-home-page []
-  (let [dispatcher (get-dispatcher)]
-    (dispatcher nil [[:db/assoc :page/navigated {:page :home}]])))
-
 (defn navigated-match-page
   [{:keys [date]}]
   (let [dispatcher (get-dispatcher)]
@@ -21,15 +13,15 @@
      [[:db/assoc :page/navigated {:page :match :date date}]])))
 
 
-(defn goto->login
-  []
+(defn goto->page
+  [page]
   (let [dispatcher (get-dispatcher)]
     (dispatcher
      nil
-     [[:db/assoc :page/navigated {:page :login}]])))
+     [[:db/assoc :page/navigated {:page page}]])))
 
 (defn perform-effect!
-  [{:replicant/keys [^js js-event] :as replicant-data} [effect & args]]
+  [{:replicant/keys [^js js-event]} [effect & args]]
   (case effect
     :dom/fx.prevent-default (.preventDefault js-event)
     :route/not-found
@@ -42,8 +34,9 @@
       (rfe/push-state
        :route/match
        {:day (h/format-iso-date (if date date (js/Date.)))}))
-    :route/fx.home (navigated-home-page)
-    :route/fx.login (goto->login)
+    :route/fx.home (goto->page :home)
+    :route/fx.login (goto->page :login)
+    :route/fx.explanation (goto->page :explanation)
     :route/fx.match (navigated-match-page (-> args first first))
     :data/fx.query (network/query-async {:query/kind :query/matches :query/data args})
     :fetch/fx.login (supabase/login (first args))

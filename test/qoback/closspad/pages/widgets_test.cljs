@@ -1,7 +1,6 @@
 (ns qoback.closspad.pages.widgets-test
   (:require [cljs.test :refer [deftest is testing]]
-            [qoback.closspad.pages.widgets :as widgets]
-            [qoback.closspad.helpers :as h]))
+            [qoback.closspad.components.widgets :as widgets]))
 
 (defn- make-date [date-str]
   (js/Date. date-str))

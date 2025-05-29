@@ -1,5 +1,5 @@
 (ns qoback.closspad.pages.match.view
-  (:require [qoback.closspad.pages.widgets :as w]
+  (:require [qoback.closspad.components.widgets :as w]
             [qoback.closspad.helpers :as h]
             [qoback.closspad.pages.match.component :as match]))
 
