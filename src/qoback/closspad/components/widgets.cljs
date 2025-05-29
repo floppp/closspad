@@ -3,8 +3,13 @@
 
 (defn header
   [_state]
-  [:div.bg-white.rounded-lg.shadow-md.p-4.mb-6
-   [:div.flex.flex-grow.gap-8.items-center
+  [:div.bg-white.rounded-lg.shadow-md.p-4.mb-5
+   {:class ["w-full"
+            "md:w-3/4"
+            "lg:w-2/3"
+            "xl:w-1/2"
+            "2xl:w-1/3"]}
+   [:div.flex.flex-grow.gap-8.items-center.justify-center
     [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out
      {:href "/#"
       :class "hover:scale-105 hover:underline hover:underline-offset-4"}
@@ -66,7 +71,7 @@
 (defn arrow-selector
   [date match-dates]
   [:div.flex.justify-center.gap-3.items-center.w-full
-   {:class ["max-w-[400px]""sm:items-start"]}
+   {:class ["max-w-[400px]" "sm:items-start"]}
    (double-arrow-left match-dates)
 
    (arrow-left date match-dates)
