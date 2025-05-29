@@ -1,28 +1,79 @@
 (ns qoback.closspad.components.widgets
   (:require [qoback.closspad.helpers :as h]))
 
+
 (defn header
-  [_state]
-  [:div.bg-white.rounded-lg.shadow-md.p-4.mb-5
+  [{:ui/keys [header]}]
+  [:div.bg-white.rounded-lg.shadow-md.p-4.sticky.top-0.mb-5
    {:class ["w-full"
             "md:w-3/4"
             "lg:w-2/3"
             "xl:w-1/2"
             "2xl:w-1/3"]}
-   [:div.flex.flex-grow.gap-8.items-center.justify-center
+   [:div.flex.items-center.md:hidden.justify-center
+    [:button.text-gray-700.hover:text-gray-900
+     {:on {:click [[:ui/header]]} :aria-label "Toggle menu"}
+     [:svg.w-6.h-6
+      {:fill "none" :viewBox "0 0 24 24" :stroke "currentColor"}
+      [:path {:stroke-linecap "round" :stroke-linejoin "round" :stroke-width "2"
+              :d (if header
+                   "M6 18L18 6M6 6l12 12"
+                   "M4 6h16M4 12h16M4 18h16")}]]]]
+
+   [:div.hidden.md:flex.flex-grow.gap-8.items-center.justify-center
     [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out
      {:href "/#"
-      :class "hover:scale-105 hover:underline hover:underline-offset-4"}
+      :class ["hover:scale-105" "hover:underline" "hover:underline-offset-4"]
+      :style {:text-align "center"}}
      "Inicio"]
     [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out
      {:href "/#/explanation"
       :title "para llorones"
-      :class "hover:scale-105 hover:underline hover:underline-offset-4"}
+      :class ["hover:scale-105" "hover:underline" "hover:underline-offset-4"]}
      "Explicación"]
     [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out
      {:href "/#/login"
-      :class "hover:scale-105 hover:underline hover:underline-offset-4"}
-     "Login"]]])
+      :class ["hover:scale-105" "hover:underline" "hover:underline-offset-4"]}
+     "Login"]]
+
+   (when header
+     [:div.flex.flex-col.gap-4.p-4.md:hidden
+      [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out.text-center
+       {:href "/#"
+        :class ["hover:scale-105" "hover:underline" "hover:underline-offset-4"]
+        :on {:click [[:ui/header]]}}
+       "Inicio"]
+      [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out.text-center
+       {:href "/#/explanation"
+        :title "para llorones"
+        :class ["hover:scale-105" "hover:underline" "hover:underline-offset-4"]
+        :on {:click [[:ui/header]]}}
+       "Explicación"]
+      [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out.text-center
+       {:href "/#/login"
+        :class ["hover:scale-105" "hover:underline" "hover:underline-offset-4"]
+        :on {:click [[:ui/header]]}}
+       "Login"]])]
+  #_[:div.bg-white.rounded-lg.shadow-md.p-4.mb-5.sticky.top-0
+     {:class ["w-full"
+              "md:w-3/4"
+              "lg:w-2/3"
+              "xl:w-1/2"
+              "2xl:w-1/3"]}
+     [:div.flex.flex-grow.gap-8.items-center.justify-center
+      [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out
+       {:href "/#"
+        :class "hover:scale-105 hover:underline hover:underline-offset-4"}
+       "Inicio"]
+      [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out
+       {:href "/#/explanation"
+        :title "para llorones"
+        :class "hover:scale-105 hover:underline hover:underline-offset-4"}
+       "Explicación"]
+      [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out
+       {:href "/#/login"
+        :class "hover:scale-105 hover:underline hover:underline-offset-4"}
+       "Login"]]])
 
 (defn- arrow-button
   [path cb]

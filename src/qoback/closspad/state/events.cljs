@@ -36,6 +36,7 @@
       :db/dissoc {:new-state (apply dissoc state args)}
       :db/login (let [[_ value element] enrichted-event]
                   {:new-state (assoc-in state [:db/login element] value)})
+      :ui/header {:new-state (update state :ui/header not)}
       :route/not-found {:effects [[:route/not-found state]]}
       :route/home {:effects [[:route/fx.home]]}
       :route/explanation {:effects [[:route/fx.explanation]]}
