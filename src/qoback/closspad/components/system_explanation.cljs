@@ -10,10 +10,11 @@
     "1. Probabilidad de Victoria (P)"]
    [:p.text-gray-600.mb-2 "Fórmula:"]
    [:pre.bg-gray-100.p-4.rounded.mb-4.overflow-x-auto
-    [:code.text-sm.font-mono "P = 1 / (1 + 10^((PuntosEquipoB - PuntosEquipoA)/200)"]]
+    [:code.text-sm.font-mono "P = 1 / (1 + 10^((PuntosEquipoB - PuntosEquipoA)/FactorEscala)"]]
+   [:p.text-gray-600.mb-2 "Donde FactorEscala = 100 (valor configurable)"]
    [:p.text-gray-600.mb-2 "Ejemplo:" [:br] "Equipo A (120 puntos) vs Equipo B (100 puntos)"]
    [:pre.bg-gray-100.p-4.rounded.mb-4.overflow-x-auto
-    [:code.text-sm.font-mono "P = 1 / (1 + 10^((100-120)/200)) = 1 / (1 + 10^-0.1) ≈ 56%"]]
+    [:code.text-sm.font-mono "P = 1 / (1 + 10^((100-120)/100)) = 1 / (1 + 10^-0.2) ≈ 60%"]]
 
    [:h3.text-xl.font-medium.text-gray-700.mt-6.mb-3
     "2. Cálculo de Cambio de Puntos"]
@@ -22,7 +23,7 @@
     [:code.text-sm.font-mono "Cambio = K * (Resultado - P)"]]
    [:p.text-gray-600.mb-2 "Donde:"]
    [:ul.list-disc.list-inside.pl-4.mb-4.space-y-1
-    [:li.text-gray-700 "K = 10 (valor base)"]
+    [:li.text-gray-700 "K = BaseK (20) * Volatilidad (1.1 inicial)"]
     [:li.text-gray-700 "Resultado = 1 (ganó) o 0 (perdió)"]
     [:li.text-gray-700 "P = Probabilidad calculada"]]
 
@@ -104,7 +105,7 @@
     [:li.text-gray-700 [:strong.font-medium "Resultado"] ": Equipo A gana"]
     [:li.text-gray-700 [:strong.font-medium "Cálculo:"]
      [:br]
-     [:pre.bg-gray-100.p-2.rounded.inline-block.ml-2 "Cambio base = 10 * (1 - 0.15) = 8.5"]
+     [:pre.bg-gray-100.p-2.rounded.inline-block.ml-2 "Cambio base = BaseK * (1 - 0.15) = 8.5"]
      [:br]
      [:pre.bg-gray-100.p-2.rounded.inline-block.ml-2 "Factores aplicados → +12 puntos"]]
     [:li.text-gray-700 [:strong.font-medium "Ajuste Final"] ":"
@@ -129,30 +130,7 @@
        [:li.text-gray-700 "Jugador nuevo: 50 → 40 (-10)"]
        [:li.text-gray-700 "Experto: 70 → 62 (-8)"]]]]]
 
-   [:h3.text-xl.font-medium.text-gray-700.mt-6.mb-3  "Ejemplo 4: Torneo Importante"]
-   [:ul.list-disc.list-inside.pl-4.mb-6.space-y-2.bg-gray-50.p-4.rounded-lg
-    [:li.text-gray-700 [:strong.font-medium "Importancia"] ": 1.5x"]
-    [:li.text-gray-700 [:strong.font-medium "Equipo A"] ": 80 + 75 = 155"]
-    [:li.text-gray-700 [:strong.font-medium "Equipo B"] ": 70 + 70 = 140"]
-    [:li.text-gray-700 [:strong.font-medium "Probabilidad"] ": 65% Equipo A"]
-    [:li.text-gray-700 [:strong.font-medium "Resultado"] ": Equipo A gana"]
-    [:li.text-gray-700 [:strong.font-medium "Cálculo:"]
-     [:br]
-     [:pre.bg-gray-100.p-2.rounded.inline-block.ml-2
-      "Cambio base = 10 * (1 - 0.65) = 3.5"]
-     [:br]
-     [:pre.bg-gray-100.p-2.rounded.inline-block.ml-2
-      "Con importancia → 3.5 * 1.5 ≈ 5.25"]
-     [:br]
-     [:pre.bg-gray-100.p-2.rounded.inline-block.ml-2
-      "Factores aplicados → +6/+7 puntos"]]
-    [:li.text-gray-700 [:strong.font-medium "Ajuste Final"] ":"
-     [:ul.list-disc.list-inside.pl-4.mb-6.space-y-2.bg-gray-50.p-4.rounded-lg
-      [:li.text-gray-700 "80 → 86 (+6)"]
-      [:li.text-gray-700 "75 → 82 (+7)"]
-      [:li.text-gray-700 "Rivales: 70 → 61 (-9)"]]]]
-
-   [:h3.text-xl.font-medium.text-gray-700.mt-6.mb-3 "Ejemplo 5: Jugadores Top"]
+   [:h3.text-xl.font-medium.text-gray-700.mt-6.mb-3 "Ejemplo 4: Jugadores Top"]
    [:ul.list-disc.list-inside.pl-4.mb-6.space-y-2.bg-gray-50.p-4.rounded-lg
     [:li.text-gray-700 [:strong.font-medium "Equipo A"] ": 95 + 90 = 185"]
     [:li.text-gray-700 [:strong.font-medium "Equipo B"] ": 50 + 50 = 100"]
@@ -181,7 +159,8 @@
     [:li [:strong "Volatilidad"] ":"
      [:ul.list-disc.list-inside.pl-4.mb-6.space-y-2.bg-gray-50.p-4.rounded-lg
       [:li "Nuevos: 1.1"]
-      [:li "Decrece 1% por partido"]
-      [:li "Mínimo: 0.8"]]]
+      [:li "Decrece 1% por partido (multiplicado por 0.99)"]
+      [:li "Mínimo: 0.8"]
+      [:li "Afecta directamente al factor K (K = BaseK * volatilidad)"]]]
     [:li [:strong "Inactividad"] ": -2% por periodo inactivo"]
     [:li [:strong "Importancia"] ": Multiplicador 1-2x"]]])
