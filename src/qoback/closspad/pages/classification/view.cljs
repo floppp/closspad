@@ -2,12 +2,12 @@
   (:require [qoback.closspad.helpers :as h]
             [qoback.closspad.pages.classification.order :refer [animate-reorder]]))
 
-(def prev-order (atom nil))
+;; (def prev-order (atom nil))
 
-(defn change-prev [x]
-  (tap> @prev-order)
-  (reset! prev-order x)
-  x)
+#_(defn change-prev [x]
+    (tap> @prev-order)
+    (reset! prev-order x)
+    x)
 
 (defn player-color?
   [points]
@@ -21,7 +21,7 @@
   [[name, points]]
   (let [cl (player-color? points)]
     [:div.flex.justify-between.items-center.p-4.rounded-lg.shadow-sm
-     {:key name
+     {:replicant/key name
       :class (concat cl ["transition-all" "duration-300" "ease-in-out"])}
      [:span.font-medium.text-gray-800 name]
      [:span.font-bold.text-lg (str points)]]))
@@ -38,8 +38,7 @@
                      ratings)
         day-ratings (last (sort-by first day-ratings))
         players (->> (second day-ratings)
-                     (sort-by second >)
-                     (change-prev))]
+                     (sort-by second >))]
     [:div.bg-white.rounded-b-lg.shadow-md.p-8
      [:h2.text-3xl.font-bold.text-center.mb-6.text-gray-800 "Clasificación"]
      [:div.space-y-3

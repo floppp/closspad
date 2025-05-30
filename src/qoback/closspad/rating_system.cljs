@@ -37,8 +37,8 @@
   {:default-rating 50
    :max-rating 100
    :min-rating 0
-   :base-k 10
-   :scale-factor 200
+   :base-k 30
+   :scale-factor 100
    :players {}
    :date nil})
 
