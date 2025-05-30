@@ -1,3 +1,10 @@
+v0.0.18 afb16c9803f59d417abcfeaa24f40893328d4b34
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> fix: coefficients adjustment
+    >> fix: previous to coefficients adjustments
+    >> feat: using matches with one game
+
+
 v0.0.17 3f5b9aa72514110b6ceb46eb1e100c078fc51d0d
 
 v0.0.16 6bba2765230ca8e3b6eed5ffc5ed548e9a5efa24
