@@ -5,6 +5,6 @@ shadow: node_modules
 	npx shadow-cljs watch app
 
 tailwind: node_modules
-	npx tailwindcss -i ./src/main.css -o ./resources/public/tailwind.css --watch
+	npx tailwindcss -i ./src/main.css -o ./resources/public/tailwind.css --watch --minify
 
 .PHONY: shadow tailwind

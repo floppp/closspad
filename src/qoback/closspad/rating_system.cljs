@@ -82,8 +82,11 @@
   (* (:base-k system) (or (:volatility player) 1)))
 
 (defn determine-winner [result]
-  (let [sets-won (count (filter (fn [[a b]] (> a b)) result))]
-    (if (> sets-won 1) "A" "B")))
+  (let [sets-won-by-a (count (filter (fn [[a b]] (> a b)) result))
+        sets-won-by-b (count (filter (fn [[a b]] (< a b)) result))]
+    (if (> sets-won-by-a sets-won-by-b)
+      "A"
+      "B")))
 
 (defn team-rating [system couple]
   (reduce (fn [sum id] (+ sum (get-in system [:players id :points] 0)))
