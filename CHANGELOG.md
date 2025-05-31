@@ -1,3 +1,9 @@
+v0.0.19 42239dbed9e712d20f0db82d0854e935568c8d5e
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> fix: removing :replicant/keys to avoid color issue
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+
+
 v0.0.18 afb16c9803f59d417abcfeaa24f40893328d4b34
     >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
     >> fix: coefficients adjustment
