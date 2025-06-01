@@ -12,6 +12,20 @@
      nil
      [[:db/assoc :page/navigated {:page :match :date date}]])))
 
+(defn compute-player-stats [player] [])
+
+(defn compute-couple-stats [player] [])
+
+(defn goto->stats
+  [{:keys [player]}]
+  (let [dispatcher (get-dispatcher)
+        stats-by-player (compute-player-stats player)
+        stats-by-couple (compute-couple-stats player)]
+    (dispatcher
+     nil
+     [[:db/assoc-in [:stats :by-player player] stats-by-player]
+      [:db/assoc-in [:stats :by-couple player] stats-by-couple]
+      [:db/assoc :page/navigated {:page :stats :player player}]])))
 
 (defn goto->page
   [page]
@@ -37,6 +51,7 @@
     :route/fx.home (goto->page :home)
     :route/fx.login (goto->page :login)
     :route/fx.explanation (goto->page :explanation)
+    :route/fx.stats (goto->stats (-> args first first))
     :route/fx.match (navigated-match-page (-> args first first))
     :data/fx.query (network/query-async {:query/kind :query/matches :query/data args})
     :fetch/fx.login (supabase/login (first args))

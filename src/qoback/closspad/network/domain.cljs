@@ -1,6 +1,7 @@
 (ns qoback.closspad.network.domain
   (:require [qoback.closspad.state.db :refer [get-dispatcher]]
             [qoback.closspad.rating-system :refer [process-matches]]
+            [qoback.closspad.components.stats.service :as stats]
             ["@supabase/supabase-js" :refer [createClient]]))
 
 (goog-define organization "")
@@ -22,8 +23,14 @@
      :callback (fn [ms]
                  (let [ratings (process-matches ms)
                        dispatcher (get-dispatcher)
-                       ratings (filter (comp some? first) ratings)]
+                       ratings (filter (comp some? first) ratings)
+                       all-players (stats/get-all-players ms)
+                       all-players-stats (stats/compute-all-players-stats all-players ms)
+                       ]
+                   (.log js/console all-players)
                    (dispatcher nil [[:db/assoc :classification {:ratings ratings}]
+                                    [:db/assoc-in [:stats :players] all-players]
+                                    [:db/assoc-in [:stats :by-player] all-players-stats]
                                     [:db/assoc :match {:results ms}]])))}
     :query/user
     [:get (str "/api/todo/users/" (:user-id data))]))

@@ -1,6 +1,14 @@
 (ns qoback.closspad.components.widgets
   (:require [qoback.closspad.helpers :as h]))
 
+(defn header-item
+  [is-open? title route]
+  [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out
+   {:href (str "/#/" route)
+    :class ["hover:scale-105" "hover:underline" "hover:underline-offset-4"]
+    :style (when is-open? {:text-align "center"})
+    :on {:click [[:ui/header]]}}
+   title])
 
 (defn header
   [{:ui/keys [header]}]
@@ -21,62 +29,21 @@
                    "M6 18L18 6M6 6l12 12"
                    "M4 6h16M4 12h16M4 18h16")}]]]]
 
+   ;; Hago así en vez de `if` para evitar montar/desmontar el header normal.
+   ;; Que no es gran ganancia porque nadie estará abre/cierra, pero me
+   ;; parece bueno tenerlo en cuenta para acordarme en otras situaciones.
    [:div.hidden.md:flex.flex-grow.gap-8.items-center.justify-center
-    [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out
-     {:href "/#"
-      :class ["hover:scale-105" "hover:underline" "hover:underline-offset-4"]
-      :style {:text-align "center"}}
-     "Inicio"]
-    [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out
-     {:href "/#/explanation"
-      :title "para llorones"
-      :class ["hover:scale-105" "hover:underline" "hover:underline-offset-4"]}
-     "Explicación"]
-    [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out
-     {:href "/#/login"
-      :class ["hover:scale-105" "hover:underline" "hover:underline-offset-4"]}
-     "Login"]]
+    (header-item header "Inicio" "")
+    (header-item header "Explicación" "explanation")
+    (header-item header "Login" "login")]
 
    (when header
      [:div.overflow-hidden.transition-all.duration-300.ease-in-out
       {:class (if header "max-h-96" "max-h-0")}
       [:div.flex.flex-col.gap-4.p-4.items-center.md:hidden
-       [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out
-        {:href "/#"
-         :class ["hover:scale-105" "hover:underline" "hover:underline-offset-4"]
-         :on {:click [[:ui/header]]}}
-        "Inicio"]
-       [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out
-        {:href "/#/explanation"
-         :title "para llorones"
-         :class ["hover:scale-105" "hover:underline" "hover:underline-offset-4"]
-         :on {:click [[:ui/header]]}}
-        "Explicación"]
-       [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out
-        {:href "/#/login"
-         :class ["hover:scale-105" "hover:underline" "hover:underline-offset-4"]
-         :on {:click [[:ui/header]]}}
-        "Login"]]])]
-  #_[:div.bg-white.rounded-lg.shadow-md.p-4.mb-5.sticky.top-0
-     {:class ["w-full"
-              "md:w-3/4"
-              "lg:w-2/3"
-              "xl:w-1/2"
-              "2xl:w-1/3"]}
-     [:div.flex.flex-grow.gap-8.items-center.justify-center
-      [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out
-       {:href "/#"
-        :class "hover:scale-105 hover:underline hover:underline-offset-4"}
-       "Inicio"]
-      [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out
-       {:href "/#/explanation"
-        :title "para llorones"
-        :class "hover:scale-105 hover:underline hover:underline-offset-4"}
-       "Explicación"]
-      [:a.text-gray-700.hover:text-gray-900.font-medium.transition-all.duration-200.ease-in-out
-       {:href "/#/login"
-        :class "hover:scale-105 hover:underline hover:underline-offset-4"}
-       "Login"]]])
+       (header-item header "Inicio" "")
+       (header-item header "Explicación" "explanation")
+       (header-item header "Login" "login")]])])
 
 (defn- arrow-button
   [path cb]

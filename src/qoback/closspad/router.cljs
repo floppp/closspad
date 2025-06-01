@@ -20,6 +20,7 @@
                             :path [:day string?]}]
    ["/add-match" {:name :route/add-match}]
    ["/explanation" {:name :route/explanation}]
+   ["/stats/:player" {:name :route/stats :path [:player string?]}]
    ["/login" {:name :route/login
               :controllers
               [{:start
@@ -39,6 +40,8 @@
                    [[:route/match {:date date}]])
     :route/classification (let [day (keyword (:day path-params))]
                             [[:route/classification {:day day}]])
+    :route/stats (let [player (keyword (:player path-params))]
+                   [[:route/stats {:player player}]])
     :route/explanation [[:route/explanation]]
     :route/login [[:route/login]]
     [[:route/not-found]]))

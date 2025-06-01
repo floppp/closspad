@@ -42,6 +42,7 @@
       :route/explanation {:effects [[:route/fx.explanation]]}
       :route/login {:effects [[:route/fx.login]]}
       :route/match {:effects [[:route/fx.match args]]}
+      :route/stats {:effects [[:route/fx.stats args]]}
       :data/query {:effects [[:data/fx.query {:state state :args args}]]}
       :fetch/login {:effects [[:fetch/fx.login args]]}
       (when goog.DEBUG
@@ -66,7 +67,7 @@
       (when goog.DEBUG
         (.log js/console " >>>>>>>>>>>>")
         (.log js/console  @!state)
-        (.log js/console " <<<<<<<<<<<<")
+        #_(.log js/console " <<<<<<<<<<<<")
         (.log js/console "")))
     (when effects
       (doseq [effect effects]

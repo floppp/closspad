@@ -1,6 +1,18 @@
 (ns qoback.closspad.rating-system
-  (:require [cljs.spec.alpha :as s]
-            [clojure.string :as str]))
+  (:require [cljs.spec.alpha :as s]))
+
+(def DEFAULTS
+  {:one-set-importance 0.8
+   :regular-importance 1})
+
+(def default-options
+  {:default-rating 50
+   :max-rating 100
+   :min-rating 0
+   :base-k 20
+   :scale-factor 100
+   :players {}
+   :date nil})
 
 ;; Type definitions
 (s/def ::player-id string?)
@@ -32,17 +44,6 @@
 (s/def ::result ::game-result)
 (s/def ::importance number?)
 
-;; Default configuration
-(def default-options
-  {:default-rating 50
-   :max-rating 100
-   :min-rating 0
-   :base-k 20
-   :scale-factor 100
-   :players {}
-   :date nil})
-
-;; Core functions
 (defn create-system
   ([] (create-system {}))
   ([options]
@@ -93,7 +94,8 @@
           0
           couple))
 
-(defn adjusted-points-change [system player teammate opponent-team-rating is-winner expected-win importance]
+(defn adjusted-points-change
+  [system player teammate opponent-team-rating is-winner expected-win importance]
   (let [normalize (fn [points]
                     (max 0 (min 1 (/ (- points (:min-rating system))
                                      (- (:max-rating system) (:min-rating system))))))
@@ -116,7 +118,8 @@
 
     (* base-change proximity (max 0.5 (min 1.5 adjustment)))))
 
-(defn update-couple [system couple-id expected-win winner couple opponent-team-rating importance]
+(defn update-couple
+  [system couple-id expected-win winner couple opponent-team-rating importance]
   (let [[player1-id player2-id] couple
         is-winner (= winner couple-id)
 
@@ -143,9 +146,18 @@
                          {}
                          players)))))
 
-(defn update-system [system match]
-  (let [{:keys [couple_a couple_b result importance]} match
-        importance (or importance 1)
+(defn match-importance
+  "If match was only one set, less importante"
+  [{:keys [result importance]}]
+  (or importance
+      (if (= 1 (count result))
+        (:one-set-importance DEFAULTS)
+        (:regular-importance DEFAULTS))))
+
+(defn update-system
+  [system match]
+  (let [{:keys [couple_a couple_b result]} match
+        importance (match-importance match)
         all-players (concat couple_a couple_b)
         winner (determine-winner result)
 

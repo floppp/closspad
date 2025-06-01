@@ -2,6 +2,7 @@
   (:require [qoback.closspad.components.widgets :as w]
             [qoback.closspad.pages.login.view :as login]
             [qoback.closspad.pages.match.view :as match]
+            [qoback.closspad.pages.stats.view :as stats]
             [qoback.closspad.components.system-explanation :as system-explanation]
             [qoback.closspad.pages.classification.view :as classification]))
 
@@ -37,6 +38,7 @@
         (case (:page (:page/navigated state))
           :not-found (not-found-view)
           :home (home-view)
+          :stats (stats/view state)
           :explanation (explanation-view)
           :match [:div
                   (match/view state)
