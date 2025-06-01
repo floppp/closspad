@@ -19,13 +19,21 @@
     :else ["bg-gray-50" "border-l-4" "border-gray-300"]))
 
 (defn- player
-  [[name, points]]
-  (let [cl (player-color? points)]
+  [[name points prev-points]]
+  (let [cl (player-color? points)
+        diff (- points prev-points)
+        preffix (if (> diff 0) "+" (if (< diff 0) "-" ""))]
     [:a.flex.justify-between.items-center.p-4.rounded-lg.shadow-sm
      {:class (concat cl ["transition-all" "duration-300" "ease-in-out"])
       :href (str "#/stats/" name)}
      [:span.font-medium.text-gray-800 name]
-     [:span.font-bold.text-lg (str points)]]))
+     [:div.text-right.w-24.flex.items-center
+      [:span.text-gray-500.text-right
+       {:class ["w-1/2"]}
+       (str "("  preffix  (.abs js/Math (- prev-points points)) ") ")]
+      [:span.font-bold.text-lg.text-right
+       {:class ["w-1/2"]}
+       (str points)]]]))
 
 (defn filter-day-ratings
   [c day-str ratings]
@@ -36,11 +44,18 @@
    ratings))
 
 (defn players-list
-  [prev-day-ratings day-ratings]
-  (let [diff (reduce
-              (fn [acc [d [name points]]]
-                ))])
-  (map player players))
+  [prev-day-ratings player-ratings]
+  (let [enrichted-ratings (map (fn [p]
+                                 (let [prev-points
+                                       (first
+                                        (filter
+                                         #(= (first p) (first %))
+                                         prev-day-ratings))]
+                                   (conj p (second prev-points))))
+                               player-ratings)]
+    (.log js/console enrichted-ratings)
+    [:div.space-y-3
+     (map player enrichted-ratings)]))
 
 (defn view
   [state]
@@ -50,12 +65,10 @@
         day-ratings (filter-day-ratings <= day-str ratings)
         sorted-ratings (sort-by first day-ratings)
         day-ratings (last sorted-ratings)
-        prev-day-ratings (filter-day-ratings < day-str sorted-ratings)
-        prev-day-rating (last prev-day-ratings)
-        players (->> (second day-ratings)
-                     (sort-by second >))]
-    (.log js/console prev-day-rating)
+        prev-day-player-ratings (second (last (filter-day-ratings < day-str sorted-ratings)))
+        players-ratings (->> (second day-ratings)
+                             (sort-by second >))]
+    ;; (.log js/console prev-day-rating)
     [:div.bg-white.rounded-b-lg.shadow-md.p-8
      [:h2.text-3xl.font-bold.text-center.mb-6.text-gray-800 "Clasificación"]
-     [:div.space-y-3
-      (map player players)]]))
+     (players-list prev-day-player-ratings players-ratings)]))
