@@ -1,7 +1,6 @@
 (ns qoback.closspad.components.stats.charts
-  (:require ;;["echarts" :as echarts]
-   [qoback.closspad.components.stats.service :as stats]
-   [qoback.closspad.helpers :as h]))
+  (:require [qoback.closspad.helpers :as h]
+            [goog.string :as gstring]))
 
 (defn player-stats-chart
   "Renders an ECharts visualization of player stats with:
@@ -19,27 +18,35 @@
         total-losses (:losses stats)
         win-rate (js/parseFloat (:win-percentage stats))]
     (clj->js
-     {:backgroundColor "#f8f9fa"
-      :title  {:text (str (:player stats) " - " total-wins "W / " total-losses "L")
-               :subtext (str "Overall Win Rate: " win-rate "% (" total-wins "/" (+ total-wins total-losses) ")")
-                                   ;; :subtext (str "Win Rate: " (:win-percentage stats) "%")
+     {:backgroundColor "#ffffff"
+      :title  {:text (str (:player stats)
+                          "  " total-wins "W / " total-losses "L     "
+                          (gstring/format "%.2f" win-rate) "% ")
                :left "center"
-               :top 20
-               :textStyle  {:fontSize 18 :fontWeight "bold" :color "#333"}}
+               :top 0
+               :textStyle  {:fontSize 16 :fontWeight "bold" :color "#333"}}
       :tooltip  {:trigger "axis"
                  :axisPointer  {:type "shadow"}}
       :legend  {:data  ["Wins" "Losses" "Win Rate Trend"]
-                :top 50}
-      :grid  {:left "3%" :right "4%" :bottom "3%"
+                :top 30
+                :itemGap 20}
+      :grid  {:left "3%" :right "4%" :bottom "3%" :top "20%"
               :containLabel true}
       :xAxis  {:type "category"
                :data months
                :axisLabel  {:rotate 30
                             :interval 0}}
-      :yAxis  {:type "value"
-               :name "Matches"
-               :axisLine  {:show true}
-               :axisLabel  {:formatter "{value}"}}
+      :yAxis  [{:type "value"
+                :name "Matches"
+                :axisLine {:show true}
+                :axisLabel {:formatter "{value}"}}
+               {:type "value"
+                :name "Win Rate %"
+                :min 0
+                :max 100
+                :axisLine {:show true}
+                :axisLabel {:formatter "{value}%"}
+                :splitLine {:show false}}]
       :series  [{:name "Wins"
                  :type "bar"
                  :stack "total"
@@ -54,7 +61,7 @@
                  :data loss-data}
                 {:name "Win Rate Trend"
                  :type "line"
-                 :yAxisIndex 0
+                 :yAxisIndex 1
                  :symbolSize 8
                  :symbol "circle"
                  :lineStyle  {:width 3

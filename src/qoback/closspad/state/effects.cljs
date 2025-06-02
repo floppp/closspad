@@ -13,7 +13,7 @@
      [[:db/assoc :page/navigated {:page :match :date date}]])))
 
 (defn goto->stats
-  [{:keys [player]}]
+  [player]
   (let [dispatcher (get-dispatcher)]
     (dispatcher
      nil
@@ -43,6 +43,9 @@
     :route/fx.home (goto->page :home)
     :route/fx.login (goto->page :login)
     :route/fx.explanation (goto->page :explanation)
+    :route/fx.push (rfe/push-state
+                    (-> args first second)
+                    {:player (-> args first first)})
     :route/fx.stats (goto->stats (-> args first first))
     :route/fx.match (navigated-match-page (-> args first first))
     :data/fx.query (network/query-async {:query/kind :query/matches :query/data args})

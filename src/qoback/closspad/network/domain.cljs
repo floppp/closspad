@@ -24,7 +24,7 @@
                  (let [ratings (process-matches ms)
                        dispatcher (get-dispatcher)
                        ratings (filter (comp some? first) ratings)
-                       all-players (stats/get-all-players ms)
+                       all-players (-> ms stats/get-all-players vec sort)
                        all-players-stats (stats/compute-all-players-stats all-players ms)]
                    (dispatcher nil [[:db/assoc :classification {:ratings ratings}]
                                     [:db/assoc-in [:stats :players] all-players]

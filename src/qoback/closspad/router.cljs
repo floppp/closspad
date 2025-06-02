@@ -41,7 +41,7 @@
     :route/classification (let [day (keyword (:day path-params))]
                             [[:route/classification {:day day}]])
     :route/stats (let [player (keyword (:player path-params))]
-                   [[:route/stats {:player player}]])
+                   [[:route/stats player]])
     :route/explanation [[:route/explanation]]
     :route/login [[:route/login]]
     [[:route/not-found]]))
