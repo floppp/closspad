@@ -20,6 +20,67 @@
        (sort)
        (str/join " & ")))
 
+
+(defn compute-player-couples-stats
+  "Calculates a player's win/loss statistics against each couple they've played.
+  Returns a map where keys are normalized couple strings and values contain:
+  - :wins - wins against this couple
+  - :losses - losses against this couple
+  - :total - total matches against this couple
+  - :win-percentage - win percentage (string)
+  - :loss-percentage - loss percentage (string)"
+  [player matches]
+  (let [stats (reduce
+               (fn [acc {:keys [couple_a couple_b result]}]
+                 (let [in-p1 (contains? (set couple_a) player)
+                       in-p2 (contains? (set couple_b) player)]
+                   (if (or in-p1 in-p2)
+                     (let [opponent-couple (if in-p1 couple_b couple_a)
+                           opponent-key (normalize-couple opponent-couple)
+                           winner (determine-winner result)
+                           won (= winner (if in-p1 "A" "B"))
+                           current (get acc opponent-key {:wins 0 :losses 0 :total 0})]
+                       (assoc acc opponent-key
+                              (-> current
+                                  (update (if won :wins :losses) inc)
+                                  (update :total inc))))
+                     acc)))
+               {}
+               matches)]
+    (reduce-kv
+     (fn [m k v]
+       (assoc m k
+              (assoc v
+                     :win-percentage
+                     (if (pos? (:total v))
+                       (str (* 100 (/ (:wins v) (:total v))))
+                       "0.00")
+                     :loss-percentage
+                     (if (pos? (:total v))
+                       (str (* 100 (/ (:losses v) (:total v))))
+                       "0.00"))))
+     {}
+     stats)))
+
+(defn couple-stats-to-player-stats
+  "Converts couple-based stats to individual player stats.
+  Takes a map of couple stats (from compute-player-couples-stats).
+  Returns a map where keys are player names and values are:
+  {:wins total-wins :losses total-losses}"
+  [couple-stats]
+  (reduce
+   (fn [acc [couple {:keys [wins losses]}]]
+     (let [players (str/split couple #" & ")]
+       (reduce
+        (fn [acc player]
+          (-> acc
+              (update-in [player :wins] (fnil + 0) wins)
+              (update-in [player :losses] (fnil + 0) losses)))
+        acc
+        players)))
+   {}
+   couple-stats))
+
 (defn compute-player-stats
   "Calculates match statistics for a specific player.
   Returns a map containing:
@@ -28,7 +89,8 @@
   - :losses - total losses count
   - :win-percentage - win percentage (string)
   - :loss-percentage - loss percentage (string)
-  - :by-month - map of monthly stats {:wins x :losses y}"
+  - :by-month - map of monthly stats {:wins x :losses y}
+  - :against-couples - map from compute-player-couples-stats"
   [player matches]
   (let [stats (reduce
                (fn [acc {:keys [couple_a couple_b result played_at]}]
@@ -38,7 +100,7 @@
                        in-p2 (contains? (set couple_b) player)]
                    (if (or in-p1 in-p2)
                      (let [player-team (if in-p1 "A" "B")
-                           winner (determine-winner result) ; Precompute
+                           winner (determine-winner result)
                            won (= winner player-team)
                            month-stats (get (:by-month acc) month {:wins 0 :losses 0})]
                        (-> acc
@@ -52,7 +114,8 @@
                      acc)))
                {:player player :wins 0 :losses 0 :by-month {}}
                matches)
-        total (+ (:wins stats) (:losses stats))]
+        total (+ (:wins stats) (:losses stats))
+        couple-stats (compute-player-couples-stats player matches)]
     (assoc stats
            :win-percentage
            (if (pos? total)
@@ -61,7 +124,9 @@
            :loss-percentage
            (if (pos? total)
              (str (* 100 (/ (:losses stats) total)))
-             "0.00"))))
+             "0.00")
+           :against-couples couple-stats
+           :against-player (couple-stats-to-player-stats couple-stats))))
 
 (defn compute-opponent-stats
   "Calculates statistics against different opponents.
@@ -154,6 +219,8 @@
                  "0.00"))))
      {}
      stats)))
+
+
 
 (defn compute-all-players-stats
   [players matches]

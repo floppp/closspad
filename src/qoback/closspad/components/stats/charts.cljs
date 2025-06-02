@@ -104,37 +104,85 @@
                        :boxShadow "0 2px 8px rgba(0,0,0,0.1)"}
                :ref #(when % (render-win-loss-pie % stats))}]]]))
 
-#_(defn render-win-loss-pie
-    "Renders a donut chart of win/loss ratio"
-    [element stats]
-    (let [chart (echarts/init element)]
-      (.setOption chart
-                  #js {:title #js {:text "Win/Loss Ratio"
-                                   :left "center"
-                                   :top 20
-                                   :textStyle #js {:fontSize 14}}
-                       :tooltip #js {:trigger "item"}
-                       :legend #js {:orient "vertical"
-                                    :left "left"
-                                    :top "middle"}
-                       :series #js [#js {:name "Matches"
-                                         :type "pie"
-                                         :radius ["40%", "70%"]
-                                         :avoidLabelOverlap false
-                                         :itemStyle #js {:borderRadius 10
-                                                         :borderColor "#fff"
-                                                         :borderWidth 2}
-                                         :label #js {:show true
-                                                     :formatter "{b}: {c} ({d}%)"}
-                                         :emphasis #js {:label #js {:show true
-                                                                    :fontSize 18
-                                                                    :fontWeight "bold"}}
-                                         :labelLine #js {:show true}
-                                         :data #js [#js {:value (:wins stats)
-                                                         :name "Wins"
-                                                         :itemStyle #js {:color "#4CAF50"}}
-                                                    #js {:value (:losses stats)
-                                                         :name "Losses"
-                                                         :itemStyle #js {:color "#F44336"}}]}]
-                       :responsive true})
-      chart))
+(defn radial-chart-against-players
+  [stats]
+  (let [opponents (:against-player stats)
+        categories (keys opponents)
+        win-data (map #(get-in opponents [% :wins] 0) categories)
+        loss-data (map #(get-in opponents [% :losses] 0) categories)]
+    (clj->js
+     {:title {:text "Performance Against Opponents"
+              :left "center"}
+      :tooltip {:trigger "item"}
+      :legend {:data (map name categories)
+               :orient "vertical"
+               :left "left"}
+      :radar {:indicator
+              (map
+               (fn [opp]
+                 {:name opp :max (apply max (map + win-data loss-data))})
+               categories)
+              :radius "65%"
+              :splitNumber 4
+              :axisName {:color "#333"}
+              :splitArea {:show true
+                          :areaStyle {:color ["rgba(255, 255, 255, 0.5)"]}}
+              :axisLine {:show true
+                         :lineStyle {:color "rgba(0, 0, 0, 0.1)"}}
+              :splitLine {:show true
+                          :lineStyle {:color "rgba(0, 0, 0, 0.1)"}}}
+      :series [{:name "Wins vs Losses"
+                :type "radar"
+                :data [{:value win-data
+                        :name "Wins"
+                        :areaStyle {:color "rgba(76, 175, 80, 0.4)"}
+                        :itemStyle {:color "#4CAF50"}
+                        :lineStyle {:width 2
+                                    :color "#4CAF50"}}
+                       {:value loss-data
+                        :name "Losses"
+                        :areaStyle {:color "rgba(244, 67, 54, 0.4)"}
+                        :itemStyle {:color "#F44336"}
+                        :lineStyle {:width 2
+                                    :color "#F44336"}}]}]})))
+
+(defn radial-chart-against-couples
+  "Renders a radial chart showing wins/losses against opponents.
+  Takes a DOM element and stats map from compute-player-stats (with :against-couples)"
+  [stats]
+  (let [opponents (:against-couples stats)
+        categories (keys opponents)
+        win-data (map #(get-in opponents [% :wins] 0) categories)
+        loss-data (map #(get-in opponents [% :losses] 0) categories)]
+    (clj->js
+     {:title {:text "Performance Against Opponents"
+              :left "center"}
+      :tooltip {:trigger "item"}
+      :legend {:data (map name categories)
+               :orient "vertical"
+               :left "left"}
+      :radar {:indicator (map (fn [opp] {:name opp :max (apply max (map + win-data loss-data))})
+                              categories)
+              :radius "65%"
+              :splitNumber 4
+              :axisName {:color "#333"}
+              :splitArea {:show true
+                          :areaStyle {:color ["rgba(255, 255, 255, 0.5)"]}}
+              :axisLine {:show true
+                         :lineStyle {:color "rgba(0, 0, 0, 0.1)"}}
+              :splitLine {:show true
+                          :lineStyle {:color "rgba(0, 0, 0, 0.1)"}}}
+      :series [{:name "Wins vs Losses"
+                :type "radar"
+                :data [{:value win-data
+                        :name "Wins"
+                        :areaStyle {:color "rgba(76, 175, 80, 0.4)"}
+                        :itemStyle {:color "#4CAF50"}
+                        :lineStyle {:width 2
+                                    :color "#4CAF50"}}
+                       {:value loss-data
+                        :name "Losses"
+                        :areaStyle {:color "rgba(244, 67, 54, 0.4)"}
+                        :itemStyle {:color "#F44336"}
+                        :lineStyle {:width 2
+                                    :color "#F44336"}}]}]})))
