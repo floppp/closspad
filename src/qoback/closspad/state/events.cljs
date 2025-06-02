@@ -28,10 +28,12 @@
                              (enrich-action-from-event replicant-data)
                              (enrich-action-from-state state))
         [action-name & args] enrichted-event]
+    ;; (.log js/console action-name)
     (case action-name
-      :event/prevent-default {:effects [[:dom/fx.prevent-default]]} ;;(.preventDefault js-event)
+      :event/prevent-default {:effects [[:dom/fx.prevent-default]]}
       :db/assoc {:new-state (apply assoc state args)}
       :db/assoc-in (let [[path args] args]
+                     (.log js/console path args)
                      {:new-state (assoc-in state path args)})
       :db/dissoc {:new-state (apply dissoc state args)}
       :db/login (let [[_ value element] enrichted-event]
@@ -64,7 +66,7 @@
   (let [{:keys [new-state effects]} (handle-events @!state replicant-data events)]
     (when new-state
       (reset! !state new-state)
-      (when goog.DEBUG
+      #_(when goog.DEBUG
         (.log js/console " >>>>>>>>>>>>")
         (.log js/console  @!state)
         #_(.log js/console " <<<<<<<<<<<<")

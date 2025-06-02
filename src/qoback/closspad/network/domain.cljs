@@ -25,9 +25,7 @@
                        dispatcher (get-dispatcher)
                        ratings (filter (comp some? first) ratings)
                        all-players (stats/get-all-players ms)
-                       all-players-stats (stats/compute-all-players-stats all-players ms)
-                       ]
-                   (.log js/console all-players)
+                       all-players-stats (stats/compute-all-players-stats all-players ms)]
                    (dispatcher nil [[:db/assoc :classification {:ratings ratings}]
                                     [:db/assoc-in [:stats :players] all-players]
                                     [:db/assoc-in [:stats :by-player] all-players-stats]

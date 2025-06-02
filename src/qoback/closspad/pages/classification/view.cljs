@@ -53,7 +53,6 @@
                                          prev-day-ratings))]
                                    (conj p (second prev-points))))
                                player-ratings)]
-    (.log js/console enrichted-ratings)
     [:div.space-y-3
      (map player enrichted-ratings)]))
 

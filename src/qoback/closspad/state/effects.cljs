@@ -12,20 +12,12 @@
      nil
      [[:db/assoc :page/navigated {:page :match :date date}]])))
 
-(defn compute-player-stats [player] [])
-
-(defn compute-couple-stats [player] [])
-
 (defn goto->stats
   [{:keys [player]}]
-  (let [dispatcher (get-dispatcher)
-        stats-by-player (compute-player-stats player)
-        stats-by-couple (compute-couple-stats player)]
+  (let [dispatcher (get-dispatcher)]
     (dispatcher
      nil
-     [[:db/assoc-in [:stats :by-player player] stats-by-player]
-      [:db/assoc-in [:stats :by-couple player] stats-by-couple]
-      [:db/assoc :page/navigated {:page :stats :player player}]])))
+     [[:db/assoc :page/navigated {:page :stats :player player}]])))
 
 (defn goto->page
   [page]

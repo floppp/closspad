@@ -35,11 +35,14 @@
                       "lg:w-2/3"
                       "xl:w-1/2"
                       "2xl:w-1/3"]}
+        ;; (.log js/console "View to show " (:page (:page/navigated state)))
         (case (:page (:page/navigated state))
           :not-found (not-found-view)
           :home (home-view)
-          :stats (stats/view state)
           :explanation (explanation-view)
           :match [:div
                   (match/view state)
-                  (classification/view state)])]]]]))
+                  (classification/view state)]
+          :stats
+          (do
+            (stats/view state)))]]]]))

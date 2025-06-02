@@ -26,3 +26,7 @@
 
 (defn get-month-name [date]
   (.toLocaleString date "default" #js {:month "short"}))
+
+(defn get-month-num
+  [date]
+  (.getMonth (js/Date. date)))
