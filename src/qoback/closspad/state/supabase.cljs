@@ -25,13 +25,11 @@
           auth-fn #(-> supabase .-auth (.signInWithPassword %))
           result (async/<! (handle-supabase-auth auth-fn {:email email :password pass}))
           {:keys [success error]} result]
-      (.log js/console error)
       (if error
         ;; TODO: events to dispatch must be pass as params
         (dispatcher nil [[:db/dissoc :db/login]
                          [:db/assoc-in [:db/login :error error]]])
-        (do
-          (.log js/console success)
-          (dispatcher nil [[:db/dissoc :db/login]
-                           [:db/assoc :auth success]
-                           [:route/match {:date (js/Date.)}]]))))))
+        (dispatcher nil [[:db/dissoc :db/login]
+                         [:db/assoc :auth success]
+                         [:auth/check-login]
+                         #_[:route/match {:date (js/Date.)}]])))))

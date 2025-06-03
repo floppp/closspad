@@ -27,9 +27,7 @@
                 (fn [_]
                   (.log js/console "Enter Login")
                   (let [dispatcher (get-dispatcher)]
-                    ;; (dispatcher nil [[:route/home]])
-                    )
-                  )
+                    (dispatcher nil [[:auth/check-login]])))
                 :stop
                 (fn [& _]
                   (.log js/console "Leaving login page"))}]}]

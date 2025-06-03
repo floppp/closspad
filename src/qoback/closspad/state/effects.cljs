@@ -41,13 +41,19 @@
        :route/match
        {:day (h/format-iso-date (if date date (js/Date.)))}))
     :route/fx.home (goto->page :home)
-    :route/fx.login (when-not (nil? args) (goto->page :login))
+    :route/fx.login (let [session (-> args first :session :access_token)]
+                      (if (nil? session)
+                        (goto->page :login)
+                        (rfe/push-state :route/home)))
     :route/fx.explanation (goto->page :explanation)
     :route/fx.push (rfe/push-state
                     (-> args first second)
                     {:player (-> args first first)})
     :route/fx.stats (goto->stats (-> args first first))
     :route/fx.match (navigated-match-page (-> args first first))
+    :auth/fx.check-login (let [session (-> args first :session :access_token)]
+                           (when-not (nil? session)
+                             (rfe/push-state :route/home)))
     :data/fx.query (network/query-async {:query/kind :query/matches :query/data args})
     :fetch/fx.login (supabase/login (first args))
     (tap> (str "Unknown effect" effect))))

@@ -28,7 +28,7 @@
                              (enrich-action-from-event replicant-data)
                              (enrich-action-from-state state))
         [action-name & args] enrichted-event]
-    (.log js/console action-name args)
+    ;; (.log js/console action-name args)
     (case action-name
       :event/prevent-default {:effects [[:dom/fx.prevent-default]]}
       :db/assoc (do
@@ -43,14 +43,13 @@
       :route/not-found   {:effects [[:route/not-found state]]}
       :route/home        {:effects [[:route/fx.home]]}
       :route/explanation {:effects [[:route/fx.explanation]]}
-      :route/login (do
-                     (.log js/console (:auth state))
-                     {:effects [[:route/fx.login (-> state :auth :user :email)]]})
-      :route/match {:effects [[:route/fx.match args]]}
-      :route/stats {:effects [[:route/fx.stats args]]}
-      :route/push  {:effects [[:route/fx.push args]]}
-      :data/query  {:effects [[:data/fx.query {:state state :args args}]]}
-      :fetch/login {:effects [[:fetch/fx.login args]]}
+      :route/login       {:effects [[:route/fx.login (:auth state)]]}
+      :route/match       {:effects [[:route/fx.match args]]}
+      :route/stats       {:effects [[:route/fx.stats args]]}
+      :route/push        {:effects [[:route/fx.push args]]}
+      :auth/check-login  {:effects [[:auth/fx.check-login (:auth state)]]}
+      :data/query        {:effects [[:data/fx.query {:state state :args args}]]}
+      :fetch/login       {:effects [[:fetch/fx.login args]]}
       (when goog.DEBUG
         (.log js/console "Unknown event " action-name "with arguments" args)))))
 
@@ -60,11 +59,11 @@
    (fn [{state :new-state :as acc} event]
      (let [{:keys [new-state effects]} (handle-event state replicant-data event)]
        (-> acc
-        (assoc :new-state (or new-state (:new-state acc)))
-        (update :effects into (or effects [])))
+           (assoc :new-state (or new-state (:new-state acc)))
+           (update :effects into (or effects [])))
        #_(cond-> acc
-         :new-state (assoc :new-state new-state)
-         :effects (update :effects into effects))))
+           :new-state (assoc :new-state new-state)
+           :effects (update :effects into effects))))
    {:new-state state :effects []}
    events))
 

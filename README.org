@@ -22,6 +22,8 @@ when clicked in the last one 1-1-1970 is selected, and no disable working
 main.js no se están versionando/modificando -> subiendo
 *** TODO [#A] Better keywordization
 so =played_at= becomes =played-at=. Do not use libraries but code from scratch.
+*** TODO [#B] Load session on start
+when app is first time loaded/rendered, it must read from localStorage the session from supabase and save into atom dispatching.
 *** TODO [#B] Rows animations
 using some js library so I can learn js interop too.
 *** TODO [#B] Adding configuration

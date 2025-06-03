@@ -1,3 +1,15 @@
+v0.0.20 b717f8d1574a5d171405b644ab327f34ea999196
+    >> feat: login working, checks from in-memory database
+    >> wip: saving :auth
+    >> fix: reloading stats page working now
+    >> wip: better individual stats, some bug yet
+    >> feat: select that allow to change stats
+    >> fix: stats triggered on player click and deleted
+    >> feat: adding different from previous day
+    >> wip: players stats
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+
+
 v0.0.19 42239dbed9e712d20f0db82d0854e935568c8d5e
     >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
     >> fix: removing :replicant/keys to avoid color issue
