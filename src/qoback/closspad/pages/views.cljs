@@ -3,6 +3,7 @@
             [qoback.closspad.pages.login.view :as login]
             [qoback.closspad.pages.match.view :as match]
             [qoback.closspad.pages.stats.view :as stats]
+            [qoback.closspad.pages.add.view :as add]
             [qoback.closspad.components.system-explanation :as system-explanation]
             [qoback.closspad.pages.classification.view :as classification]))
 
@@ -35,14 +36,12 @@
                       "lg:w-2/3"
                       "xl:w-1/2"
                       "2xl:w-1/3"]}
-        ;; (.log js/console "View to show " (:page (:page/navigated state)))
         (case (:page (:page/navigated state))
           :not-found (not-found-view)
           :home (home-view)
+          :add-match (add/view state)
           :explanation (explanation-view)
           :match [:div
                   (match/view state)
                   (classification/view state)]
-          :stats
-          (do
-            (stats/view state)))]]]]))
+          :stats (stats/view state))]]]]))

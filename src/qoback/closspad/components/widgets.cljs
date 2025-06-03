@@ -38,7 +38,7 @@
       (header-item header "Inicio" "")
       (header-item header "Explicación" "explanation")
       (if is-logged?
-           (header-item header "Añadir Partido" "add")
+           (header-item header "Añadir Partido" "add-match")
            (header-item header "Login" "login"))]
 
      (when header

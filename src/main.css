@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+    box-sizing: border-box;
+}
+
 @layer components {
   .animate-fade-in-up {
     opacity: 0;

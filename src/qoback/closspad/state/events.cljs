@@ -31,9 +31,9 @@
     ;; (.log js/console action-name args)
     (case action-name
       :event/prevent-default {:effects [[:dom/fx.prevent-default]]}
-      :db/assoc (do
-                  (.log js/console (apply assoc state args))
-                  {:new-state (apply assoc state args)})
+      :add-match {:new-state (assoc-in state [:add/match (second args)] (first args))}
+      :add/match-set {:new-state (update-in state [:add/match :n-sets] (fnil inc 1))}
+      :db/assoc  {:new-state (apply assoc state args)}
       :db/assoc-in (let [[path args] args]
                      {:new-state (assoc-in state path args)})
       :db/dissoc {:new-state (apply dissoc state args)}
@@ -45,10 +45,12 @@
       :route/explanation {:effects [[:route/fx.explanation]]}
       :route/login       {:effects [[:route/fx.login (:auth state)]]}
       :route/match       {:effects [[:route/fx.match args]]}
+      :route/add-match   {:effects [[:route/fx.add-match]]}
       :route/stats       {:effects [[:route/fx.stats args]]}
       :route/push        {:effects [[:route/fx.push args]]}
       :auth/check-login  {:effects [[:auth/fx.check-login (:auth state)]]}
       :data/query        {:effects [[:data/fx.query {:state state :args args}]]}
+      :post/match        {:effects [[:post/fx.match {:args (first args)}]]}
       :fetch/login       {:effects [[:fetch/fx.login args]]}
       (when goog.DEBUG
         (.log js/console "Unknown event " action-name "with arguments" args)))))
@@ -60,10 +62,7 @@
      (let [{:keys [new-state effects]} (handle-event state replicant-data event)]
        (-> acc
            (assoc :new-state (or new-state (:new-state acc)))
-           (update :effects into (or effects [])))
-       #_(cond-> acc
-           :new-state (assoc :new-state new-state)
-           :effects (update :effects into effects))))
+           (update :effects into (or effects [])))))
    {:new-state state :effects []}
    events))
 
