@@ -105,3 +105,10 @@
    (arrow-right date match-dates)
 
    (double-arrow-right match-dates)])
+
+(defn spinner
+  []
+  [:div.w-full.flex.justify-center.mt-5.py-5
+   {:style {:background "white"}}
+   [:span.loading.loading-ring.loading-xl
+    {:style {:height "100px" :width "100px"}}]])

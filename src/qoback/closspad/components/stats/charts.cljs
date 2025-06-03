@@ -27,7 +27,7 @@
                :textStyle  {:fontSize 16 :fontWeight "bold" :color "#333"}}
       :tooltip  {:trigger "axis"
                  :axisPointer  {:type "shadow"}}
-      :legend  {:data  ["Wins" "Losses" "Win Rate Trend"]
+      :legend  {:data  ["Victorias" "Derrotas" "Ratio Victorias"]
                 :top 30
                 :itemGap 20}
       :grid  {:left "3%" :right "4%" :bottom "3%" :top "20%"
@@ -37,29 +37,29 @@
                :axisLabel  {:rotate 30
                             :interval 0}}
       :yAxis  [{:type "value"
-                :name "Matches"
+                :name "Partidos"
                 :axisLine {:show true}
                 :axisLabel {:formatter "{value}"}}
                {:type "value"
-                :name "Win Rate %"
+                :name "Ratio Victorias %"
                 :min 0
                 :max 100
                 :axisLine {:show true}
                 :axisLabel {:formatter "{value}%"}
                 :splitLine {:show false}}]
-      :series  [{:name "Wins"
+      :series  [{:name "Victorias"
                  :type "bar"
                  :stack "total"
                  :emphasis  {:focus "series"}
                  :itemStyle  {:color "#4CAF50"}
                  :data win-data}
-                {:name "Losses"
+                {:name "Derrotas"
                  :type "bar"
                  :stack "total"
                  :emphasis #js {:focus "series"}
                  :itemStyle #js {:color "#F44336"}
                  :data loss-data}
-                {:name "Win Rate Trend"
+                {:name "Ratio Victorias"
                  :type "line"
                  :yAxisIndex 1
                  :symbolSize 8
@@ -111,7 +111,7 @@
         win-data (map #(get-in opponents [% :wins] 0) categories)
         loss-data (map #(get-in opponents [% :losses] 0) categories)]
     (clj->js
-     {:title {:text "Performance Against Opponents"
+     {:title {:text "Resultados Individuales"
               :left "center"}
       :tooltip {:trigger "item"}
       :legend {:data (map name categories)
@@ -131,31 +131,28 @@
                          :lineStyle {:color "rgba(0, 0, 0, 0.1)"}}
               :splitLine {:show true
                           :lineStyle {:color "rgba(0, 0, 0, 0.1)"}}}
-      :series [{:name "Wins vs Losses"
-                :type "radar"
+      :series [{:type "radar"
                 :data [{:value win-data
-                        :name "Wins"
+                        :name "Victorias"
                         :areaStyle {:color "rgba(76, 175, 80, 0.4)"}
                         :itemStyle {:color "#4CAF50"}
                         :lineStyle {:width 2
                                     :color "#4CAF50"}}
                        {:value loss-data
-                        :name "Losses"
+                        :name "Derrotas"
                         :areaStyle {:color "rgba(244, 67, 54, 0.4)"}
                         :itemStyle {:color "#F44336"}
                         :lineStyle {:width 2
                                     :color "#F44336"}}]}]})))
 
 (defn radial-chart-against-couples
-  "Renders a radial chart showing wins/losses against opponents.
-  Takes a DOM element and stats map from compute-player-stats (with :against-couples)"
   [stats]
   (let [opponents (:against-couples stats)
         categories (keys opponents)
         win-data (map #(get-in opponents [% :wins] 0) categories)
         loss-data (map #(get-in opponents [% :losses] 0) categories)]
     (clj->js
-     {:title {:text "Performance Against Opponents"
+     {:title {:text "Resultados Contra Parejas"
               :left "center"}
       :tooltip {:trigger "item"}
       :legend {:data (map name categories)
@@ -172,16 +169,15 @@
                          :lineStyle {:color "rgba(0, 0, 0, 0.1)"}}
               :splitLine {:show true
                           :lineStyle {:color "rgba(0, 0, 0, 0.1)"}}}
-      :series [{:name "Wins vs Losses"
-                :type "radar"
+      :series [{:type "radar"
                 :data [{:value win-data
-                        :name "Wins"
+                        :name "Victorias"
                         :areaStyle {:color "rgba(76, 175, 80, 0.4)"}
                         :itemStyle {:color "#4CAF50"}
                         :lineStyle {:width 2
                                     :color "#4CAF50"}}
                        {:value loss-data
-                        :name "Losses"
+                        :name "Derrotas"
                         :areaStyle {:color "rgba(244, 67, 54, 0.4)"}
                         :itemStyle {:color "#F44336"}
                         :lineStyle {:width 2
