@@ -1,10 +1,10 @@
 ;; Definición opciones para los distintos gráficos de echarts
 (ns qoback.closspad.components.stats.echarts
-  (:require ["echarts" :as echarts]))
+  #_(:require ["echarts" :as echarts]))
 
 (defn mount-stats
   [^js node]
-  (.init echarts node))
+  (.init js/echarts node))
 
 (defn update-chart
   [^js chart option]
