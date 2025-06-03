@@ -1,3 +1,8 @@
+v0.0.24 909adf329541054d78b82fe64a7f5c442d3c3326
+    >> fix: echarts again as npm
+    >> fix: avoid using goog.strings
+
+
 v0.0.23 5dbe310b1ed8884a18c58935ff1a791432f389e9
     >> fix: avoid using goog.strings
     >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad

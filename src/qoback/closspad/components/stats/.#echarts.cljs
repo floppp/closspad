@@ -1,1 +1,0 @@
-nando@Mac-mini-de-Fernando.local.421
