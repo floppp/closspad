@@ -44,6 +44,7 @@
     :route/stats (let [player (keyword (:player path-params))]
                    [[:route/stats player]])
     :route/explanation [[:route/explanation]]
+    :route/add-match [[:route/add-match]]
     :route/login [[:route/login]]
     [[:route/not-found]]))
 

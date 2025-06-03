@@ -46,6 +46,7 @@
                         (goto->page :login)
                         (rfe/push-state :route/home)))
     :route/fx.explanation (goto->page :explanation)
+    :route/fx.add-match   (goto->page :add-match)
     :route/fx.push (rfe/push-state
                     (-> args first second)
                     {:player (-> args first first)})
@@ -54,6 +55,8 @@
     :auth/fx.check-login (let [session (-> args first :session :access_token)]
                            (when-not (nil? session)
                              (rfe/push-state :route/home)))
+    ;; TODO: hacer comprobación para enviar o no
     :data/fx.query (network/query-async {:query/kind :query/matches :query/data args})
+    :post/fx.match (supabase/post "CLOSSPAD_match" (first args))
     :fetch/fx.login (supabase/login (first args))
     (tap> (str "Unknown effect" effect))))

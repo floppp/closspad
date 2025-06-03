@@ -1,3 +1,8 @@
+v0.0.25 fb0932dfbcd16c0fe942749da52a9348b141a7f5
+    >> feat: adding match
+    >> fix: echarts again as npm
+
+
 v0.0.24 909adf329541054d78b82fe64a7f5c442d3c3326
     >> fix: echarts again as npm
     >> fix: avoid using goog.strings
