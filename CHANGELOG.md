@@ -1,3 +1,8 @@
+v0.0.21 777a083fb2fa173fa01266b9257147cce0387c19
+    >> fix: echarts from cdn
+    >> feat: login working, checks from in-memory database
+
+
 v0.0.20 b717f8d1574a5d171405b644ab327f34ea999196
     >> feat: login working, checks from in-memory database
     >> wip: saving :auth
