@@ -1,3 +1,9 @@
+v0.0.22 b3473c50cb727d27ac0a19827eaf18e248ac67ed
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> fix: not importing echarts but using from global
+    >> fix: echarts from cdn
+
+
 v0.0.21 777a083fb2fa173fa01266b9257147cce0387c19
     >> fix: echarts from cdn
     >> feat: login working, checks from in-memory database
