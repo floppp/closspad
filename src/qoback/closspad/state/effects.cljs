@@ -41,7 +41,7 @@
        :route/match
        {:day (h/format-iso-date (if date date (js/Date.)))}))
     :route/fx.home (goto->page :home)
-    :route/fx.login (goto->page :login)
+    :route/fx.login (when-not (nil? args) (goto->page :login))
     :route/fx.explanation (goto->page :explanation)
     :route/fx.push (rfe/push-state
                     (-> args first second)

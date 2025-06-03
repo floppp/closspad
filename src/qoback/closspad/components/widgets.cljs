@@ -11,7 +11,11 @@
    title])
 
 (defn header
-  [{:ui/keys [header]}]
+  [{:ui/keys [header] :as state}]
+  (let [user-email (get-in state [:auth :user :email])
+        is-logged? (not (nil? user-email))]
+    (.log js/console user-email is-logged?)
+    )
   [:div.bg-white.rounded-lg.shadow-md.p-4.sticky.top-0.mb-5
    {:class ["w-full"
             "md:w-3/4"

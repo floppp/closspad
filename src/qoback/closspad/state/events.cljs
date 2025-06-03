@@ -28,9 +28,12 @@
                              (enrich-action-from-event replicant-data)
                              (enrich-action-from-state state))
         [action-name & args] enrichted-event]
+    (.log js/console action-name args)
     (case action-name
       :event/prevent-default {:effects [[:dom/fx.prevent-default]]}
-      :db/assoc {:new-state (apply assoc state args)}
+      :db/assoc (do
+                  (.log js/console (apply assoc state args))
+                  {:new-state (apply assoc state args)})
       :db/assoc-in (let [[path args] args]
                      {:new-state (assoc-in state path args)})
       :db/dissoc {:new-state (apply dissoc state args)}
@@ -40,7 +43,9 @@
       :route/not-found   {:effects [[:route/not-found state]]}
       :route/home        {:effects [[:route/fx.home]]}
       :route/explanation {:effects [[:route/fx.explanation]]}
-      :route/login {:effects [[:route/fx.login]]}
+      :route/login (do
+                     (.log js/console (:auth state))
+                     {:effects [[:route/fx.login (-> state :auth :user :email)]]})
       :route/match {:effects [[:route/fx.match args]]}
       :route/stats {:effects [[:route/fx.stats args]]}
       :route/push  {:effects [[:route/fx.push args]]}
@@ -54,7 +59,10 @@
   (reduce
    (fn [{state :new-state :as acc} event]
      (let [{:keys [new-state effects]} (handle-event state replicant-data event)]
-       (cond-> acc
+       (-> acc
+        (assoc :new-state (or new-state (:new-state acc)))
+        (update :effects into (or effects [])))
+       #_(cond-> acc
          :new-state (assoc :new-state new-state)
          :effects (update :effects into effects))))
    {:new-state state :effects []}

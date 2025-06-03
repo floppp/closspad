@@ -25,8 +25,11 @@
               :controllers
               [{:start
                 (fn [_]
+                  (.log js/console "Enter Login")
                   (let [dispatcher (get-dispatcher)]
-                    (dispatcher nil [[:route/home]])))
+                    ;; (dispatcher nil [[:route/home]])
+                    )
+                  )
                 :stop
                 (fn [& _]
                   (.log js/console "Leaving login page"))}]}]
