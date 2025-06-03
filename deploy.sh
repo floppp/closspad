@@ -233,6 +233,7 @@ rsync -avz --progress \
       resources/public/ \
       nando@157.90.230.213:/home/nando/apps/qoback/fik
 
+mv "resources/public/js/main.$version_with_v.js" resources/public/js/main.js 
 # Altough trap we must `mv` to avoid git issues.
 mv resources/public/index.html.bak resources/public/index.html
 
