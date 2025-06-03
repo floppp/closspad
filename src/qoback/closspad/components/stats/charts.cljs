@@ -1,6 +1,5 @@
 (ns qoback.closspad.components.stats.charts
-  (:require [qoback.closspad.helpers :as h]
-            [goog.string :as gstring]))
+  (:require [qoback.closspad.helpers :as h]))
 
 (defn player-stats-chart
   "Renders an ECharts visualization of player stats with:
@@ -21,7 +20,8 @@
      {:backgroundColor "#ffffff"
       :title  {:text (str (:player stats)
                           "  " total-wins "W / " total-losses "L     "
-                          (gstring/format "%.2f" win-rate) "% ")
+                          (.toFixed win-rate 2)
+                          "% ")
                :left "center"
                :top 0
                :textStyle  {:fontSize 16 :fontWeight "bold" :color "#333"}}

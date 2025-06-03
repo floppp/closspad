@@ -1,3 +1,8 @@
+v0.0.23 5dbe310b1ed8884a18c58935ff1a791432f389e9
+    >> fix: avoid using goog.strings
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+
+
 v0.0.22 b3473c50cb727d27ac0a19827eaf18e248ac67ed
     >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
     >> fix: not importing echarts but using from global
