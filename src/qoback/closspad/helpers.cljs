@@ -1,5 +1,28 @@
 (ns qoback.closspad.helpers)
 
+(def month-order
+  {"jan" 1 "feb" 2 "mar" 3 "abr" 4 "may" 5 "jun" 6
+   "jul" 7 "ago" 8 "sep" 9 "oct" 10 "nov" 11 "dic" 12})
+
+(defn rotate-months [months]
+  (let [current-month (-> (js/Date.) .getMonth inc) ; 1-12
+        months-vec (vec (sort-by month-order months))
+        rotate-point (- 13 current-month)]
+    (concat (drop rotate-point months-vec)
+            (take rotate-point months-vec))))
+
+(defn first-day-next-month-prev-year
+  ([] (first-day-next-month-prev-year (js/Date.)))
+  ([date]
+   (let [now (js/Date.)
+         prev-year (doto date
+                     (.setFullYear (-> now .getFullYear dec)))
+         next-month (doto (js/Date. prev-year)
+                      (.setMonth (-> prev-year .getMonth inc)))
+         first-day (doto (js/Date. next-month)
+                     (.setDate 1))]
+     (-> first-day .toISOString (.split "T") first))))
+
 (defn datetime->date->str [date & [{:keys [tz] :or {tz "es-ES"}}]]
   (str (.toLocaleDateString date tz)))
 

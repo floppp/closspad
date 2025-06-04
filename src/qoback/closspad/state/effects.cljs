@@ -3,7 +3,7 @@
             [qoback.closspad.state.db :refer [get-dispatcher]]
             [qoback.closspad.network.query :as network]
             [qoback.closspad.helpers :as h]
-            [qoback.closspad.state.supabase :as supabase]))
+            [qoback.closspad.network.supabase :as supabase]))
 
 (defn navigated-match-page
   [{:keys [date]}]

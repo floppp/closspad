@@ -1,4 +1,4 @@
-(ns qoback.closspad.state.supabase
+(ns qoback.closspad.network.supabase
   (:require [cljs.core.async :as async]
             [cljs.core.async.interop :refer [<p!]]
             [qoback.closspad.state.db :refer [get-dispatcher]]

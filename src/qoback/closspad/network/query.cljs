@@ -1,7 +1,8 @@
 (ns qoback.closspad.network.query
   (:require [cljs.core.async :as async]
             [cljs.core.async.interop :refer [<p!]]
-            [qoback.closspad.network.domain :refer [base-url query->http-request]]))
+            [qoback.closspad.network.domain :refer [base-url query->http-request]]
+            [qoback.closspad.helpers :as h]))
 
 (defn GET
   ([url] (GET url nil))
@@ -19,7 +20,9 @@
 
 (defn query-async
   [params]
-  (let [{:keys [method url options callback]} (query->http-request params)
+  (let [{:keys [method url options callback]}
+        (query->http-request
+         (assoc params :query/date (h/first-day-next-month-prev-year #_(js/Date. "2024-01-01"))))
         chan ((method method-handler) (str base-url "rest/" url) options)]
     (async/go
       (let [data (async/<! chan)]

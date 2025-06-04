@@ -1,8 +1,7 @@
 (ns qoback.closspad.network.core-async
   (:require [cljs.core.async :as async]
             [cljs.core.async.interop :refer [<p!]]
-            [qoback.closspad.state.db :refer [get-dispatcher]]
-            [qoback.closspad.rating-system :refer [process-matches]]
+            [qoback.closspad.helpers :as h]
             [qoback.closspad.network.domain :refer [base-url query->http-request]]))
 
 (defn GET
@@ -21,8 +20,8 @@
 
 (defn query-async
   [params]
-  (let [{:keys [method url options callback]} (query->http-request params)
-        chan ((method method-handler) (str base-url url) options)]
+  (let [{:keys [method url options callback]} (query->http-request (assoc params :query/date (h/first-day-next-month-prev-year)))
+        chan ((method method-handler) (str base-url "" url) options)]
     (async/go
       (let [data (async/<! chan)]
         (when callback (callback data))))))

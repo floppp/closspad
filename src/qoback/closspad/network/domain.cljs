@@ -11,11 +11,15 @@
 (defonce supabase (createClient base-url anon-key))
 
 (defn query->http-request
-  [{:query/keys [kind data]}]
+  [{:query/keys [kind data date]}]
   (case kind
     :query/matches
     {:method  :get
-     :url     (str "v1/CLOSSPAD_match?select=*&order=played_at.asc&organization=eq." organization)
+     :url     (str "v1/CLOSSPAD_match?select=*&order=played_at.asc&organization=eq."
+                   organization
+                   "&played_at=gte."
+                   date
+                   )
      :options {:method (name :get)
                :headers
                {:apiKey anon-key
@@ -89,4 +93,3 @@
        (drop-while #(not= :query.status/loading (:query/status %)))
        first
        :query/user-time))
-

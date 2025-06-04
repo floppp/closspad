@@ -156,6 +156,7 @@
     "Reglas Especiales"]
    [:ol.list-inside.pl-4.mb-6.space-y-2.bg-gray-50.p-4.rounded-lg
     [:li [:strong "Límites"] ": Puntos entre 0-100"]
+    [:li [:strong "Partido de 1 Set"] ": Se minoran con un 0.8"]
     [:li [:strong "Volatilidad"] ":"
      [:ul.list-disc.list-inside.pl-4.mb-6.space-y-2.bg-gray-50.p-4.rounded-lg
       [:li "Nuevos: 1.1"]
