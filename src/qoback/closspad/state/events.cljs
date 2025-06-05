@@ -40,7 +40,7 @@
       :db/login (let [[_ value element] enrichted-event]
                   {:new-state (assoc-in state [:db/login element] value)})
       :ui/header {:new-state (update state :ui/header not)}
-      :route/not-found   {:effects [[:route/not-found state]]}
+      :route/not-found   {:effects [[:route/fx.not-found state]]}
       :route/home        {:effects [[:route/fx.home]]}
       :route/explanation {:effects [[:route/fx.explanation]]}
       :route/login       {:effects [[:route/fx.login (:auth state)]]}
@@ -49,6 +49,7 @@
       :route/stats       {:effects [[:route/fx.stats args]]}
       :route/push        {:effects [[:route/fx.push args]]}
       :auth/check-login  {:effects [[:auth/fx.check-login (:auth state)]]}
+      :auth/check-not-logged  {:effects [[:auth/fx.check-not-logged (:auth state)]]}
       :data/query        {:effects [[:data/fx.query {:state state :args args}]]}
       :post/match        {:effects [[:post/fx.match {:args (first args)}]]}
       :fetch/login       {:effects [[:fetch/fx.login args]]}

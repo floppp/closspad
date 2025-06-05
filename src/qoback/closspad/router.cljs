@@ -2,36 +2,24 @@
   (:require [reitit.frontend :as rfr]
             [reitit.frontend.easy :as rfe]
             [reitit.frontend.controllers :as rfc]
-            [qoback.closspad.helpers :as h]
-            [qoback.closspad.state.db :refer [get-dispatcher]]))
+            [qoback.closspad.state.db :refer [get-dispatcher !state]]))
 
-;; (def dispatcher (get-dispatcher))
-#_(defn redirect-middleware [handler]
-    (fn [match]
-      (if match
-        (handler match)
-        (rfe/push-state :route/home)))) ; or your 404 page
+(defn auth-guard
+  [success]
+  (let [st @!state]
+    (if (:auth st)
+      [[success]]
+      (do
+        (rfe/push-state :route/home)
+        nil))))
 
 (def routes
-  [
-   ["/match/:day" {:name :route/match
-                   :path [:day string?]}] ;; format: YYYY-MM-DD
-   ["/classification/:day" {:name :route/classification
-                            :path [:day string?]}]
-   ["/add-match" {:name :route/add-match}]
-   ["/explanation" {:name :route/explanation}]
-   ["/stats/:player" {:name :route/stats :path [:player string?]}]
-   ["/login" {:name :route/login
-              :controllers
-              [{:start
-                (fn [_]
-                  (.log js/console "Enter Login")
-                  (let [dispatcher (get-dispatcher)]
-                    (dispatcher nil [[:auth/check-login]])))
-                :stop
-                (fn [& _]
-                  (.log js/console "Leaving login page"))}]}]
-   #_["/" {:name :route/home}]])
+  [["/login"               {:name :route/login}]
+   ["/add-match"           {:name :route/add-match}]
+   ["/explanation"         {:name :route/explanation}]
+   ["/stats/:player"       {:name :route/stats          :path [:player string?]}]
+   ["/match/:day"          {:name :route/match          :path [:day string?]}] ;; format: YYYY-MM-DD
+   ["/classification/:day" {:name :route/classification :path [:day string?]}]])
 
 (defn- get-route-actions
   [{:keys [data path-params]}]
@@ -44,17 +32,18 @@
     :route/stats (let [player (keyword (:player path-params))]
                    [[:route/stats player]])
     :route/explanation [[:route/explanation]]
-    :route/add-match [[:route/add-match]]
-    :route/login [[:route/login]]
+    :route/add-match   (auth-guard :route/add-match)
+    :route/login       [[:route/login]]
     [[:route/not-found]]))
 
 (defn start! [routes dispatch!]
   (rfe/start!
    (rfr/router routes)
-   (fn do-routing [{:keys [data] :as m}]
+   (fn [{:keys [data] :as m}]
      (if m
        (do
          (rfc/apply-controllers nil m)
-         (dispatch! nil (get-route-actions m)))
+         (when-let [action (get-route-actions m)]
+           (dispatch! nil action)))
        (dispatch! nil [[:route/not-found]])))
    {:use-fragment true}))

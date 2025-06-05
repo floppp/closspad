@@ -28,7 +28,6 @@
           couple-b-score
           n-sets]} new-match
         n-sets (min (or n-sets 1) 3)]
-    (.log js/console new-match)
     [:form.mb-4.flex.gap-2.max-w-screen-sm
      {:on {:submit [[:event/prevent-default]
                     (when-not (empty? couple-a-1)

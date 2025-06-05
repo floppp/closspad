@@ -5,6 +5,7 @@
             ["@supabase/supabase-js" :refer [createClient]]))
 
 (goog-define organization "")
+(goog-define table "")
 (goog-define base-url "")
 (goog-define anon-key "")
 
@@ -15,11 +16,12 @@
   (case kind
     :query/matches
     {:method  :get
-     :url     (str "v1/CLOSSPAD_match?select=*&order=played_at.asc&organization=eq."
+     :url     (str "v1/"
+                   table
+                   "?select=*&order=played_at.asc&organization=eq."
                    organization
                    "&played_at=gte."
-                   date
-                   )
+                   date)
      :options {:method (name :get)
                :headers
                {:apiKey anon-key

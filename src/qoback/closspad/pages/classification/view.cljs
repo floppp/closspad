@@ -67,7 +67,6 @@
         prev-day-player-ratings (second (last (filter-day-ratings < day-str sorted-ratings)))
         players-ratings (->> (second day-ratings)
                              (sort-by second >))]
-    ;; (.log js/console prev-day-rating)
     [:div.bg-white.rounded-b-lg.shadow-md.p-8
      [:h2.text-3xl.font-bold.text-center.mb-6.text-gray-800 "Clasificación"]
      (players-list prev-day-player-ratings players-ratings)]))
