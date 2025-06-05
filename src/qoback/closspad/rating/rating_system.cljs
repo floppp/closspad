@@ -1,11 +1,13 @@
-(ns qoback.closspad.rating-system
-  (:require [cljs.spec.alpha :as s]))
+(ns qoback.closspad.rating.rating-system
+  (:require [cljs.spec.alpha :as s]
+            [qoback.closspad.rating.core :as core]
+            [qoback.closspad.rating.match :as match]))
 
-(def DEFAULTS
+#_(def DEFAULTS
   {:one-set-importance 0.8
    :regular-importance 1})
 
-(def default-options
+#_(def default-options
   {:default-rating 50
    :max-rating 100
    :min-rating 0
@@ -47,7 +49,7 @@
 (defn create-system
   ([] (create-system {}))
   ([options]
-   (merge default-options options)))
+   (merge core/default-options options)))
 
 (defn clamp-rating [system rating]
   (max (:min-rating system) (min (:max-rating system) rating)))
@@ -146,18 +148,12 @@
                          {}
                          players)))))
 
-(defn match-importance
-  "If match was only one set, less importante"
-  [{:keys [result importance]}]
-  (or importance
-      (if (= 1 (count result))
-        (:one-set-importance DEFAULTS)
-        (:regular-importance DEFAULTS))))
+
 
 (defn update-system
-  [system match]
+  [system match last-match-date]
   (let [{:keys [couple_a couple_b result]} match
-        importance (match-importance match)
+        importance (match/importance match last-match-date)
         all-players (concat couple_a couple_b)
         winner (determine-winner result)
 
@@ -174,20 +170,20 @@
                        system
                        all-players)
 
-        ;; Update both teams
         system (update-couple system "A" expected-win-a winner couple_a team-b-rating importance)
         system (update-couple system "B" (- 1 expected-win-a) winner couple_b team-a-rating importance)]
 
-    ;; Apply decay to inactive players
     (-> system
-        (apply-decay all-players)
+        ;; (apply-decay all-players) ;; Apply decay to inactive players
         (assoc :date (:played_at match)))
     ))
 
 (defn process-matches [matches]
   (let [initial-state (create-system)
+        sorted-matches (sort-by :played_at matches)
+        last-match-date (:played_at (last sorted-matches))
         states (reduce (fn [acc match]
-                         (cons (update-system (first acc) match) acc))
+                         (cons (update-system (first acc) match last-match-date) acc))
                        [initial-state]
                        matches)]
     (map (fn [state]
