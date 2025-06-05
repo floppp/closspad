@@ -1,6 +1,6 @@
 (ns qoback.closspad.components.stats.service
   (:require [clojure.string :as str]
-            [qoback.closspad.rating.rating-system :refer [determine-winner]]
+            [qoback.closspad.rating.system :refer [determine-winner]]
             [qoback.closspad.helpers :as h]))
 
 (defn get-all-players

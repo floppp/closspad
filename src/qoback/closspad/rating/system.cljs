@@ -1,20 +1,7 @@
-(ns qoback.closspad.rating.rating-system
+(ns qoback.closspad.rating.system
   (:require [cljs.spec.alpha :as s]
             [qoback.closspad.rating.core :as core]
             [qoback.closspad.rating.match :as match]))
-
-#_(def DEFAULTS
-  {:one-set-importance 0.8
-   :regular-importance 1})
-
-#_(def default-options
-  {:default-rating 50
-   :max-rating 100
-   :min-rating 0
-   :base-k 20
-   :scale-factor 100
-   :players {}
-   :date nil})
 
 ;; Type definitions
 (s/def ::player-id string?)

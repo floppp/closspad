@@ -163,5 +163,9 @@
       [:li "Decrece 1% por partido (multiplicado por 0.99)"]
       [:li "Mínimo: 0.8"]
       [:li "Afecta directamente al factor K (K = BaseK * volatilidad)"]]]
-    [:li [:strong "Inactividad"] ": -2% por periodo inactivo"]
+    [:li [:strong "Decaimiento Temporal"] ":"
+     [:ul.list-disc.list-inside.pl-4.mb-6.space-y-2.bg-gray-50.p-4.rounded-lg
+      [:li "El valor de cada partido decae con el tiempo"]
+      [:li "Fórmula: ((días desde el que se jugó el partido hasta el último) / 300) * valor del partido"]
+      [:li "Ejemplo: Si un partido fue hace 150 días, su valor se reduce a la mitad"]]]
     [:li [:strong "Importancia"] ": Multiplicador 1-2x"]]])
