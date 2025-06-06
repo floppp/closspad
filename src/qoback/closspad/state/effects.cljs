@@ -53,6 +53,7 @@
                     {:player (-> args first first)})
     :route/fx.stats (goto->stats (-> args first first))
     :route/fx.match (navigated-match-page (-> args first first))
+    :route/fx.full-stats (goto->page :full-stats)
     :auth/fx.check-login (let [session (-> args first :session :access_token)]
                            (when-not (nil? session)
                              (rfe/push-state :route/home)))

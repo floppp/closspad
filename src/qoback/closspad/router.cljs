@@ -17,6 +17,7 @@
   [["/login"               {:name :route/login}]
    ["/add-match"           {:name :route/add-match}]
    ["/explanation"         {:name :route/explanation}]
+   ["/stats"               {:name :route/full-stats}]
    ["/stats/:player"       {:name :route/stats          :path [:player string?]}]
    ["/match/:day"          {:name :route/match          :path [:day string?]}] ;; format: YYYY-MM-DD
    ["/classification/:day" {:name :route/classification :path [:day string?]}]])
@@ -31,6 +32,7 @@
                             [[:route/classification {:day day}]])
     :route/stats (let [player (keyword (:player path-params))]
                    [[:route/stats player]])
+    :route/full-stats  [[:route/full-stats]]
     :route/explanation [[:route/explanation]]
     :route/add-match   (auth-guard :route/add-match)
     :route/login       [[:route/login]]

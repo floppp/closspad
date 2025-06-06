@@ -3,7 +3,8 @@
 (def DEFAULTS
   {:one-set-importance 0.8
    :regular-importance 1
-   :time-distance-factor 300})
+   :time-distance-factor 365
+   :max-decay 0.8})
 
 (def default-options
   {:default-rating 50

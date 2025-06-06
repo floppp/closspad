@@ -7,7 +7,7 @@
 (defn days-between [date1 date2]
   (let [d1 (.getTime (js/Date. date1))
         d2 (.getTime (js/Date. date2))
-        diff (- d1 d2)]
+        diff (js/Math.abs (- d1 d2))]
     (/ diff (* 1000 60 60 24))))
 
 

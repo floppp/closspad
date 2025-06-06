@@ -124,18 +124,17 @@
         (assoc-in [:players player2-id :points] (clamp-rating system (+ (:points player2) change2)))
         (assoc-in [:players player2-id :volatility] (max 0.8 (* (or (:volatility player2) 1) 0.99))))))
 
-(defn apply-decay [system active-players]
+#_(defn apply-decay [system active-players]
   (let [decay-factor 0.98]
     (update system :players
             (fn [players]
-              (reduce-kv (fn [m id player]
-                           (if (some #{id} active-players)
-                             (assoc m id player)
-                             (assoc m id (update player :points #(clamp-rating system (* % decay-factor))))))
-                         {}
-                         players)))))
-
-
+              (reduce-kv
+               (fn [m id player]
+                 (if (some #{id} active-players)
+                   (assoc m id player)
+                   (assoc m id (update player :points #(clamp-rating system (* % decay-factor))))))
+               {}
+               players)))))
 
 (defn update-system
   [system match last-match-date]
@@ -162,8 +161,7 @@
 
     (-> system
         ;; (apply-decay all-players) ;; Apply decay to inactive players
-        (assoc :date (:played_at match)))
-    ))
+        (assoc :date (:played_at match)))))
 
 (defn process-matches [matches]
   (let [initial-state (create-system)

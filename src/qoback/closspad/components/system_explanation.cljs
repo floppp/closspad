@@ -165,7 +165,9 @@
       [:li "Afecta directamente al factor K (K = BaseK * volatilidad)"]]]
     [:li [:strong "Decaimiento Temporal"] ":"
      [:ul.list-disc.list-inside.pl-4.mb-6.space-y-2.bg-gray-50.p-4.rounded-lg
-      [:li "El valor de cada partido decae con el tiempo"]
-      [:li "Fórmula: ((días desde el que se jugó el partido hasta el último) / 300) * valor del partido"]
+      [:li "El valor de cada partido decae con el tiempo"
+       [:br]
+       [:pre.bg-gray-100.p-2.rounded.inline-block.ml-2
+        "(1 - min(0.8, DeltaDías / 365)) * valor del partido"]]
       [:li "Ejemplo: Si un partido fue hace 150 días, su valor se reduce a la mitad"]]]
     [:li [:strong "Importancia"] ": Multiplicador 1-2x"]]])

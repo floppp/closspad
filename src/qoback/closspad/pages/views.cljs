@@ -4,6 +4,7 @@
             [qoback.closspad.pages.match.view :as match]
             [qoback.closspad.pages.stats.view :as stats]
             [qoback.closspad.pages.add.view :as add]
+            [qoback.closspad.pages.full-stats.view :as full-stats]
             [qoback.closspad.components.system-explanation :as system-explanation]
             [qoback.closspad.pages.classification.view :as classification]))
 
@@ -42,6 +43,7 @@
           :home (home-view)
           :add-match (add/view state)
           :explanation (explanation-view)
+          :full-stats (full-stats/view state)
           :match [:div
                   (match/view state)
                   (classification/view state)]

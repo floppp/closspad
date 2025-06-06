@@ -47,6 +47,7 @@
       :route/match       {:effects [[:route/fx.match args]]}
       :route/add-match   {:effects [[:route/fx.add-match]]}
       :route/stats       {:effects [[:route/fx.stats args]]}
+      :route/full-stats  {:effects [[:route/fx.full-stats]]}
       :route/push        {:effects [[:route/fx.push args]]}
       :auth/check-login  {:effects [[:auth/fx.check-login (:auth state)]]}
       :auth/check-not-logged  {:effects [[:auth/fx.check-not-logged (:auth state)]]}
