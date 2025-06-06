@@ -37,9 +37,10 @@
      [:div.hidden.md:flex.flex-grow.gap-8.items-center.justify-center
       (header-item header "Inicio" "")
       (header-item header "Explicación" "explanation")
+      (header-item header "Estadísticas" "stats")
       (if is-logged?
-           (header-item header "Añadir Partido" "add-match")
-           (header-item header "Login" "login"))]
+        (header-item header "Añadir Partido" "add-match")
+        (header-item header "Login" "login"))]
 
      (when header
        [:div.overflow-hidden.transition-all.duration-300.ease-in-out
@@ -47,6 +48,7 @@
         [:div.flex.flex-col.gap-4.p-4.items-center.md:hidden
          (header-item header "Inicio" "")
          (header-item header "Explicación" "explanation")
+         (header-item header "Estadísticas" "stats")
          (if is-logged?
            (header-item header "Añadir Partido" "add")
            (header-item header "Login" "login"))

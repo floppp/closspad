@@ -23,6 +23,7 @@
   []
   (system-explanation/component))
 
+
 (defn view
   [state]
   (case (:page (:page/navigated state))

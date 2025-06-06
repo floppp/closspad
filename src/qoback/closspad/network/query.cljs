@@ -2,7 +2,7 @@
   (:require [cljs.core.async :as async]
             [cljs.core.async.interop :refer [<p!]]
             [qoback.closspad.network.domain :refer [base-url query->http-request]]
-            [qoback.closspad.helpers :as h]))
+            [qoback.closspad.utils.datetime :as dt]))
 
 (defn GET
   ([url] (GET url nil))
@@ -22,7 +22,7 @@
   [params]
   (let [{:keys [method url options callback]}
         (query->http-request
-         (assoc params :query/date (h/first-day-next-month-prev-year #_(js/Date. "2024-01-01"))))
+         (assoc params :query/date (dt/date->minus-one-year)))
         chan ((method method-handler) (str base-url "rest/" url) options)]
     (async/go
       (let [data (async/<! chan)]
