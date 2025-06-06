@@ -10,8 +10,6 @@
         diff (js/Math.abs (- d1 d2))]
     (/ diff (* 1000 60 60 24))))
 
-
-
 (defn rotate-months [months]
   (let [current-month (-> (js/Date.) .getMonth inc) ; 1-12
         months-vec (vec (sort-by month-order months))
@@ -30,9 +28,6 @@
          first-day (doto (js/Date. next-month)
                      (.setDate 1))]
      (-> first-day .toISOString (.split "T") first))))
-
-(defn datetime->date->str [date & [{:keys [tz] :or {tz "es-ES"}}]]
-  (str (.toLocaleDateString date tz)))
 
 (defn format-iso-date [date]
   (let [d (js/Date. date)

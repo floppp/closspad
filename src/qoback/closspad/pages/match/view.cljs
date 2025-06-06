@@ -1,19 +1,19 @@
 (ns qoback.closspad.pages.match.view
   (:require [qoback.closspad.components.widgets :as w]
-            [qoback.closspad.helpers :as h]
+            [qoback.closspad.utils.datetime :as dt]
             [qoback.closspad.pages.match.component :as match]))
 
 (defn view
   [state]
   (let [match-date (:date (:page/navigated state))
-        match-date-str (h/datetime->date->str match-date)
+        match-date-str (dt/datetime->date->str match-date)
         all-matches (:results (:match state))
         day-matches (filter
                      #(= match-date-str
                          (-> %
                              :played_at
                              js/Date.
-                             h/datetime->date->str))
+                             dt/datetime->date->str))
                      all-matches)]
     [:div.bg-white.rounded-t-lg.shadow-md.p-8
      [:div.mb-6.flex.justify-center

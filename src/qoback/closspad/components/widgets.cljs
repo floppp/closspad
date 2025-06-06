@@ -1,5 +1,6 @@
 (ns qoback.closspad.components.widgets
-  (:require [qoback.closspad.helpers :as h]))
+  (:require [qoback.closspad.helpers :as h]
+            [qoback.closspad.utils.datetime :as dt]))
 
 (defn header-item
   [is-open? title route]
@@ -109,7 +110,7 @@
    [:div
     {:class
      ["text-lg" "font-semibold" "min-w-120" "text-center" "sm:text-xl"]}
-    (h/datetime->date->str date)]
+    (dt/datetime->date->str date)]
 
    (arrow-right date match-dates)
 

@@ -73,11 +73,8 @@
   (let [{:keys [new-state effects]} (handle-events @!state replicant-data events)]
     (when new-state
       (reset! !state new-state)
-      (when goog.DEBUG
-        #_(.log js/console " >>>>>>>>>>>>")
-        (.log js/console  @!state)
-        #_(.log js/console " <<<<<<<<<<<<")
-        #_(.log js/console "")))
+      #_(when goog.DEBUG
+        (.log js/console  @!state)))
     (when effects
       (doseq [effect effects]
         (perform-effect! replicant-data effect)))))

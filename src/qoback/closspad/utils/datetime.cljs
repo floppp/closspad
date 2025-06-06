@@ -18,6 +18,9 @@
   (let [m (get-month-name date)]
     (str m "/" (.getFullYear date))))
 
+(defn datetime->date->str
+  [date & [{:keys [tz] :or {tz "es-ES"}}]]
+  (str (.toLocaleDateString date tz)))
 
 (comment
   (date->minus-one-year)
