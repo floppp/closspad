@@ -9,7 +9,20 @@
      (-> d .toISOString (.split "T") first))))
 
 
+(defn get-month-name
+  [^js date]
+  (.toLocaleString date "default" #js {:month "short"}))
+
+(defn get-month-name-with-year
+  [^js date]
+  (let [m (get-month-name date)]
+    (str m "/" (.getFullYear date))))
+
 
 (comment
   (date->minus-one-year)
+
+  (get-month-name (js/Date.))
+
+  (get-month-name-with-year (js/Date.))
   )

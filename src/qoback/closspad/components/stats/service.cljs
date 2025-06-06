@@ -1,7 +1,8 @@
 (ns qoback.closspad.components.stats.service
   (:require [clojure.string :as str]
             [qoback.closspad.rating.system :refer [determine-winner]]
-            [qoback.closspad.helpers :as h]))
+            [qoback.closspad.helpers :as h]
+            [qoback.closspad.utils.datetime :as dt]))
 
 (defn get-all-players
   "Returns a set of all unique player names from matches.
@@ -95,7 +96,7 @@
   (let [stats (reduce
                (fn [acc {:keys [couple_a couple_b result played_at]}]
                  (let [date (js/Date. played_at)
-                       month (h/get-month-name date)
+                       month (dt/get-month-name-with-year date)
                        in-p1 (contains? (set couple_a) player)
                        in-p2 (contains? (set couple_b) player)]
                    (if (or in-p1 in-p2)

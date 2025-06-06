@@ -55,9 +55,6 @@
         new-time (- (.getTime js-date) (* n-days 24 60 60 1000))]
     (js/Date. new-time)))
 
-(defn get-month-name [date]
-  (.toLocaleString date "default" #js {:month "short"}))
-
 (defn get-month-num
   [date]
   (.getMonth (js/Date. date)))
