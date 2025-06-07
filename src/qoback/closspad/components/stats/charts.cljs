@@ -184,33 +184,6 @@
                         :lineStyle {:width 2
                                     :color "#F44336"}}]}]})))
 
-#_(defn points-evolution-chart
-  "Renders a line chart showing player's points evolution over time"
-  [points-history]
-  (clj->js
-   {:backgroundColor "#ffffff"
-    :title {:text "Evolución de Puntos"
-            :left "center"}
-    :tooltip {:trigger "axis"
-              :formatter (fn [params]
-                           (let [date (aget params 0 "axisValue")
-                                 points (aget params 0 "data")]
-                             (str date ": " points " puntos")))}
-    :xAxis {:type "category"
-            :data (map :date points-history)
-            :axisLabel {:rotate 30}}
-    :yAxis {:type "value"
-            :name "Puntos"
-            :min (apply min (map :points points-history))
-            :max (apply max (map :points points-history))}
-    :series [{:name "Puntos"
-              :type "line"
-              :data (map :points points-history)
-              :symbolSize 8
-              :lineStyle {:width 3
-                          :color "#2196F3"}
-              :itemStyle {:color "#2196F3"}}]}))
-
 (defn points-evolution-chart
   "Renders a line chart showing players' points evolution over time.
   Accepts a map of {player-id [{:date date-str :points points}]}"
@@ -222,8 +195,6 @@
         players (keys points-history)]
     (clj->js
      {:backgroundColor "#ffffff"
-      :title {:text "Evolución de Puntos"
-              :left "center"}
       :tooltip {:trigger "axis"}
       :legend {:data (map name players)}
       :xAxis {:type "category"

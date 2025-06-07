@@ -1,6 +1,6 @@
 (ns qoback.closspad.network.domain
   (:require [qoback.closspad.state.db :refer [get-dispatcher]]
-            [qoback.closspad.rating.system :refer [process-matches]]
+            [qoback.closspad.rating.system :refer [process-matches] :as rat]
             [qoback.closspad.components.stats.service :as stats]
             ["@supabase/supabase-js" :refer [createClient]]))
 
@@ -32,10 +32,15 @@
                        ratings (filter (comp some? first) ratings)
                        all-players (-> ms stats/get-all-players vec sort)
                        all-players-stats (stats/compute-all-players-stats all-players ms)]
-                   (dispatcher nil [[:db/assoc :classification {:ratings ratings}]
-                                    [:db/assoc-in [:stats :players] all-players]
-                                    [:db/assoc-in [:stats :by-player] all-players-stats]
-                                    [:db/assoc :match {:results ms}]])))}
+                   (dispatcher
+                    nil
+                    [[:db/assoc-in [:classification :_ratings] ratings]
+                     [:db/assoc-in
+                      [:classification :ratings]
+                      (rat/logarithmic-decay ratings)]
+                     [:db/assoc-in [:stats :players] all-players]
+                     [:db/assoc-in [:stats :by-player] all-players-stats]
+                     [:db/assoc :match {:results ms}]])))}
     :query/user
     [:get (str "/api/todo/users/" (:user-id data))]))
 

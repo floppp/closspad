@@ -23,7 +23,7 @@
     [:code.text-sm.font-mono "Cambio = K * (Resultado - P)"]]
    [:p.text-gray-600.mb-2 "Donde:"]
    [:ul.list-disc.list-inside.pl-4.mb-4.space-y-1
-    [:li.text-gray-700 "K = BaseK (20) * Volatilidad (1.1 inicial)"]
+    [:li.text-gray-700 "K = BaseK (20)"]
     [:li.text-gray-700 "Resultado = 1 (ganó) o 0 (perdió)"]
     [:li.text-gray-700 "P = Probabilidad calculada"]]
 
@@ -157,12 +157,6 @@
    [:ol.list-inside.pl-4.mb-6.space-y-2.bg-gray-50.p-4.rounded-lg
     [:li [:strong "Límites"] ": Puntos entre 0-100"]
     [:li [:strong "Partido de 1 Set"] ": Se minoran con un 0.8"]
-    [:li [:strong "Volatilidad"] ":"
-     [:ul.list-disc.list-inside.pl-4.mb-6.space-y-2.bg-gray-50.p-4.rounded-lg
-      [:li "Nuevos: 1.1"]
-      [:li "Decrece 1% por partido (multiplicado por 0.99)"]
-      [:li "Mínimo: 0.8"]
-      [:li "Afecta directamente al factor K (K = BaseK * volatilidad)"]]]
     [:li [:strong "Decaimiento Temporal"] ":"
      [:ul.list-disc.list-inside.pl-4.mb-6.space-y-2.bg-gray-50.p-4.rounded-lg
       [:li "El valor de cada partido decae con el tiempo"

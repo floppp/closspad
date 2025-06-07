@@ -8,7 +8,7 @@
     (min (:max-decay core/DEFAULTS)
          (/ day-distance (:time-distance-factor core/DEFAULTS)))))
 
-(defn importance_
+(defn one-set-importance
   "If match was only one set, less importante"
   [{:keys [result importance]}]
   (or importance
@@ -16,17 +16,12 @@
         (:one-set-importance core/DEFAULTS)
         (:regular-importance core/DEFAULTS))))
 
-(defn importance
+(defn time-decay-importance
   "Applies time decay to match importance"
-  [{:keys [result importance played_at]} last-match-date]
-  (let [base-importance
-        (or importance
-            (if (= 1 (count result))
-              (:one-set-importance core/DEFAULTS)
-              (:regular-importance core/DEFAULTS)))
+  [{:keys [played_at] :as data} last-match-date]
+  (let [base-importance (one-set-importance data)
         decay-factor (calculate-decay-factor played_at last-match-date)
         factor (- 1 decay-factor)]
     (* base-importance factor)))
-
 
 

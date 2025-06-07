@@ -73,7 +73,8 @@
   (let [{:keys [new-state effects]} (handle-events @!state replicant-data events)]
     (when new-state
       (reset! !state new-state)
-      #_(when goog.DEBUG
+      (when goog.DEBUG
+        #_(prn  (->  @!state :classification :ratings))
         (.log js/console  @!state)))
     (when effects
       (doseq [effect effects]
