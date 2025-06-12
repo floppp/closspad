@@ -122,3 +122,11 @@
    {:style {:background "white"}}
    [:span.loading.loading-ring.loading-xl
     {:style {:height "100px" :width "100px"}}]])
+
+(defn toast
+  [{:keys [error]}]
+  (when error
+    [:div.toast
+     [:div.alert.alert-error
+      {:on {:click [[:db/dissoc :error]]}}
+      [:span error]]]))

@@ -26,7 +26,13 @@
                :headers
                {:apiKey anon-key
                 :Authorization (str "Bearer " anon-key)}}
-     :callback (fn [ms]
+     :on-failure (fn [err]
+                   (let [dispatcher (get-dispatcher)]
+                     (dispatcher
+                      nil
+                      [[:db/assoc :error err]
+                       [:db/dissoc :is-loading?]])))
+     :on-success (fn [ms]
                  (let [ratings (process-matches ms)
                        dispatcher (get-dispatcher)
                        ratings (filter (comp some? first) ratings)
@@ -40,7 +46,8 @@
                       (rat/logarithmic-decay ratings)]
                      [:db/assoc-in [:stats :players] all-players]
                      [:db/assoc-in [:stats :by-player] all-players-stats]
-                     [:db/assoc :match {:results ms}]])))}
+                     [:db/assoc :match {:results ms}]
+                     [:db/dissoc :is-loading?]])))}
     :query/user
     [:get (str "/api/todo/users/" (:user-id data))]))
 

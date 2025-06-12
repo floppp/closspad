@@ -1,13 +1,5 @@
-(ns qoback.closspad.pages.classification.view
-  (:require [qoback.closspad.helpers :as h]
-            [qoback.closspad.pages.classification.order :refer [animate-reorder]]))
-
-;; (def prev-order (atom nil))
-
-#_(defn change-prev [x]
-    (tap> @prev-order)
-    (reset! prev-order x)
-    x)
+(ns qoback.closspad.components.classification.component
+  (:require [qoback.closspad.helpers :as h]))
 
 (defn player-color?
   [points]
@@ -56,7 +48,7 @@
     [:div.space-y-3
      (map player enrichted-ratings)]))
 
-(defn view
+(defn component
   [state]
   (let [day (:date (:page/navigated state))
         day-str (h/format-iso-date day)
@@ -70,3 +62,4 @@
     [:div.bg-white.rounded-b-lg.shadow-md.p-8
      [:h2.text-3xl.font-bold.text-center.mb-6.text-gray-800 "Clasificación"]
      (players-list prev-day-player-ratings players-ratings)]))
+

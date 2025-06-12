@@ -159,9 +159,27 @@
     [:li [:strong "Partido de 1 Set"] ": Se minoran con un 0.8"]
     [:li [:strong "Decaimiento Temporal"] ":"
      [:ul.list-disc.list-inside.pl-4.mb-6.space-y-2.bg-gray-50.p-4.rounded-lg
-      [:li "El valor de cada partido decae con el tiempo"
+      [:li "El valor de cada partido decae con la inactividad (logarítmicamente)"
        [:br]
        [:pre.bg-gray-100.p-2.rounded.inline-block.ml-2
-        "(1 - min(0.8, DeltaDías / 365)) * valor del partido"]]
-      [:li "Ejemplo: Si un partido fue hace 150 días, su valor se reduce a la mitad"]]]
-    [:li [:strong "Importancia"] ": Multiplicador 1-2x"]]])
+        "
+racha = Partidos Inactivos Consecutivos
+límite = Umbral antes de aplicar decaimiento (5)
+penal = Penalización mínima (0.5)
+
+escala = 
+  si racha <= límite: 1.0
+  sino: max(penal, 1 - log(racha - límite + 1)/log(20))"]]
+      [:li "Parámetros:"
+       [:ul.list-disc.list-inside.pl-4.mb-6.space-y-2.bg-gray-50.p-4.rounded-lg
+        [:li "límite = 5 partidos inactivos"]
+        [:li "penal = 0.5 (mínimo alcanzable)"]
+        [:li "base logarítmica = 20 (controla velocidad de decaimiento)"]]]
+      [:li "Ejemplo:"
+       [:ul.list-disc.list-inside.pl-4.mb-6.space-y-2.bg-gray-50.p-4.rounded-lg
+        [:li "5 inactivos: ×1.0 (sin decaimiento)"]
+        [:li "6 inactivos: ×0.85 (log(2)/log(20) ≈ 0.15)"]
+        [:li "10 inactivos: ×0.70 (log(6)/log(20) ≈ 0.30)"]
+        [:li "15 inactivos: ×0.60 (log(11)/log(20) ≈ 0.40)"]
+        [:li "20 inactivos: ×0.50 (log(16)/log(20) ≈ 0.50)"]]]]]
+    [:li [:strong "Importancia"] ": Multiplicador: 1 / 0.8 (normal/partidos 1 set)"]]])

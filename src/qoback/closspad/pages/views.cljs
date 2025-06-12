@@ -5,8 +5,7 @@
             [qoback.closspad.pages.stats.view :as stats]
             [qoback.closspad.pages.add.view :as add]
             [qoback.closspad.pages.full-stats.view :as full-stats]
-            [qoback.closspad.components.system-explanation :as system-explanation]
-            [qoback.closspad.pages.classification.view :as classification]))
+            [qoback.closspad.components.system-explanation :as system-explanation]))
 
 (defn- not-found-view
   []
@@ -33,6 +32,7 @@
      [:div.flex-grow
       [:div.flex.flex-col.items-center.min-h-screen.mt-5
        (w/header state)
+       (w/toast state)
        [:div {:class ["w-full"
                       "md:w-3/4"
                       "lg:w-2/3"
@@ -44,7 +44,5 @@
           :add-match (add/view state)
           :explanation (explanation-view)
           :full-stats (full-stats/view state)
-          :match [:div
-                  (match/view state)
-                  (classification/view state)]
+          :match (match/view state)
           :stats (stats/view state))]]]]))

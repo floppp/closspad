@@ -1,9 +1,10 @@
 (ns qoback.closspad.pages.match.view
   (:require [qoback.closspad.components.widgets :as w]
             [qoback.closspad.utils.datetime :as dt]
-            [qoback.closspad.pages.match.component :as match]))
+            [qoback.closspad.pages.match.component :as match]
+            [qoback.closspad.components.classification.component :as classification]))
 
-(defn view
+(defn- component
   [state]
   (let [match-date (:date (:page/navigated state))
         match-date-str (dt/datetime->date->str match-date)
@@ -24,3 +25,12 @@
       (for [match day-matches]
         [:div.border.border-gray-200.rounded-lg.p-4.shadow-sm
          (match/component match)])]]))
+
+(defn view
+  [state]
+  (let [is-loading? (-> state :is-loading?)]
+    (if is-loading?
+      (w/spinner)
+      [:div
+       (component state)
+       (classification/component state)])))

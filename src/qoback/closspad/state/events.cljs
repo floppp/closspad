@@ -51,7 +51,8 @@
       :route/push        {:effects [[:route/fx.push args]]}
       :auth/check-login  {:effects [[:auth/fx.check-login (:auth state)]]}
       :auth/check-not-logged  {:effects [[:auth/fx.check-not-logged (:auth state)]]}
-      :data/query        {:effects [[:data/fx.query {:state state :args args}]]}
+      :data/query        {:new-state (assoc state :is-loading? true :error nil)
+                          :effects [[:data/fx.query {:state state :args args}]]}
       :post/match        {:effects [[:post/fx.match {:args (first args)}]]}
       :fetch/login       {:effects [[:fetch/fx.login args]]}
       (when goog.DEBUG

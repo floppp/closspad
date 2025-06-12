@@ -25,7 +25,6 @@
 (defn- get-route-actions
   [{:keys [data path-params]}]
   (case (:name data)
-    ;; :route/home [[:route/home]]
     :route/match (let [date ^js (js/Date. (:day path-params))]
                    [[:route/match {:date date}]])
     :route/classification (let [day (keyword (:day path-params))]

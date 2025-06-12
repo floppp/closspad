@@ -254,17 +254,21 @@
         ;; last-match-date (:played_at (last (sort-by :played_at matches)))
         states (reduce
                 (fn [acc match]
-                  (cons (compute-match-points (first acc) match) acc))
+                  (cons (compute-match-points
+                         (first acc)
+                         match)
+                        acc))
                 [initial-state]
                 matches)]
-    (map (fn [state]
-           [(:date state)
-            (->> (:players state)
-                 (map
-                  (fn [[id player]]
-                    [id (n/half-round-number (:points player))]))
-                 (sort-by first >))])
-         states)))
+    (map
+     (fn [state]
+       [(:date state)
+        (->> (:players state)
+             (map
+              (fn [[id player]]
+                [id (n/half-round-number (:points player))]))
+             (sort-by first >))])
+     states)))
 
 (defn logarithmic-decay
   "Applies logarithmic score decay with configurable parameters
@@ -275,11 +279,12 @@
      - base-decay: Initial decay strength (default 0.9 = 10% reduction)
      - max-effect: Maximum decay effect (default 0.5 = 50% max reduction)
      - scale: Controls curve steepness (default 10)"
-  [player-data & {:keys [threshold base-decay max-effect scale]
-                  :or {threshold 5
-                       base-decay 0.8
-                       max-effect 0.5
-                       scale 10}}]
+  [player-data
+   & {:keys [threshold base-decay max-effect scale]
+      :or {threshold 5
+           base-decay 0.8
+           max-effect 0.5
+           scale 10}}]
   (let [sorted-data (sort-by first player-data)]
     (loop [remaining sorted-data
            streaks {} ; {:player {:last-score X :streak Y :active? Boolean}}

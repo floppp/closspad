@@ -12,18 +12,24 @@
        (try
          (let [response (<p! (js/fetch url (clj->js options)))
                json (-> response .json .then <p!)]
-           (async/>! ch (js->clj json {:keywordize-keys true})))
-         (catch js/Error err (js/console.warn (ex-cause err)))))
+           (async/>! ch {:data (js->clj json {:keywordize-keys true})}))
+         (catch js/Error err
+           (js/console.warn (ex-cause err))
+           (async/>! ch {:error (ex-cause err)}))))
      ch)))
 
 (def method-handler {:get #'GET})
 
 (defn query-async
   [params]
-  (let [{:keys [method url options callback]}
+  (let [{:keys [method url options on-success on-failure]}
         (query->http-request
          (assoc params :query/date (dt/date->minus-one-year)))
-        chan ((method method-handler) (str base-url "rest/" url) options)]
+        chan ((method method-handler)
+              (str base-url "rest/" url)
+              (assoc options :signal (js/AbortSignal.timeout 5000)))]
     (async/go
-      (let [data (async/<! chan)]
-        (when callback (callback data))))))
+      (let [{:keys [error data]} (async/<! chan)]
+        (if error
+          (when on-failure (on-failure error))
+          (when on-success (on-success data)))))))
