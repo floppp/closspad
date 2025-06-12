@@ -33,6 +33,7 @@
       :event/prevent-default {:effects [[:dom/fx.prevent-default]]}
       :add-match {:new-state (assoc-in state [:add/match (second args)] (first args))}
       :add/match-set {:new-state (update-in state [:add/match :n-sets] (fnil inc 1))}
+      :remove/match-set {:new-state (update-in state [:add/match :n-sets] (fnil dec 1))}
       :db/assoc  {:new-state (apply assoc state args)}
       :db/assoc-in (let [[path args] args]
                      {:new-state (assoc-in state path args)})
