@@ -19,6 +19,7 @@
     {:method  :get
      :url     (str "v1/"
                    table
+                   ;; "?select=*&order=played_at.asc&organization=eq."
                    "?select=*&played_at=gt.2025-05-20&order=played_at.asc&organization=eq."
                    organization
                    "&played_at=gte."
