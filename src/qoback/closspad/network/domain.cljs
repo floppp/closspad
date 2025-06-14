@@ -2,7 +2,8 @@
   (:require [qoback.closspad.state.db :refer [get-dispatcher]]
             [qoback.closspad.rating.system :refer [process-matches] :as rat]
             [qoback.closspad.components.stats.service :as stats]
-            ["@supabase/supabase-js" :refer [createClient]]))
+            ["@supabase/supabase-js" :refer [createClient]]
+            ["../../../js/ratingSystem" :as rating]))
 
 (goog-define organization "")
 (goog-define table "")
@@ -33,21 +34,26 @@
                       [[:db/assoc :error err]
                        [:db/dissoc :is-loading?]])))
      :on-success (fn [ms]
-                 (let [ratings (process-matches ms)
-                       dispatcher (get-dispatcher)
-                       ratings (filter (comp some? first) ratings)
-                       all-players (-> ms stats/get-all-players vec sort)
-                       all-players-stats (stats/compute-all-players-stats all-players ms)]
-                   (dispatcher
-                    nil
-                    [[:db/assoc-in [:classification :_ratings] ratings]
-                     [:db/assoc-in
-                      [:classification :ratings]
-                      (rat/logarithmic-decay ratings)]
-                     [:db/assoc-in [:stats :players] all-players]
-                     [:db/assoc-in [:stats :by-player] all-players-stats]
-                     [:db/assoc :match {:results ms}]
-                     [:db/dissoc :is-loading?]])))}
+                   (let [ratings (process-matches ms)
+                         ratings-js (rating/processMatches (clj->js ms))
+                         dispatcher (get-dispatcher)
+                         ratings (filter (comp some? first) ratings)
+                         all-players (-> ms stats/get-all-players vec sort)
+                         all-players-stats (stats/compute-all-players-stats all-players ms)]
+
+                     (.log js/console ratings)
+                     (.log js/console ratings-js)
+
+                     (dispatcher
+                      nil
+                      [[:db/assoc-in [:classification :_ratings] ratings]
+                       [:db/assoc-in
+                        [:classification :ratings]
+                        (rat/logarithmic-decay ratings)]
+                       [:db/assoc-in [:stats :players] all-players]
+                       [:db/assoc-in [:stats :by-player] all-players-stats]
+                       [:db/assoc :match {:results ms}]
+                       [:db/dissoc :is-loading?]])))}
     :query/user
     [:get (str "/api/todo/users/" (:user-id data))]))
 
