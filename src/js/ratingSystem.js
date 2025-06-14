@@ -129,99 +129,99 @@ function getTeamRating(system, couple) {
     return couple.reduce((sum, id) => sum + (system.players[id]?.points ?? 0), 0);
 }
 
-// function updateCouple(
-//     system,
-//     coupleId,
-//     expectedWin,
-//     winner,
-//     couple,
-//     opponentTeamRating,
-//     importance,
-//     currentDate, // Accept currentDate parameter
-// ) {
-//     const [player1Id, player2Id] = couple;
-//     const isWinner = winner === coupleId;
+function updateCouple(
+    system,
+    coupleId,
+    expectedWin,
+    winner,
+    couple,
+    opponentTeamRating,
+    importance,
+    currentDate, // Accept currentDate parameter
+) {
+    const [player1Id, player2Id] = couple;
+    const isWinner = winner === coupleId;
 
-//     const player1 = system.players[player1Id];
-//     const player2 = system.players[player2Id];
+    const player1 = system.players[player1Id];
+    const player2 = system.players[player2Id];
 
-//     const change1 = getAdjustedPointsChange(
-//         system,
-//         player1,
-//         player2,
-//         opponentTeamRating,
-//         isWinner,
-//         expectedWin,
-//         importance,
-//     );
-
-//     const change2 = getAdjustedPointsChange(
-//         system,
-//         player2,
-//         player1,
-//         opponentTeamRating,
-//         isWinner,
-//         expectedWin,
-//         importance,
-//     );
-
-//     return {
-//         ...system,
-//         players: {
-//             ...system.players,
-//             [player1Id]: {
-//                 ...player1,
-//                 points: clampRating(system, player1.points + change1),
-//                 // volatility: Math.max(0.8, (player1.volatility ?? 1) * 0.99),
-//                 lastMatchDate: currentDate, // Update last match date
-//             },
-//             [player2Id]: {
-//                 ...player2,
-//                 points: clampRating(system, player2.points + change2),
-//                 // volatility: Math.max(0.8, (player2.volatility ?? 1) * 0.99),
-//                 lastMatchDate: currentDate, // Update last match date
-//             },
-//         },
-//     };
-// }
-
-function calculateTeamPoints(system, teamRating, opponentRating, isWinner) {
-    const ratingDiff = opponentRating - teamRating;
-    const expected = 1 / (1 + Math.pow(10, ratingDiff/system.scaleFactor));
-
-    // Base points based on match outcome and expectation
-    const basePoints = isWinner
-        ? system.baseK * (1 - expected)  // Always positive for winners
-        : -system.baseK * expected;      // Always negative for losers
-
-    // Apply non-linear scaling for more balanced results
-    const scaledPoints = basePoints * (1 - Math.pow(expected, 2));
-
-    return Math.max(
-        system.minPointChange,
-        Math.min(system.maxPointChange, scaledPoints)
+    const change1 = getAdjustedPointsChange(
+        system,
+        player1,
+        player2,
+        opponentTeamRating,
+        isWinner,
+        expectedWin,
+        importance,
     );
-}
 
-function updateCouple(system, couple, pointsChange) {
-    const [p1, p2] = couple;
-    const changePerPlayer = pointsChange / 2; // Equal split
+    const change2 = getAdjustedPointsChange(
+        system,
+        player2,
+        player1,
+        opponentTeamRating,
+        isWinner,
+        expectedWin,
+        importance,
+    );
 
     return {
         ...system,
         players: {
             ...system.players,
-            [p1]: {
-                ...system.players[p1],
-                points: clampRating(system, system.players[p1].points + changePerPlayer)
+            [player1Id]: {
+                ...player1,
+                points: clampRating(system, player1.points + change1),
+                // volatility: Math.max(0.8, (player1.volatility ?? 1) * 0.99),
+                lastMatchDate: currentDate, // Update last match date
             },
-            [p2]: {
-                ...system.players[p2],
-                points: clampRating(system, system.players[p2].points + changePerPlayer)
-            }
-        }
+            [player2Id]: {
+                ...player2,
+                points: clampRating(system, player2.points + change2),
+                // volatility: Math.max(0.8, (player2.volatility ?? 1) * 0.99),
+                lastMatchDate: currentDate, // Update last match date
+            },
+        },
     };
 }
+
+// function calculateTeamPoints(system, teamRating, opponentRating, isWinner) {
+//     const ratingDiff = opponentRating - teamRating;
+//     const expected = 1 / (1 + Math.pow(10, ratingDiff/system.scaleFactor));
+
+//     // Base points based on match outcome and expectation
+//     const basePoints = isWinner
+//         ? system.baseK * (1 - expected)  // Always positive for winners
+//         : -system.baseK * expected;      // Always negative for losers
+
+//     // Apply non-linear scaling for more balanced results
+//     const scaledPoints = basePoints * (1 - Math.pow(expected, 2));
+
+//     return Math.max(
+//         system.minPointChange,
+//         Math.min(system.maxPointChange, scaledPoints)
+//     );
+// }
+
+// function updateCouple(system, couple, pointsChange) {
+//     const [p1, p2] = couple;
+//     const changePerPlayer = pointsChange / 2; // Equal split
+
+//     return {
+//         ...system,
+//         players: {
+//             ...system.players,
+//             [p1]: {
+//                 ...system.players[p1],
+//                 points: clampRating(system, system.players[p1].points + changePerPlayer)
+//             },
+//             [p2]: {
+//                 ...system.players[p2],
+//                 points: clampRating(system, system.players[p2].points + changePerPlayer)
+//             }
+//         }
+//     };
+// }
 
 function getAdjustedPointsChange(
     system,
