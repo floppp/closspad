@@ -11,13 +11,16 @@ function calculatePointDecay(lastMatchDate, matchDate, playerScore) {
     const timeDiff = matchDate - lastMatchDate;
     const monthsDiff = timeDiff / (1000 * 3600 * 24 * 30);
 
-    if (monthsDiff <= 0) return 0;
+    if (monthsDiff <= 0) {
+        return 0;
+    }
+    console.log('decayment')
 
     const decayPercentage = monthsDiff <= 2
           ? 0.02 * (Math.log10(1 + (9 * monthsDiff/2)) / Math.log10(10))
           : 0.02;
 
-    return -playerScore * decayPercentage;
+    return playerScore * decayPercentage;
 }
 
 function createSystem(options = {}) {
@@ -271,29 +274,23 @@ function applyDecay(system, currentMatchPlayers, matchDate) {
 
     // Only decay players NOT in current match
     const playersToDecay = Object.keys(updatedPlayers)
-        .filter(id => !currentMatchPlayers.includes(id));
+          .filter(id => !currentMatchPlayers.includes(id));
 
     for (const id of playersToDecay) {
         const player = updatedPlayers[id];
-        if (!player || !player.lastMatchDate) continue;
-
         const lastMatchDateObj = new Date(player.lastMatchDate);
         const timeDiff = matchDateObj - lastMatchDateObj;
 
-        if (timeDiff > 0) {
-            const decayPoints = calculatePointDecay(
-                lastMatchDateObj,
-                matchDateObj,
-                player.points
-            );
+        const decayPoints = calculatePointDecay(
+            lastMatchDateObj,
+            matchDateObj,
+            player.points
+        );
 
-            if (decayPoints !== 0) {
-                updatedPlayers[id] = {
-                    ...player,
-                    points: clampRating(system, player.points + decayPoints)
-                };
-            }
-        }
+        updatedPlayers[id] = {
+            ...player,
+            points: clampRating(system, player.points - decayPoints)
+        };
     }
 
     return {
