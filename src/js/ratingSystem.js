@@ -3,25 +3,21 @@ const defaultOptions = {
     maxRating: 100,
     minRating: 0,
     baseK: 10,
-    scaleFactor: 200,
+    scaleFactor: 100,
     players: {},
 };
 
-function calculatePointDecay(lastMatchDate, currentDate) {
-    // Ensure lastMatchDate is a Date object
-    if (!(lastMatchDate instanceof Date)) {
-        lastMatchDate = new Date(lastMatchDate);
-    }
+function calculatePointDecay(lastMatchDate, matchDate, playerScore) {
+    const timeDiff = matchDate - lastMatchDate;
+    const monthsDiff = timeDiff / (1000 * 3600 * 24 * 30);
 
-    const timeDiff = currentDate.getTime() - lastMatchDate.getTime();
-    const monthsDiff = timeDiff / (1000 * 3600 * 24 * 30); // Approximate months
+    if (monthsDiff <= 0) return 0;
 
-    if (monthsDiff > 1) {
-        // Logarithmic decay. Returns a negative value for point reduction.
-        // Adjust the multiplier (e.g., 2) to control the decay rate.
-        return -Math.log(monthsDiff) * 2;
-    }
-    return 0; // No decay for matches within the last month or less
+    const decayPercentage = monthsDiff <= 2
+          ? 0.02 * (Math.log10(1 + (9 * monthsDiff/2)) / Math.log10(10))
+          : 0.02;
+
+    return -playerScore * decayPercentage;
 }
 
 function createSystem(options = {}) {
@@ -31,6 +27,7 @@ function createSystem(options = {}) {
 function addPlayer(
     system,
     playerId,
+    matchDate,
     initialRating = system.defaultRating
 ) {
     const rating = clampRating(system, initialRating);
@@ -42,14 +39,14 @@ function addPlayer(
                 id: playerId,
                 name: playerId,
                 points: rating,
-                volatility: 1.1,
-                lastMatchDate: new Date(), // Initialize lastMatchDate for new players
+                // volatility: 1.1,
+                lastMatchDate: matchDate
             },
         },
     };
 }
 
-function updateSystem    (system, match) {
+function updateSystem (system, match) {
     const { couple_a, couple_b, result, played_at, importance = 1 } = match;
     const matchPlayers = [...couple_a, ...couple_b];
     const winner = determineWinner(result);
@@ -63,12 +60,11 @@ function updateSystem    (system, match) {
     let newSystem = system;
     for (const playerId of matchPlayers) {
         if (!newSystem.players[playerId]) {
-            newSystem = addPlayer(newSystem, playerId);
+            newSystem = addPlayer(newSystem, playerId, played_at);
         }
     }
 
     const matchDate = new Date(played_at);
-    // const currentDate = new Date(); // Get current date for updating lastMatchDate
 
     // Update both teams with proper opponent ratings
     newSystem = updateCouple(
@@ -96,10 +92,12 @@ function updateSystem    (system, match) {
         (id) => !matchPlayers.includes(id),
     );
     return {
+        ...applyDecay(newSystem, inactivePlayersForDecay, matchDate),
         date: matchDate,
-        ...applyDecay(newSystem, inactivePlayersForDecay),
     };
 }
+
+
 
 // --- Helper Functions ---
 function calculateExpectedWin(system, teamARating, teamBRating) {
@@ -131,59 +129,97 @@ function getTeamRating(system, couple) {
     return couple.reduce((sum, id) => sum + (system.players[id]?.points ?? 0), 0);
 }
 
-function updateCouple(
-    system,
-    coupleId,
-    expectedWin,
-    winner,
-    couple,
-    opponentTeamRating,
-    importance,
-    currentDate, // Accept currentDate parameter
-) {
-    const [player1Id, player2Id] = couple;
-    const isWinner = winner === coupleId;
+// function updateCouple(
+//     system,
+//     coupleId,
+//     expectedWin,
+//     winner,
+//     couple,
+//     opponentTeamRating,
+//     importance,
+//     currentDate, // Accept currentDate parameter
+// ) {
+//     const [player1Id, player2Id] = couple;
+//     const isWinner = winner === coupleId;
 
-    const player1 = system.players[player1Id];
-    const player2 = system.players[player2Id];
+//     const player1 = system.players[player1Id];
+//     const player2 = system.players[player2Id];
 
-    const change1 = getAdjustedPointsChange(
-        system,
-        player1,
-        player2,
-        opponentTeamRating,
-        isWinner,
-        expectedWin,
-        importance,
+//     const change1 = getAdjustedPointsChange(
+//         system,
+//         player1,
+//         player2,
+//         opponentTeamRating,
+//         isWinner,
+//         expectedWin,
+//         importance,
+//     );
+
+//     const change2 = getAdjustedPointsChange(
+//         system,
+//         player2,
+//         player1,
+//         opponentTeamRating,
+//         isWinner,
+//         expectedWin,
+//         importance,
+//     );
+
+//     return {
+//         ...system,
+//         players: {
+//             ...system.players,
+//             [player1Id]: {
+//                 ...player1,
+//                 points: clampRating(system, player1.points + change1),
+//                 // volatility: Math.max(0.8, (player1.volatility ?? 1) * 0.99),
+//                 lastMatchDate: currentDate, // Update last match date
+//             },
+//             [player2Id]: {
+//                 ...player2,
+//                 points: clampRating(system, player2.points + change2),
+//                 // volatility: Math.max(0.8, (player2.volatility ?? 1) * 0.99),
+//                 lastMatchDate: currentDate, // Update last match date
+//             },
+//         },
+//     };
+// }
+
+function calculateTeamPoints(system, teamRating, opponentRating, isWinner) {
+    const ratingDiff = opponentRating - teamRating;
+    const expected = 1 / (1 + Math.pow(10, ratingDiff/system.scaleFactor));
+
+    // Base points based on match outcome and expectation
+    const basePoints = isWinner
+        ? system.baseK * (1 - expected)  // Always positive for winners
+        : -system.baseK * expected;      // Always negative for losers
+
+    // Apply non-linear scaling for more balanced results
+    const scaledPoints = basePoints * (1 - Math.pow(expected, 2));
+
+    return Math.max(
+        system.minPointChange,
+        Math.min(system.maxPointChange, scaledPoints)
     );
+}
 
-    const change2 = getAdjustedPointsChange(
-        system,
-        player2,
-        player1,
-        opponentTeamRating,
-        isWinner,
-        expectedWin,
-        importance,
-    );
+function updateCouple(system, couple, pointsChange) {
+    const [p1, p2] = couple;
+    const changePerPlayer = pointsChange / 2; // Equal split
 
     return {
         ...system,
         players: {
             ...system.players,
-            [player1Id]: {
-                ...player1,
-                points: clampRating(system, player1.points + change1),
-                volatility: Math.max(0.8, (player1.volatility ?? 1) * 0.99),
-                lastMatchDate: currentDate, // Update last match date
+            [p1]: {
+                ...system.players[p1],
+                points: clampRating(system, system.players[p1].points + changePerPlayer)
             },
-            [player2Id]: {
-                ...player2,
-                points: clampRating(system, player2.points + change2),
-                volatility: Math.max(0.8, (player2.volatility ?? 1) * 0.99),
-                lastMatchDate: currentDate, // Update last match date
-            },
-        },
+            [p2]: {
+                ...system.players[p2],
+                points: clampRating(system, system.players[p2].points + changePerPlayer)
+            }
+        }
     };
 }
 
@@ -229,70 +265,67 @@ function getAdjustedPointsChange(
     return baseChange * proximity * Math.max(0.5, Math.min(1.5, adjustment));
 }
 
-function applyDecay(system, playersToDecay) {
-    // Renamed parameter for clarity: these are the players who will decay
+function applyDecay(system, currentMatchPlayers, matchDate) {
     const updatedPlayers = { ...system.players };
-    const currentDate = new Date(); // The date when this decay calculation is being made
+    const matchDateObj = new Date(matchDate);
+
+    // Only decay players NOT in current match
+    const playersToDecay = Object.keys(updatedPlayers)
+        .filter(id => !currentMatchPlayers.includes(id));
 
     for (const id of playersToDecay) {
-        // Iterate only through the specified players to decay
         const player = updatedPlayers[id];
+        if (!player || !player.lastMatchDate) continue;
 
-        // Ensure player exists and has a lastMatchDate
-        if (player && player.lastMatchDate) {
-            const lastMatchDateObj = new Date(player.lastMatchDate);
+        const lastMatchDateObj = new Date(player.lastMatchDate);
+        const timeDiff = matchDateObj - lastMatchDateObj;
 
-            // Apply decay only if the player's last activity was on a day PRIOR to currentDate
-            // This prevents applying decay to players whose lastMatchDate is "today"
-            // (even if they weren't in the *current* match, they might have played *another* match today).
-            if (lastMatchDateObj.toDateString() !== currentDate.toDateString()) {
-                const decayPoints = calculatePointDecay(
-                    player.lastMatchDate,
-                    currentDate,
-                );
-                if (decayPoints !== 0) {
-                    // Only update if there's actual decay
-                    updatedPlayers[id] = {
-                        ...player,
-                        points: clampRating(system, player.points + decayPoints),
-                        // Optional: consider increasing volatility slightly for decayed players
-                        // volatility: Math.min(player.volatility * 1.01, 1.5)
-                    };
-                }
+        if (timeDiff > 0) {
+            const decayPoints = calculatePointDecay(
+                lastMatchDateObj,
+                matchDateObj,
+                player.points
+            );
+
+            if (decayPoints !== 0) {
+                updatedPlayers[id] = {
+                    ...player,
+                    points: clampRating(system, player.points + decayPoints)
+                };
             }
         }
     }
 
     return {
         ...system,
-        players: updatedPlayers,
+        players: updatedPlayers
     };
 }
 
+
 const processMatches = (matches) => {
+    const initialState = createSystem();
+
     const states = matches.reduce(
         (acc, match) => {
-            const lastState = acc[0];
+            const [lastState] = acc;
             const newState = updateSystem(lastState, match);
-
             return [newState, ...acc];
         },
-        [createSystem()],
+        [initialState]
     );
 
-    console.log(states)
-
-    const formattedStates = states.map((state) =>
-        [state.date, Object.entries(state.players)
-         .map(([id, player]) => [id, Math.round(2 * player.points) / 2])
-         .sort((a, b) => b[1] - a[1])],
-    );
+    const formattedStates = states.map(state => {
+        return [state.date,
+                Object.entries(state.players)
+                .map(([id, player]) => [id, Math.round(2 * player.points) / 2])
+                .sort((a, b) => b[1] - a[1])];
+    });
 
     return formattedStates;
 };
 
 // processMatches(matches);
 
-module.exports = { processMatches };
-
-
+// module.exports = { processMatches };
+export { processMatches };

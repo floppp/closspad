@@ -19,7 +19,7 @@
     {:method  :get
      :url     (str "v1/"
                    table
-                   "?select=*&order=played_at.asc&organization=eq."
+                   "?select=*&played_at=gt.2025-05-20&order=played_at.asc&organization=eq."
                    organization
                    "&played_at=gte."
                    date)
@@ -34,16 +34,12 @@
                       [[:db/assoc :error err]
                        [:db/dissoc :is-loading?]])))
      :on-success (fn [ms]
-                   (let [ratings (process-matches ms)
-                         ratings-js (rating/processMatches (clj->js ms))
+                   (let [;; ratings (process-matches ms)
+                         ratings-js (js->clj (rating/processMatches (clj->js ms)))
                          dispatcher (get-dispatcher)
-                         ratings (filter (comp some? first) ratings)
+                         ratings (filter (comp some? first) ratings-js)
                          all-players (-> ms stats/get-all-players vec sort)
                          all-players-stats (stats/compute-all-players-stats all-players ms)]
-
-                     (.log js/console ratings)
-                     (.log js/console ratings-js)
-
                      (dispatcher
                       nil
                       [[:db/assoc-in [:classification :_ratings] ratings]
