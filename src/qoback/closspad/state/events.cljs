@@ -1,7 +1,8 @@
 (ns qoback.closspad.state.events
   (:require [clojure.walk :as walk]
             [qoback.closspad.state.db :refer [!state]]
-            [qoback.closspad.state.effects :refer [perform-effect!]]))
+            [qoback.closspad.state.effects :refer [perform-effect!]]
+            [qoback.closspad.state.ui-events :as ui-events]))
 
 (defn- enrich-action-from-event [{:replicant/keys [js-event node]} actions]
   (walk/postwalk
@@ -28,34 +29,36 @@
                              (enrich-action-from-event replicant-data)
                              (enrich-action-from-state state))
         [action-name & args] enrichted-event]
-    ;; (.log js/console action-name args)
+    (when goog.DEBUG
+      (.log js/console action-name args))
     (case action-name
-      :event/prevent-default {:effects [[:dom/fx.prevent-default]]}
-      :add-match {:new-state (assoc-in state [:add/match (second args)] (first args))}
-      :add/match-set {:new-state (update-in state [:add/match :n-sets] (fnil inc 1))}
-      :remove/match-set {:new-state (update-in state [:add/match :n-sets] (fnil dec 1))}
-      :db/assoc  {:new-state (apply assoc state args)}
-      :db/assoc-in (let [[path args] args]
-                     {:new-state (assoc-in state path args)})
-      :db/dissoc {:new-state (apply dissoc state args)}
-      :db/login (let [[_ value element] enrichted-event]
-                  {:new-state (assoc-in state [:db/login element] value)})
-      :ui/header {:new-state (update state :ui/header not)}
-      :route/not-found   {:effects [[:route/fx.not-found state]]}
-      :route/home        {:effects [[:route/fx.home]]}
-      :route/explanation {:effects [[:route/fx.explanation]]}
-      :route/login       {:effects [[:route/fx.login (:auth state)]]}
-      :route/match       {:effects [[:route/fx.match args]]}
-      :route/add-match   {:effects [[:route/fx.add-match]]}
-      :route/stats       {:effects [[:route/fx.stats args]]}
-      :route/full-stats  {:effects [[:route/fx.full-stats]]}
-      :route/push        {:effects [[:route/fx.push args]]}
-      :auth/check-login  {:effects [[:auth/fx.check-login (:auth state)]]}
+      :event/prevent-default  {:effects [[:dom/fx.prevent-default]]}
+      :add-match              {:new-state (assoc-in state [:add/match (second args)] (first args))}
+      :add/match-set          {:new-state (update-in state [:add/match :n-sets] (fnil inc 1))}
+      :remove/match-set       {:new-state (update-in state [:add/match :n-sets] (fnil dec 1))}
+      :db/assoc               {:new-state (apply assoc state args)}
+      :db/assoc-in            (let [[path args] args]
+                                {:new-state (assoc-in state path args)})
+      :db/dissoc              {:new-state (apply dissoc state args)}
+      :db/login               (let [[_ value element] enrichted-event]
+                                {:new-state (assoc-in state [:db/login element] value)})
+      :ui/header              {:new-state (update state :ui/header not)}
+      :ui/dialog              (ui-events/process-dialogs state args)
+      :route/not-found        {:effects [[:route/fx.not-found state]]}
+      :route/home             {:effects [[:route/fx.home]]}
+      :route/explanation      {:effects [[:route/fx.explanation]]}
+      :route/login            {:effects [[:route/fx.login (:auth state)]]}
+      :route/match            {:effects [[:route/fx.match args]]}
+      :route/add-match        {:effects [[:route/fx.add-match]]}
+      :route/stats            {:effects [[:route/fx.stats args]]}
+      :route/full-stats       {:effects [[:route/fx.full-stats]]}
+      :route/push             {:effects [[:route/fx.push args]]}
+      :auth/check-login       {:effects [[:auth/fx.check-login (:auth state)]]}
       :auth/check-not-logged  {:effects [[:auth/fx.check-not-logged (:auth state)]]}
-      :data/query        {:new-state (assoc state :is-loading? true :error nil)
-                          :effects [[:data/fx.query {:state state :args args}]]}
-      :post/match        {:effects [[:post/fx.match {:args (first args)}]]}
-      :fetch/login       {:effects [[:fetch/fx.login args]]}
+      :data/query             {:new-state (assoc state :is-loading? true :error nil)
+                               :effects [[:data/fx.query {:state state :args args}]]}
+      :post/match             {:effects [[:post/fx.match {:args (first args)}]]}
+      :fetch/login            {:effects [[:fetch/fx.login args]]}
       (when goog.DEBUG
         (.log js/console "Unknown event " action-name "with arguments" args)))))
 

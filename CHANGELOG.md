@@ -1,3 +1,42 @@
+v0.1.2 416282b22ada97ec1715ba22ec8d182f90201829
+    >> feat: starting with info dialog
+
+
+v0.1.1 47b7d5c8ef7a6c23e8a4f77eba97de5e34049275
+    >> feat: starting with info dialog
+
+
+v0.1.0 b06d9206c97f26bf1bac642756abb2ab144ca94a
+    >> feat: starting with info dialog
+
+
+v0.0.26 628c10cb9db7f3151a2f421d3e03a6ef6ea02e0e
+    >> feat: starting with info dialog
+    >> feat: better volatilty management
+    >> feat: adding volatibility and underdog points
+    >> fix: refactor/simplification decayment
+    >> feat: winners highlighted
+    >> feat: somehow fixing
+    >> fix: decayment simplification
+    >> wip: last point working
+    >> wip: some failures
+    >> wip: rating in data oriented javascript
+    >> wip: rating system in javascript
+    >> fix: adding set is somehow responise
+    >> feat: request abort controlling
+    >> feat: logarithmic decay
+    >> feat: global stats with point evolution
+    >> feat: decayment based on delta days
+    >> fix: months by year too
+    >> feat: searching for last 365 days
+    >> feat: temporal decayment improved
+    >> feat: decay  is related with time when played was played
+    >> fix: router guard but no with controller
+    >> fix: month sort fixed
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> feat: adding match
+
+
 v0.0.25 fb0932dfbcd16c0fe942749da52a9348b141a7f5
     >> feat: adding match
     >> fix: echarts again as npm

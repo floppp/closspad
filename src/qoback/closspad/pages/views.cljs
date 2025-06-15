@@ -1,5 +1,6 @@
 (ns qoback.closspad.pages.views
   (:require [qoback.closspad.components.widgets :as w]
+            [qoback.closspad.components.dialog :as dialog]
             [qoback.closspad.pages.login.view :as login]
             [qoback.closspad.pages.match.view :as match]
             [qoback.closspad.pages.stats.view :as stats]
@@ -23,7 +24,6 @@
   []
   (system-explanation/component))
 
-
 (defn view
   [state]
   (case (:page (:page/navigated state))
@@ -45,4 +45,7 @@
           :explanation (explanation-view)
           :full-stats (full-stats/view state)
           :match (match/view state)
-          :stats (stats/view state))]]]]))
+          :stats (stats/view state))]]]
+     (when (:ui/dialog state)
+      (dialog/component (:ui/dialog state)
+                        (:dialog state)))]))

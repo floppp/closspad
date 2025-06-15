@@ -1,5 +1,6 @@
 (ns qoback.closspad.components.classification.component
-  (:require [qoback.closspad.helpers :as h]))
+  (:require [qoback.closspad.helpers :as h]
+            [qoback.closspad.components.icons.info :as info]))
 
 (defn player-color?
   [points]
@@ -20,6 +21,10 @@
       :href (str "#/stats/" name)}
      [:span.font-medium.text-gray-800 name]
      [:div.text-right.w-24.flex.items-center
+      [:span
+       {:on {:click [[:event/prevent-default]
+                     [:ui/dialog :player-info name]]}}
+       info/icon]
       [:span.text-gray-500.text-right
        {:class ["w-1/2"]}
        (str "("  preffix  (.abs js/Math (- prev-points points)) ") ")]

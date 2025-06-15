@@ -19,9 +19,9 @@ function calculatePointDecay(player, matchDate) {
         return 0;
     }
 
-    const decayPercentage = monthsDiff <= 2
-          ? 0.02 * (Math.log10(1 + (9 * monthsDiff / 2)) / Math.log10(10))
-          : 0.02;
+    const decayPercentage = monthsDiff <= 4
+        ? 0.04 * (Math.log10(1 + (9 * monthsDiff / 4)) / Math.log10(10))
+        : 0.04;
 
     return player.points * decayPercentage;
 }
@@ -109,6 +109,7 @@ function updateSystemCouple(system, couple, playerVariations, matchDate) {
         updatedPlayers[playerId] = {
             ...player,
             points: clampRating(system, player.points + delta),
+            lastMatchDate: matchDate,
             volatility,
         };
     }
@@ -222,16 +223,16 @@ function computeVariationPerPlayer(system, couple, coupleRating, otherCoupleRati
 function applyDecay(system, currentMatchPlayers, matchDate) {
     const date = new Date(matchDate);
     const updatedPlayers = Object.values(system.players)
-          .filter(pl => !currentMatchPlayers.includes(pl.id))
-          .reduce((acc, pl) => {
-              const decayPoints = calculatePointDecay(pl, date);
-              acc[pl.id] = {
-                  ...pl,
-                  points: clampRating(system, pl.points - decayPoints)
-              };
+        .filter(pl => !currentMatchPlayers.includes(pl.id))
+        .reduce((acc, pl) => {
+            const decayPoints = calculatePointDecay(pl, date);
+            acc[pl.id] = {
+                ...pl,
+                points: clampRating(system, pl.points - decayPoints)
+            };
 
-              return acc;
-          }, { ...system.players });
+            return acc;
+        }, { ...system.players });
 
     return {
         ...system,
@@ -287,11 +288,11 @@ const processMatches = (matches) => {
 
     const classificationHistory = systemHistory.map(state =>
         [state.date,
-         Object.entries(state.players)
-         .map(([id, player]) => [id, Math.round(2 * player.points) / 2])
-         .sort((a, b) => b[1] - a[1])]);
+        Object.entries(state.players)
+            .map(([id, player]) => [id, Math.round(2 * player.points) / 2])
+            .sort((a, b) => b[1] - a[1])]);
 
-    return classificationHistory;
+    return [classificationHistory, systemHistory];
     return {
         system: systemHistory.reduce((acc, e) => {
             const date = e.date;
