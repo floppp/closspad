@@ -36,17 +36,17 @@
                        [:db/dissoc :is-loading?]])))
      :on-success (fn [ms]
                    (let [;; ratings (process-matches ms)
-                         ratings-js (js->clj (rating/processMatches (clj->js ms)))
+                         classification (js->clj (rating/processMatches (clj->js ms)))
                          dispatcher (get-dispatcher)
-                         ratings (filter (comp some? first) ratings-js)
+                         ratings (filter (comp some? first) classification)
                          all-players (-> ms stats/get-all-players vec sort)
                          all-players-stats (stats/compute-all-players-stats all-players ms)]
+                     ;; (.log js/console system)
+                     (.log js/console classification)
                      (dispatcher
                       nil
-                      [[:db/assoc-in [:classification :_ratings] ratings]
-                       [:db/assoc-in
-                        [:classification :ratings]
-                        (rat/logarithmic-decay ratings)]
+                      [[:db/assoc-in [:classification :ratings] ratings]
+                       ;; [:db/assoc-in [:system :history] system]
                        [:db/assoc-in [:stats :players] all-players]
                        [:db/assoc-in [:stats :by-player] all-players-stats]
                        [:db/assoc :match {:results ms}]
