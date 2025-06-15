@@ -62,4 +62,3 @@
     [:div.bg-white.rounded-b-lg.shadow-md.p-8
      [:h2.text-3xl.font-bold.text-center.mb-6.text-gray-800 "Clasificación"]
      (players-list prev-day-player-ratings players-ratings)]))
-
