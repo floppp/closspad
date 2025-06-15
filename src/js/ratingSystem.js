@@ -304,4 +304,5 @@ const processMatches = (matches) => {
 };
 
 
-export { processMatches };
+// export { processMatches };
+module.exports = { processMatches };

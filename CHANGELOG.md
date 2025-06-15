@@ -1,3 +1,8 @@
+v0.1.4 6a94396bcf6bd77dd11d2445a567fafecc453dc1
+    >> fix: compilation issue trying with module export
+    >> fix: issues compiling supabase now??
+
+
 v0.1.3 703b1a37f4b45bbbfbf5bc1526d1efae7b187dee
     >> fix: issues compiling supabase now??
     >> feat: starting with info dialog
