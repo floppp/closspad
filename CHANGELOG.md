@@ -1,3 +1,8 @@
+v0.1.3 703b1a37f4b45bbbfbf5bc1526d1efae7b187dee
+    >> fix: issues compiling supabase now??
+    >> feat: starting with info dialog
+
+
 v0.1.2 416282b22ada97ec1715ba22ec8d182f90201829
     >> feat: starting with info dialog
 
