@@ -16,16 +16,14 @@
   [:div {:style {:position "absolute"
                  :width "100vw"
                  :height "100vh"
+                 :display "grid"
+                 :place-items "center"
                  :background "rgba(0, 0, 0, 0.5)"
                  :backdrop-filter "blur(5px)"}
          :on {:click  [[:db/dissoc :ui/dialog]]}}
    [:dialog
     {:open opened?
-     :style {:position "fixed"
-             :top "50%"
-             :left "50%"
-             :transform "translate(-50%, -50%)"
-             :border "none"
+     :style {:border "none"
              :border-radius "8px"
              :padding "20px"
              :box-shadow "0 4px 12px rgba(0, 0, 0, 0.15)"

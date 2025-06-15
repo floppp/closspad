@@ -1,3 +1,8 @@
+v0.1.6 eafdc2b6e701f2a368b656c07cfa63e3fd34686d
+    >> fix: fixing dialog style
+    >> fix: better explanation
+
+
 v0.1.5 fff31e237399d5598a89ee5b96fa1316ddc9be1a
     >> fix: better explanation
     >> fix: compilation issue trying with module export
