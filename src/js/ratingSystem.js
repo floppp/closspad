@@ -9,8 +9,8 @@ const defaultOptions = {
     players: {},
 };
 
-function calculatePointDecay(lastMatchDate, matchDate, playerScore) {
-    const timeDiff = matchDate - lastMatchDate;
+function calculatePointDecay(player, matchDate) {
+    const timeDiff = matchDate - new Date(player.lastMatchDate);
     const monthsDiff = timeDiff / (1000 * 3600 * 24 * 30);
 
     if (monthsDiff <= 1) {
@@ -21,7 +21,7 @@ function calculatePointDecay(lastMatchDate, matchDate, playerScore) {
           ? 0.02 * (Math.log10(1 + (9 * monthsDiff/2)) / Math.log10(10))
           : 0.02;
 
-    return playerScore * decayPercentage;
+    return player.points * decayPercentage;
 }
 
 function createSystem(options = {}) {
@@ -151,14 +151,13 @@ function getTeamRating(system, couple) {
     return couple.reduce((sum, id) => sum + (system.players[id]?.points ?? 0), 0);
 }
 
-
 function computeVariation(
-    system,             // Objeto con configuración del sistema, incluye baseK
-    coupleRating,       // Puntuación actual de la pareja
-    otherCoupleRating,  // Puntuación de la pareja rival
-    isWinner,           // true si esta pareja ganó
-    expectedWin,        // Probabilidad esperada de victoria (0 a 1)
-    importance          // Factor de importancia del partido (1 = normal)
+    system,
+    coupleRating,
+    otherCoupleRating,
+    isWinner,
+    expectedWin,
+    importance,
 ) {
     const baseK = system.baseK;
 
@@ -180,13 +179,10 @@ function applyDecay(system, currentMatchPlayers, matchDate) {
 
     for (const id of playersToDecay) {
         const player = updatedPlayers[id];
-        const lastMatchDateObj = new Date(player.lastMatchDate);
-        const timeDiff = matchDateObj - lastMatchDateObj;
 
         const decayPoints = calculatePointDecay(
-            lastMatchDateObj,
+            player,
             matchDateObj,
-            player.points
         );
 
         updatedPlayers[id] = {
