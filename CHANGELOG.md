@@ -1,3 +1,8 @@
+v0.1.5 fff31e237399d5598a89ee5b96fa1316ddc9be1a
+    >> fix: better explanation
+    >> fix: compilation issue trying with module export
+
+
 v0.1.4 6a94396bcf6bd77dd11d2445a567fafecc453dc1
     >> fix: compilation issue trying with module export
     >> fix: issues compiling supabase now??
