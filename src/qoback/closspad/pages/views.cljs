@@ -46,6 +46,4 @@
           :full-stats (full-stats/view state)
           :match (match/view state)
           :stats (stats/view state))]]]
-     (when (:ui/dialog state)
-      (dialog/component (:ui/dialog state)
-                        (:dialog state)))]))
+     (dialog/component (:ui/dialog state) (:dialog state))]))
