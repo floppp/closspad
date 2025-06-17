@@ -9,8 +9,7 @@ const defaultOptions = {
     scaleFactor: 120,
     oneSetImportance: 0.6,
     players: {},
-    // Nueva propiedad para el registro de auditoría
-    auditLog: []
+    auditLog: {}
 };
 
 function createSystem(options = {}) {
@@ -184,13 +183,10 @@ function updateSystem(system, match) {
         }
     }
 
-    // Añadir la entrada al log de auditoría del sistema
-    const updatedAuditLog = [...systemAfterDecay.auditLog, auditEntry];
-
     return {
         ...systemAfterDecay,
         date: matchDate,
-        auditLog: updatedAuditLog // Devolver el sistema con el auditLog actualizado
+        auditLog: auditEntry,
     };
 }
 
