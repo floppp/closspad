@@ -38,7 +38,7 @@
                :box-shadow "0 4px 12px rgba(0, 0, 0, 0.15)"
                :background "white"
                :z-index "100"}}
-      [:h2.mb-4.pb-2 title]
+      (when title [:h2.mb-4.pb-2 title])
       (map
        (fn [[k v]]
          [:p.flex.justify-between.gap-8.mb-2

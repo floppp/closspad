@@ -1,4 +1,10 @@
-(ns qoback.closspad.utils.datetime)
+(ns qoback.closspad.utils.datetime
+  (:require [clojure.string :as str]))
+
+(defn sp-date->js-date
+  [s]
+  (let [[d m y] (str/split s #"/")]
+    (js/Date. y (dec m) d)))
 
 (defn date->minus-one-year
   ([] (date->minus-one-year (js/Date.)))

@@ -7,12 +7,14 @@
     (if (> sets-won-by-a sets-won-by-b) 0 1)))
 
 
-(defn component [{:keys [couple_a couple_b result]}]
+(defn component [{:keys [couple_a couple_b result] :as match} ]
   (let [f (first result)
         s (second result)
         t (get result 2)
         winner (determine-winner result)]
     [:table.table-auto.w-full.border-collapse
+     {:on {:click [[:event/prevent-default]
+                   [:ui/dialog :match-info match]]}}
      [:thead
       [:tr.border-b.border-gray-200
        {:style {:grid-template-columns "3fr 1fr 1fr 1fr"}

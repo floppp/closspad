@@ -171,7 +171,7 @@ function determineWinner(result) {
 }
 
 function getTeamRating(system, couple) {
-    return couple.reduce((sum, id) => sum + (system.players[id]?.points ?? 0), 0);
+    return couple.reduce((sum, id) => sum + (system.players[id]?.points ?? system.defaultRating), 0);
 }
 
 function computeVariation(system, coupleRating, otherCoupleRating, isWinner, expectedWin, importance) {
@@ -305,4 +305,11 @@ const processMatches = (matches) => {
 
 
 // export { processMatches };
-module.exports = { processMatches };
+module.exports = {
+    processMatches,
+    determineWinner,
+    getTeamRating,
+    calculateExpectedWin,
+    computeImportance,
+    computeVariationPerPlayer
+};

@@ -29,7 +29,7 @@
                              (enrich-action-from-event replicant-data)
                              (enrich-action-from-state state))
         [action-name & args] enrichted-event]
-    (when goog.DEBUG
+    #_(when goog.DEBUG
       (.log js/console action-name args))
     (case action-name
       :add-match              {:new-state (assoc-in state [:add/match (second args)] (first args))}
@@ -81,7 +81,7 @@
   (let [{:keys [new-state effects]} (handle-events @!state replicant-data events)]
     (when new-state
       (reset! !state new-state)
-      #_(when goog.DEBUG
+      (when goog.DEBUG
         #_(prn  (->  @!state :classification :ratings))
         (.log js/console  @!state)))
     (when effects
