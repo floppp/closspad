@@ -1,3 +1,15 @@
+v0.2.0 ef48fbdd6cb7bfe14202908023f4a27797c63666
+    >> feat: audit working but wip, no style yet
+    >> fix: log mantiene el suyo en cada sistema
+    >> feat: auditLog con histórico en cada sistema
+    >> wip: working on match info and fixed big bug
+    >> fix: refactoring dom effects (not prevent-default)
+    >> fix: scroll
+    >> fix: dialog does not allow body scroll
+    >> feat: new match/system analysis component
+    >> fix: fixing dialog style
+
+
 v0.1.6 eafdc2b6e701f2a368b656c07cfa63e3fd34686d
     >> fix: fixing dialog style
     >> fix: better explanation

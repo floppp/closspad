@@ -5,6 +5,7 @@
             [qoback.closspad.pages.match.view :as match]
             [qoback.closspad.pages.stats.view :as stats]
             [qoback.closspad.pages.add.view :as add]
+            [qoback.closspad.pages.changelog.view :as changelog]
             [qoback.closspad.pages.full-stats.view :as full-stats]
             [qoback.closspad.components.system-explanation :as system-explanation]))
 
@@ -41,6 +42,7 @@
         (case (:page (:page/navigated state))
           :not-found (not-found-view)
           :home (home-view)
+          :changelog (changelog/view state)
           :add-match (add/view state)
           :explanation (explanation-view)
           :full-stats (full-stats/view state)

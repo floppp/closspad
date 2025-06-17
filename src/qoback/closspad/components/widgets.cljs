@@ -39,6 +39,7 @@
       (header-item header "Inicio" "")
       (header-item header "Explicación" "explanation")
       (header-item header "Estadísticas" "stats")
+      (header-item header "Cambios" "changelog")
       (if is-logged?
         (header-item header "Añadir Partido" "add-match")
         (header-item header "Login" "login"))]
@@ -50,6 +51,7 @@
          (header-item header "Inicio" "")
          (header-item header "Explicación" "explanation")
          (header-item header "Estadísticas" "stats")
+         (header-item header "Cambios" "changelog")
          (if is-logged?
            (header-item header "Añadir Partido" "add")
            (header-item header "Login" "login"))

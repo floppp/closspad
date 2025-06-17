@@ -6,22 +6,16 @@
   [state args]
   (let [[action-name & args] args]
     (case action-name
-      :match-info (when-let [date (-> state :page/navigated :date h/datetime->date->str)]
-                    (let [match (first args)
-                          hist (->> state :system :history)
-                          prev-system (->> hist
-                                           (filter #(< (:date %) (h/sp-date->js-date date)))
-                                           first)]
-                      (assoc state
-                             :dialog {:extra-node
-                                      [:div
-                                       [:p {:style {:text-align "center" :margin-bottom "0.5rem"}}
-                                        (m/couples->str (:couple_a match) (:couple_b match))]
-                                       [:div.flex.gap-8.justify-center.mb-4
-                                        (for [s (:result match)]
-                                          [:span (str (first s) " - " (second s))])]
-                                       (m/component prev-system match)]}
-                             :ui/dialog true)))
+      :match-info (let [match (first args)
+                        hist (->> state :system :history)
+                        date (js/Date. (:played_at match))
+                        system (->> hist
+                                    (filter #(= (:date %) date))
+                                    first)]
+                    (assoc state
+                           :dialog {:extra-node
+                                    (m/component (-> system :auditLog) match)}
+                           :ui/dialog true))
       :player-info (when-let [date (-> state :page/navigated :date h/datetime->date->str)]
                      (let [selected-player (-> args first keyword)
                            hist (->> state :system :history)

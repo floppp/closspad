@@ -44,6 +44,7 @@
       :ui/header              {:new-state (update state :ui/header not)}
       :route/not-found        {:effects [[:route/fx.not-found state]]}
       :route/home             {:effects [[:route/fx.home]]}
+      :route/changelog        {:effects [[:route/fx.changelog]]}
       :route/explanation      {:effects [[:route/fx.explanation]]}
       :route/login            {:effects [[:route/fx.login (:auth state)]]}
       :route/match            {:effects [[:route/fx.match args]]}

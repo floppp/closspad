@@ -17,6 +17,7 @@
   [["/login"               {:name :route/login}]
    ["/add-match"           {:name :route/add-match}]
    ["/explanation"         {:name :route/explanation}]
+   ["/changelog"           {:name :route/changelog}]
    ["/stats"               {:name :route/full-stats}]
    ["/stats/:player"       {:name :route/stats          :path [:player string?]}]
    ["/match/:day"          {:name :route/match          :path [:day string?]}] ;; format: YYYY-MM-DD
@@ -33,6 +34,7 @@
                    [[:route/stats player]])
     :route/full-stats  [[:route/full-stats]]
     :route/explanation [[:route/explanation]]
+    :route/changelog   [[:route/changelog]]
     :route/add-match   (auth-guard :route/add-match)
     :route/login       [[:route/login]]
     [[:route/not-found]]))

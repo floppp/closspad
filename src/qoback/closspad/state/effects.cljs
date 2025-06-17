@@ -50,6 +50,7 @@
                         (goto->page :login)
                         (rfe/push-state :route/home)))
     :route/fx.explanation (goto->page :explanation)
+    :route/fx.changelog   (goto->page :changelog)
     :route/fx.add-match   (goto->page :add-match)
     :route/fx.push (rfe/push-state
                     (-> args first second)
