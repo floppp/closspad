@@ -12,7 +12,7 @@
     [:div "holan"]]])
 
 (defn component
-  [opened? {:keys [title info]}]
+  [opened? {:keys [title info extra-node]}]
   (if opened?
     (set! (.-overflow (.-style js/document.body)) "hidden")
     (set! (.-overflow (.-style js/document.body)) ""))
@@ -42,4 +42,6 @@
          [:p.flex.justify-between.gap-8.mb-2
           [:span (name k)]
           [:span v]])
-       (filter (fn [[k _]] (not= k :id)) info))]]))
+       (filter (fn [[k _]] (not= k :id)) info))
+      (when extra-node
+        extra-node)]]))
