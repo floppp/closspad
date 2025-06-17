@@ -8,7 +8,7 @@
   3. Performance trend line
   Takes a DOM element and stats map from compute-player-stats"
   [stats]
-  (.log js/console stats)
+  ;; (.log js/console stats)
   (let [months (->> (:by-month stats)
                     (keys)
                     (h/rotate-months))

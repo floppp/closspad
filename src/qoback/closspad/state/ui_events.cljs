@@ -14,11 +14,11 @@
                            prev-system (->> hist
                                             (filter #(< (:date %) (js/Date. date)))
                                             first)]
-                       (.log js/console prev-system)
-                       {:new-state (assoc state
-                                          :dialog {:title (name (-> args first keyword))
-                                                   :info (-> args first keyword players-info)
-                                                   :extra-node [:div [:p "foo"]]}
-                                          :ui/dialog true)}))
+                       ;; (.log js/console prev-system)
+                       (assoc state
+                              :dialog {:title (name (-> args first keyword))
+                                       :info (-> args first keyword players-info)
+                                       :extra-node [:div [:p "foo"]]}
+                              :ui/dialog true)))
       (when goog.DEBUG
         (.log js/console "Unknown UI event " action-name "with arguments" args)))))

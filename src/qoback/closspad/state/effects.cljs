@@ -4,7 +4,8 @@
             [qoback.closspad.network.query :as network]
             [qoback.closspad.network.domain :refer [table]]
             [qoback.closspad.helpers :as h]
-            [qoback.closspad.network.supabase :as supabase]))
+            [qoback.closspad.network.supabase :as supabase]
+            [qoback.closspad.state.dom-effects :as dom]))
 
 (defn navigated-match-page
   [{:keys [date]}]
@@ -29,7 +30,9 @@
 
 (defn perform-effect!
   [{:replicant/keys [^js js-event]} [effect & args]]
+  ;; (.log js/console js-event effect args)
   (case effect
+    :dom/fx.effect (dom/process args)
     :dom/fx.prevent-default (.preventDefault js-event)
     :route/fx.not-found
     (let [date (-> args

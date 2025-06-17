@@ -5,10 +5,9 @@
 (defn player-color?
   [points]
   (cond
-    (>= points 60) ["bg-green-100" "border-l-4" "border-green-500"]
-    ;; (>= points 60) ["bg-blue-100" "border-l-4" "border-blue-500"]
     (< points 30) ["bg-red-100" "border-l-4" "border-red-500"]
     (< points 45) ["bg-orange-100" "border-l-4" "border-orange-500"]
+    (>= points 60) ["bg-green-100" "border-l-4" "border-green-500"]
     :else ["bg-gray-50" "border-l-4" "border-gray-300"]))
 
 (defn- player

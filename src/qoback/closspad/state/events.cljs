@@ -32,7 +32,6 @@
     (when goog.DEBUG
       (.log js/console action-name args))
     (case action-name
-      :event/prevent-default  {:effects [[:dom/fx.prevent-default]]}
       :add-match              {:new-state (assoc-in state [:add/match (second args)] (first args))}
       :add/match-set          {:new-state (update-in state [:add/match :n-sets] (fnil inc 1))}
       :remove/match-set       {:new-state (update-in state [:add/match :n-sets] (fnil dec 1))}
@@ -43,7 +42,6 @@
       :db/login               (let [[_ value element] enrichted-event]
                                 {:new-state (assoc-in state [:db/login element] value)})
       :ui/header              {:new-state (update state :ui/header not)}
-      :ui/dialog              (ui-events/process-dialogs state args)
       :route/not-found        {:effects [[:route/fx.not-found state]]}
       :route/home             {:effects [[:route/fx.home]]}
       :route/explanation      {:effects [[:route/fx.explanation]]}
@@ -59,6 +57,11 @@
                                :effects [[:data/fx.query {:state state :args args}]]}
       :post/match             {:effects [[:post/fx.match {:args (first args)}]]}
       :fetch/login            {:effects [[:fetch/fx.login args]]}
+      ;; No refactorizar porque es mucho lío para cambiar `enrich-action-from-event`.
+      :event/prevent-default  {:effects [[:dom/fx.prevent-default]]}
+      ;; Refactorizados ya
+      :ui/dialog              {:new-state (ui-events/process-dialogs state args)}
+      :dom/effect             {:effects   [[:dom/fx.effect (first args)]]}
       (when goog.DEBUG
         (.log js/console "Unknown event " action-name "with arguments" args)))))
 
@@ -78,7 +81,7 @@
   (let [{:keys [new-state effects]} (handle-events @!state replicant-data events)]
     (when new-state
       (reset! !state new-state)
-      (when goog.DEBUG
+      #_(when goog.DEBUG
         #_(prn  (->  @!state :classification :ratings))
         (.log js/console  @!state)))
     (when effects

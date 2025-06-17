@@ -1,4 +1,5 @@
-(ns qoback.closspad.components.dialog)
+(ns qoback.closspad.components.dialog
+  (:require [qoback.closspad.state.db :refer [get-dispatcher]]))
 
 (defn component-dialog
   []
@@ -13,9 +14,10 @@
 
 (defn component
   [opened? {:keys [title info extra-node]}]
-  (if opened?
-    (set! (.-overflow (.-style js/document.body)) "hidden")
-    (set! (.-overflow (.-style js/document.body)) ""))
+  (let [dispatcher (get-dispatcher)]
+    (dispatcher nil [(if opened?
+                       [:dom/effect :body/scroll-hidden]
+                       [:dom/effect :body/scroll-show])]))
   (when opened?
     [:div {:style {:position "fixed"
                    :width "100vw"
