@@ -5,11 +5,17 @@ const defaultOptions = {
     defaultRating: 50,
     maxRating: 100,
     minRating: 0,
-    baseK: 25, // a >, > variabilidad cada partida, 40 se pasa, hay cambios muy salvajes, 8 hay muy poquita variación
+    baseK: 25,
     scaleFactor: 120,
     oneSetImportance: 0.6,
     players: {},
+    // Nueva propiedad para el registro de auditoría
+    auditLog: []
 };
+
+function createSystem(options = {}) {
+    return { ...defaultOptions, ...options};
+}
 
 function calculatePointDecay(player, matchDate) {
     const timeDiff = matchDate - new Date(player.lastMatchDate);
@@ -24,10 +30,6 @@ function calculatePointDecay(player, matchDate) {
         : 0.04;
 
     return player.points * decayPercentage;
-}
-
-function createSystem(options = {}) {
-    return { ...defaultOptions, ...options };
 }
 
 function addPlayer(
@@ -52,6 +54,47 @@ function addPlayer(
     };
 }
 
+// function updateSystem(system, match) {
+//     const { couple_a, couple_b, result, played_at } = match;
+//     const importance = computeImportance(system, match);
+//     const matchPlayers = [...couple_a, ...couple_b];
+//     const winner = determineWinner(result);
+
+//     const teamARating = getTeamRating(system, couple_a);
+//     const teamBRating = getTeamRating(system, couple_b);
+//     const expectedWinA = calculateExpectedWin(system, teamARating, teamBRating);
+
+//     // Add missing players
+//     let newSystem = system;
+//     for (const playerId of matchPlayers) {
+//         if (!newSystem.players[playerId]) {
+//             newSystem = addPlayer(newSystem, playerId, played_at);
+//         }
+//     }
+
+//     const matchDate = new Date(played_at);
+
+//     // Distribución equitativa puntos
+//     // const pointsTeamA = computeVariation(system, teamARating, teamBRating, winner === 'A', expectedWinA, importance);
+//     // const pointsTeamB = computeVariation(system, teamBRating, teamARating, winner === 'B', 1 - expectedWinA, importance);
+
+//     // newSystem = updateSystemCouple(newSystem, couple_a, pointsTeamA);
+//     // newSystem = updateSystemCouple(newSystem, couple_b, pointsTeamB);
+
+//     // Distribución no equitativa
+//     const playerVariationsA = computeVariationPerPlayer(newSystem, couple_a, teamARating, teamBRating, winner === 'A', expectedWinA, importance);
+//     const playerVariationsB = computeVariationPerPlayer(newSystem, couple_b, teamBRating, teamARating, winner === 'B', 1 - expectedWinA, importance);
+
+//     newSystem = updateSystemCouple(newSystem, couple_a, playerVariationsA, played_at);
+//     newSystem = updateSystemCouple(newSystem, couple_b, playerVariationsB, played_at);
+
+//     const inactivePlayersForDecay = Object.keys(newSystem.players).filter((id) => !matchPlayers.includes(id));
+
+//     return {
+//         ...applyDecay(newSystem, inactivePlayersForDecay, matchDate),
+//         date: matchDate,
+//     };
+// }
 function updateSystem(system, match) {
     const { couple_a, couple_b, result, played_at } = match;
     const importance = computeImportance(system, match);
@@ -62,35 +105,92 @@ function updateSystem(system, match) {
     const teamBRating = getTeamRating(system, couple_b);
     const expectedWinA = calculateExpectedWin(system, teamARating, teamBRating);
 
-    // Add missing players
     let newSystem = system;
+    // Captura las puntuaciones iniciales de los jugadores involucrados para el auditLog
+    const initialPlayerRatings = {};
     for (const playerId of matchPlayers) {
         if (!newSystem.players[playerId]) {
             newSystem = addPlayer(newSystem, playerId, played_at);
         }
+        initialPlayerRatings[playerId] = newSystem.players[playerId].points;
     }
 
     const matchDate = new Date(played_at);
 
-    // Distribución equitativa puntos
-    // const pointsTeamA = computeVariation(system, teamARating, teamBRating, winner === 'A', expectedWinA, importance);
-    // const pointsTeamB = computeVariation(system, teamBRating, teamARating, winner === 'B', 1 - expectedWinA, importance);
-
-    // newSystem = updateSystemCouple(newSystem, couple_a, pointsTeamA);
-    // newSystem = updateSystemCouple(newSystem, couple_b, pointsTeamB);
-
-    // Distribución no equitativa
-    const playerVariationsA = computeVariationPerPlayer(newSystem, couple_a, teamARating, teamBRating, winner === 'A', expectedWinA, importance);
-    const playerVariationsB = computeVariationPerPlayer(newSystem, couple_b, teamBRating, teamARating, winner === 'B', 1 - expectedWinA, importance);
+    // Modificado para capturar tanto variaciones como detalles de auditoría
+    const { variations: playerVariationsA, auditDetails: auditDetailsA } =
+        computeVariationPerPlayer(newSystem, couple_a, teamARating, teamBRating, winner === 'A', expectedWinA, importance);
+    const { variations: playerVariationsB, auditDetails: auditDetailsB } =
+        computeVariationPerPlayer(newSystem, couple_b, teamBRating, teamARating, winner === 'B', 1 - expectedWinA, importance);
 
     newSystem = updateSystemCouple(newSystem, couple_a, playerVariationsA, played_at);
     newSystem = updateSystemCouple(newSystem, couple_b, playerVariationsB, played_at);
 
     const inactivePlayersForDecay = Object.keys(newSystem.players).filter((id) => !matchPlayers.includes(id));
 
+    // Aplicar decaimiento y capturar los cambios por decaimiento
+    const systemAfterDecay = applyDecay(newSystem, inactivePlayersForDecay, matchDate);
+
+    // --- AUDIT LOGGING ---
+    const auditEntry = {
+        matchId: match.id || `match-${played_at}-${couple_a.join('-')}-vs-${couple_b.join('-')}`, // Asumiendo que `match` puede tener un ID o generar uno
+        playedAt: played_at,
+        teamA: couple_a,
+        teamB: couple_b,
+        result: result,
+        winner: winner,
+        importance: importance,
+        expectedWinA: expectedWinA.toFixed(4), // Redondear para legibilidad
+        teamARatingBefore: teamARating,
+        teamBRatingBefore: teamBRating,
+        playersAudit: {}, // Detalles por jugador
+        decayDetails: [] // Detalles de la decadencia
+    };
+
+    // Recopilar detalles de cambios para los jugadores activos
+    for (const playerId of matchPlayers) {
+        const initialPoints = initialPlayerRatings[playerId];
+        const finalPoints = systemAfterDecay.players[playerId].points;
+        const totalDelta = finalPoints - initialPoints;
+
+        const auditDetailForPlayer = {};
+        if (couple_a.includes(playerId)) {
+            Object.assign(auditDetailForPlayer, auditDetailsA[playerId]);
+        } else if (couple_b.includes(playerId)) {
+            Object.assign(auditDetailForPlayer, auditDetailsB[playerId]);
+        }
+
+        auditEntry.playersAudit[playerId] = {
+            initialPoints: initialPoints,
+            finalPoints: finalPoints,
+            totalDelta: totalDelta,
+            breakdown: auditDetailForPlayer // Esto contiene el desglose (baseDelta, bonuses, etc.)
+        };
+    }
+
+    // Recopilar detalles de la decadencia para jugadores inactivos
+    for (const playerId of inactivePlayersForDecay) {
+        const playerBeforeDecay = newSystem.players[playerId]; // Puntos antes de aplicar el decaimiento
+        const playerAfterDecay = systemAfterDecay.players[playerId]; // Puntos después de aplicar el decaimiento
+        const pointsDecayed = playerBeforeDecay.points - playerAfterDecay.points;
+
+        if (pointsDecayed > 0) { // Solo si hubo decadencia
+            auditEntry.decayDetails.push({
+                playerId: playerId,
+                initialPoints: playerBeforeDecay.points,
+                finalPoints: playerAfterDecay.points,
+                decayAmount: pointsDecayed.toFixed(2)
+            });
+        }
+    }
+
+    // Añadir la entrada al log de auditoría del sistema
+    const updatedAuditLog = [...systemAfterDecay.auditLog, auditEntry];
+
     return {
-        ...applyDecay(newSystem, inactivePlayersForDecay, matchDate),
+        ...systemAfterDecay,
         date: matchDate,
+        auditLog: updatedAuditLog // Devolver el sistema con el auditLog actualizado
     };
 }
 
@@ -181,6 +281,43 @@ function computeVariation(system, coupleRating, otherCoupleRating, isWinner, exp
     return Math.round(variation);
 }
 
+// function computeVariationPerPlayer(system, couple, coupleRating, otherCoupleRating, isWinner, expectedWin, importance) {
+//     const actualResult = isWinner ? 1 : 0;
+
+//     const totalWeightedPoints = couple.reduce(
+//         (sum, id) => sum + Math.pow(system.players[id].points, 0.5),
+//         0
+//     );
+
+//     const baseDelta = importance * system.baseK * (actualResult - expectedWin);
+
+//     // 🎲 BONUS POR SORPRESA
+//     const surpriseBonus = isWinner ? Math.max(0, (0.5 - expectedWin)) * system.baseK * 0.5 : 0;
+
+//     const variations = {};
+
+//     for (const playerId of couple) {
+//         const player = system.players[playerId];
+//         const playerWeight = Math.pow(player.points, 0.5) / totalWeightedPoints;
+
+//         // 💥 RECOMPENSA AL DÉBIL
+//         const reverseWeight = 1 - playerWeight;
+//         const weakBonus = isWinner ? Math.round(reverseWeight * 2) : 0; // Hasta +2 puntos para el más débil
+
+//         // 🧗 BONUS UNDERDOG
+//         const opponentAvg = otherCoupleRating / 2;
+//         const underdogGap = Math.max(0, opponentAvg - player.points);
+//         const underdogBonus = isWinner ? Math.round(underdogGap * 0.015) : 0;
+
+//         // REPARTO BONUS POR SORPRESA
+//         const surpriseShare = isWinner ? surpriseBonus * playerWeight : 0;
+//         const adjustedVariation = Math.round(baseDelta * playerWeight + surpriseShare) + weakBonus + underdogBonus;
+
+//         variations[playerId] = adjustedVariation;
+//     }
+
+//     return variations;
+// }
 function computeVariationPerPlayer(system, couple, coupleRating, otherCoupleRating, isWinner, expectedWin, importance) {
     const actualResult = isWinner ? 1 : 0;
 
@@ -195,6 +332,8 @@ function computeVariationPerPlayer(system, couple, coupleRating, otherCoupleRati
     const surpriseBonus = isWinner ? Math.max(0, (0.5 - expectedWin)) * system.baseK * 0.5 : 0;
 
     const variations = {};
+    // Añadimos una estructura para almacenar los detalles de la auditoría por jugador
+    const auditDetails = {};
 
     for (const playerId of couple) {
         const player = system.players[playerId];
@@ -202,7 +341,7 @@ function computeVariationPerPlayer(system, couple, coupleRating, otherCoupleRati
 
         // 💥 RECOMPENSA AL DÉBIL
         const reverseWeight = 1 - playerWeight;
-        const weakBonus = isWinner ? Math.round(reverseWeight * 2) : 0; // Hasta +2 puntos para el más débil
+        const weakBonus = isWinner ? Math.round(reverseWeight * 2) : 0;
 
         // 🧗 BONUS UNDERDOG
         const opponentAvg = otherCoupleRating / 2;
@@ -214,9 +353,21 @@ function computeVariationPerPlayer(system, couple, coupleRating, otherCoupleRati
         const adjustedVariation = Math.round(baseDelta * playerWeight + surpriseShare) + weakBonus + underdogBonus;
 
         variations[playerId] = adjustedVariation;
+
+        // Capturar los detalles para la auditoría
+        auditDetails[playerId] = {
+            baseDelta: Math.round(baseDelta * playerWeight), // Parte del delta base proporcional al peso
+            surpriseBonus: Math.round(surpriseShare),
+            weakBonus: weakBonus,
+            underdogBonus: underdogBonus,
+            totalChange: adjustedVariation,
+            playerWeight: playerWeight.toFixed(4), // Redondear para legibilidad
+            originalPlayerPoints: player.points // Para referencia
+        };
     }
 
-    return variations;
+    // Devolvemos tanto las variaciones como los detalles de auditoría
+    return { variations, auditDetails };
 }
 
 
@@ -293,14 +444,6 @@ const processMatches = (matches) => {
             .sort((a, b) => b[1] - a[1])]);
 
     return [classificationHistory, systemHistory];
-    return {
-        system: systemHistory.reduce((acc, e) => {
-            const date = e.date;
-            acc[date] = e;
-            return acc
-        }, {}),
-        classification: classificationHistory
-    };
 };
 
 
