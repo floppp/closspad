@@ -8,7 +8,7 @@
   [success]
   (let [st @!state]
     (if (:auth st)
-      [[success]]
+      [success]
       (do
         (rfe/push-state :route/home)
         nil))))
@@ -26,16 +26,16 @@
   [{:keys [data path-params]}]
   (case (:name data)
     :route/match (let [date ^js (js/Date. (:day path-params))]
-                   [[:route/match {:date date}]])
+                   [[:route :match {:date date}]])
     :route/classification (let [day (keyword (:day path-params))]
-                            [[:route/classification {:day day}]])
+                            [[:route :classification {:day day}]])
     :route/stats (let [player (keyword (:player path-params))]
-                   [[:route/stats player]])
-    :route/full-stats  [[:route/full-stats]]
-    :route/explanation [[:route/explanation]]
-    :route/add-match   (auth-guard :route/add-match)
-    :route/login       [[:route/login]]
-    [[:route/not-found]]))
+                   [[:route :stats player]])
+    :route/full-stats  [[:route :full-stats]]
+    :route/explanation [[:route :explanation]]
+    :route/add-match   (auth-guard [:route :add-match])
+    :route/login       [[:route :login]]
+    [[:route :not-found]]))
 
 (defn start! [routes dispatch!]
   (rfe/start!
@@ -46,5 +46,5 @@
          (rfc/apply-controllers nil m)
          (when-let [action (get-route-actions m)]
            (dispatch! nil action)))
-       (dispatch! nil [[:route/not-found]])))
+       (dispatch! nil [[:route :not-found]])))
    {:use-fragment true}))

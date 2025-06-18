@@ -22,6 +22,7 @@
 
 (defn query-async
   [params]
+  (.log js/console "query-async" params)
   (let [{:keys [method url options on-success on-failure]}
         (query->http-request
          (assoc params :query/date (dt/date->minus-one-year)))

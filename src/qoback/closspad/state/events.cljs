@@ -30,7 +30,7 @@
                              (enrich-action-from-state state))
         [action-name & args] enrichted-event]
     #_(when goog.DEBUG
-      (.log js/console action-name args))
+        (.log js/console action-name args))
     (case action-name
       :add-match              {:new-state (assoc-in state [:add/match (second args)] (first args))}
       :add/match-set          {:new-state (update-in state [:add/match :n-sets] (fnil inc 1))}
@@ -42,15 +42,6 @@
       :db/login               (let [[_ value element] enrichted-event]
                                 {:new-state (assoc-in state [:db/login element] value)})
       :ui/header              {:new-state (update state :ui/header not)}
-      :route/not-found        {:effects [[:route/fx.not-found state]]}
-      :route/home             {:effects [[:route/fx.home]]}
-      :route/explanation      {:effects [[:route/fx.explanation]]}
-      :route/login            {:effects [[:route/fx.login (:auth state)]]}
-      :route/match            {:effects [[:route/fx.match args]]}
-      :route/add-match        {:effects [[:route/fx.add-match]]}
-      :route/stats            {:effects [[:route/fx.stats args]]}
-      :route/full-stats       {:effects [[:route/fx.full-stats]]}
-      :route/push             {:effects [[:route/fx.push args]]}
       :auth/check-login       {:effects [[:auth/fx.check-login (:auth state)]]}
       :auth/check-not-logged  {:effects [[:auth/fx.check-not-logged (:auth state)]]}
       :data/query             {:new-state (assoc state :is-loading? true :error nil)
@@ -62,8 +53,19 @@
       ;; Refactorizados ya
       :ui/dialog              {:new-state (ui-events/process-dialogs state args)}
       :dom/effect             {:effects   [[:dom/fx.effect (first args)]]}
+      ;; Routes
+      :route/push             {:effects [[:route/fx.push args]]}
+      :route                  {:effects [[:route/fx args state]]}
+      ;; :route/login            {:effects [[:route/fx :login (:auth state)]]}
+      ;; :route/not-found        {:effects [[:route/fx.not-found state]]}
+      ;; :route/home             {:effects [[:route/fx.home]]}
+      ;; :route/explanation      {:effects [[:route/fx.explanation]]}
+      ;; :route/match            {:effects [[:route/fx.match args]]}
+      ;; :route/add-match        {:effects [[:route/fx.add-match]]}
+      ;; :route/stats            {:effects [[:route/fx.stats args]]}
+      ;; :route/full-stats       {:effects [[:route/fx.full-stats]]}
       (when goog.DEBUG
-        (.log js/console "Unknown event " action-name "with arguments" args)))))
+        (.log js/console "Unknown Event " action-name " with arguments" args)))))
 
 (defn- handle-events
   [state replicant-data events]
