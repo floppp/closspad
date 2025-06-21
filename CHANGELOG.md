@@ -1,3 +1,8 @@
+v0.2.7 71f21299de4e1cfc01539df88aaf5fe5dc8872f3
+    >> fix: main version not being updated
+    >> fix: mv bak to original
+
+
 v0.2.6 8b38374ba5278183ab6f4ae7ae539acd3c949a45
     >> fix: mv bak to original
     >> fix: cleaning extra space trying to sed style.css

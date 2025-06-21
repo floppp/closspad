@@ -202,6 +202,7 @@ if [[ $compile ]]; then
     printf "Checking index.html after update:\n" >&2
     grep "<script src=\"js/main" resources/public/index.html >&2
 
+    cat resources/public/index.html
 
 
     # Build normally first
@@ -214,7 +215,7 @@ if [[ $compile ]]; then
 
     # Rename to versioned file
     echo "Creating versioned file: main.$version_with_v.js"
-    mv resources/public/js/main.js "resources/public/js/main.$version_with_v.js"
+    cp resources/public/js/main.js "resources/public/js/main.$version_with_v.js"
     if [ $? -ne 0 ]; then
         echo "Error: Failed to create versioned JS file"
         exit 1
@@ -240,7 +241,7 @@ rsync -avz --progress \
       resources/public/ \
       nando@157.90.230.213:/home/nando/apps/qoback/fik
 
-mv "resources/public/js/main.$version_with_v.js" resources/public/js/main.js
+# mv "resources/public/js/main.$version_with_v.js" resources/public/js/main.js
 # Altough trap we must `mv` to avoid git issues.
 mv resources/public/index.html.bak resources/public/index.html
 
@@ -251,8 +252,9 @@ git commit --amend --no-edit
 
 clean() {
     # Clean old versions
-    rm -f resources/public/js/main.v*.js
-    rm -f resources/public/js/manifest.edn
-    rm -f resources/public/css/style.v*.css
-    rm -f resources/public/tailwind.v*.css
+    rm resources/public/*.bak
+    rm resources/public/js/main.v*.js
+    rm resources/public/js/manifest.edn
+    rm resources/public/css/style.v*.css
+    rm resources/public/tailwind.v*.css
 }
