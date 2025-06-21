@@ -1,3 +1,8 @@
+v0.2.12 1d07c05aca87cf1c474718e8dbcab69bd76a9290
+    >> fix: sed was creating bak
+    >> fix: sed was creating bak
+
+
 v0.2.11 2e9203f41c304efd4e6eb0f9f4b8ae943d7d43b5
     >> fix: sed was creating bak
     >> fix: html was dirty
