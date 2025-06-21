@@ -1,3 +1,5 @@
+v0.2.1 fed79b0648ef427d491ec0ef7fa1617a82b7450e
+
 v0.2.0 ef48fbdd6cb7bfe14202908023f4a27797c63666
     >> feat: audit working but wip, no style yet
     >> fix: log mantiene el suyo en cada sistema

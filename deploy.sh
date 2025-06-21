@@ -39,6 +39,9 @@ fi
 # <<<<<
 # ======================================================================
 
+# Creating clean copy to restore later
+
+cp resources/public/index.html resources/public/index.html.bak
 
 get_last_version() {
     local found_version=""
@@ -148,6 +151,11 @@ for arg in "$@"; do
 done
 
 if [[ $compile ]]; then
+    CSS_VERSIONED_STYLE="css/style.v$version_with_v.css"
+    CSS_VERSIONED_TAILWIND="css/tailwind.v$version_with_v.css"
+    cp resources/public/css/style.css resources/public/"$CSS_VERSIONED_STYLE"
+    cp resources/public/tailwind.css resources/public/"$CSS_VERSIONED_TAILWIND"
+
     if [[ -z "$version" ]]; then
         last_version=$(get_last_version | tail -n 1)
         version=$(increment_version "$last_version" "$minor_upgrade")
@@ -189,13 +197,13 @@ if [[ $compile ]]; then
     grep "<script src=\"js/main" resources/public/index.html >&2
 
     sed -i.bak -E "s|<script src=\"/js/main.js\"></script>|<script src=\"js/$NEW_MAIN\"></script>|" resources/public/index.html
+    sed -i.bak -E "s|<link href=\"/css/style.css\" rel=\"stylesheet\" type=\"text/css\">|<link href=\"/$CSS_VERSIONED_STYLE\"  rel=\"stylesheet\" type=\"text/css\">|" resources/public/index.html
+    sed -i.bak -E "s|<link href=\"/tailwind.css\"  rel=\"stylesheet\" type=\"text/css\">|<link href=\"/$CSS_VERSIONED_TAILWIND\"  rel=\"stylesheet\" type=\"text/css\">|" resources/public/index.html
 
     printf "Checking index.html after update:\n" >&2
     grep "<script src=\"js/main" resources/public/index.html >&2
 
-    # Clean old versions
-    rm -f resources/public/js/main.v*.js
-    rm -f resources/public/js/manifest.edn
+
 
     # Build normally first
     echo "Building application..."
@@ -240,3 +248,12 @@ mv resources/public/index.html.bak resources/public/index.html
 # To add CHANGELOG change to last commit.
 git add .
 git commit --amend --no-edit
+
+
+clean() {
+    # Clean old versions
+    rm -f resources/public/js/main.v*.js
+    rm -f resources/public/js/manifest.edn
+    rm -f resources/public/css/style.v*.css
+    rm -f resources/public/tailwind.v*.css
+}
