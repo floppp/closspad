@@ -1,3 +1,9 @@
+v0.2.15 3da94a00e001039c06e940af383cb5e61ae696b0
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> fix: dialog max-height and scroll
+    >> feat: better match analysis style
+
+
 v0.2.14 be664aa2e24ad38071b7390a250e1cf39e54d211
     >> feat: better match analysis style
     >> fix: cleaning dirty g in html top
