@@ -1,3 +1,8 @@
+v0.2.8 5c47b7ae5ddb8f52023b43293c63a2d50e4861bc
+    >> fix: extra / on main.js
+    >> fix: main version not being updated
+
+
 v0.2.7 71f21299de4e1cfc01539df88aaf5fe5dc8872f3
     >> fix: main version not being updated
     >> fix: mv bak to original

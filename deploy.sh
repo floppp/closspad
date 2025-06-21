@@ -202,9 +202,6 @@ if [[ $compile ]]; then
     printf "Checking index.html after update:\n" >&2
     grep "<script src=\"js/main" resources/public/index.html >&2
 
-    cat resources/public/index.html
-
-
     # Build normally first
     echo "Building application..."
     npx shadow-cljs release app
