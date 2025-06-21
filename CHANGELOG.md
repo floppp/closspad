@@ -1,3 +1,8 @@
+v0.2.5 e9d9560b74075c64bc2e0678c8fe20f3c9334d0e
+    >> fix: cleaning extra space trying to sed style.css
+    >> fix: not cleaning bak to debug
+
+
 v0.2.4 19865d67ba608a02f5d0241cb140b1e449d0e0f9
     >> fix: not cleaning bak to debug
     >> fix: deleting extra v in version

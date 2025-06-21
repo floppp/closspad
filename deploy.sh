@@ -73,7 +73,6 @@ get_last_version() {
 
     if [ -z "$found_version" ]; then
         printf "Checking JS files...\n" >&2
-        # ls -la resources/public/js/main.v*.js 2>/dev/null >&2
         js_version=$(ls resources/public/js/main.v*.js 2>/dev/null | sed 's/.*main\.\(v[0-9]*\.[0-9]*\.[0-9]*\)\.js/\1/' | sort -V | tail -n 1)
         if [ ! -z "$js_version" ]; then
             printf "Found version in JS files: %s\n" "$js_version" >&2
@@ -198,7 +197,7 @@ if [[ $compile ]]; then
 
     sed -i.bak -E "s|<script src=\"/js/main.js\"></script>|<script src=\"js/$NEW_MAIN\"></script>|" resources/public/index.html
     sed -i.bak -E "s|<link href=\"/css/style.css\" rel=\"stylesheet\" type=\"text/css\">|<link href=\"/$CSS_VERSIONED_STYLE\"  rel=\"stylesheet\" type=\"text/css\">|" resources/public/index.html
-    sed -i.bak -E "s|<link href=\"/tailwind.css\"  rel=\"stylesheet\" type=\"text/css\">|<link href=\"/$CSS_VERSIONED_TAILWIND\"  rel=\"stylesheet\" type=\"text/css\">|" resources/public/index.html
+    sed -i.bak -E "s|<link href=\"/tailwind.css\" rel=\"stylesheet\" type=\"text/css\">|<link href=\"/$CSS_VERSIONED_TAILWIND\"  rel=\"stylesheet\" type=\"text/css\">|" resources/public/index.html
 
     printf "Checking index.html after update:\n" >&2
     grep "<script src=\"js/main" resources/public/index.html >&2
