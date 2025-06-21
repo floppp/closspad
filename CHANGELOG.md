@@ -1,3 +1,8 @@
+v0.2.3 ee6f831e23e536098f313f35abf3f5044f2cd31b
+    >> fix: deleting extra v in version
+    >> fix: no version on css
+
+
 v0.2.2 34fd233d1578cdffd86d5b61435632e60032d032
     >> fix: no version on css
     >> fix: version to css

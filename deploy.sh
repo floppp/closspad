@@ -166,8 +166,8 @@ if [[ $compile ]]; then
         version_with_v="v$version_with_v"
     fi
 
-    CSS_VERSIONED_STYLE="css/style.v$version_with_v.css"
-    CSS_VERSIONED_TAILWIND="tailwind.v$version_with_v.css"
+    CSS_VERSIONED_STYLE="css/style.$version_with_v.css"
+    CSS_VERSIONED_TAILWIND="tailwind.$version_with_v.css"
     cp resources/public/css/style.css resources/public/"$CSS_VERSIONED_STYLE"
     cp resources/public/tailwind.css resources/public/"$CSS_VERSIONED_TAILWIND"
 
@@ -243,7 +243,7 @@ rsync -avz --progress \
 
 mv "resources/public/js/main.$version_with_v.js" resources/public/js/main.js 
 # Altough trap we must `mv` to avoid git issues.
-mv resources/public/index.html.bak resources/public/index.html
+# mv resources/public/index.html.bak resources/public/index.html
 
 # To add CHANGELOG change to last commit.
 git add .
