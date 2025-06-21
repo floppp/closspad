@@ -1,3 +1,8 @@
+v0.2.6 8b38374ba5278183ab6f4ae7ae539acd3c949a45
+    >> fix: mv bak to original
+    >> fix: cleaning extra space trying to sed style.css
+
+
 v0.2.5 e9d9560b74075c64bc2e0678c8fe20f3c9334d0e
     >> fix: cleaning extra space trying to sed style.css
     >> fix: not cleaning bak to debug

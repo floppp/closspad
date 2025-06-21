@@ -231,7 +231,7 @@ fi
 
 
 # Add trap to clean up on script exit in case there is some issue on syncing.
-# trap 'mv resources/public/index.html.bak resources/public/index.html' EXIT
+trap 'mv resources/public/index.html.bak resources/public/index.html' EXIT
 
 rsync -avz --progress \
       --exclude "js/cljs-runtime" \
@@ -242,7 +242,7 @@ rsync -avz --progress \
 
 mv "resources/public/js/main.$version_with_v.js" resources/public/js/main.js
 # Altough trap we must `mv` to avoid git issues.
-# mv resources/public/index.html.bak resources/public/index.html
+mv resources/public/index.html.bak resources/public/index.html
 
 # To add CHANGELOG change to last commit.
 git add .
