@@ -1,3 +1,8 @@
+v0.2.4 19865d67ba608a02f5d0241cb140b1e449d0e0f9
+    >> fix: not cleaning bak to debug
+    >> fix: deleting extra v in version
+
+
 v0.2.3 ee6f831e23e536098f313f35abf3f5044f2cd31b
     >> fix: deleting extra v in version
     >> fix: no version on css
