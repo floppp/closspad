@@ -1,3 +1,8 @@
+v0.2.10 b4232002e11398ff547f7a0e2231afadffe240c8
+    >> fix: html was dirty
+    >> fix: cleaning new wrong extra white space
+
+
 v0.2.9 3f2d5bb24aa4d308a3576859d6a57bd784c7ed74
     >> fix: cleaning new wrong extra white space
     >> fix: extra / on main.js
