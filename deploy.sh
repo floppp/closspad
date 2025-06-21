@@ -195,9 +195,9 @@ if [[ $compile ]]; then
     printf "Checking index.html before update:\n" >&2
     grep "<script src=\"js/main" resources/public/index.html >&2
 
-    sed -i.bak -E "s|<script src=\"/js/main.js\"></script>|<script src=\"js/$NEW_MAIN\"></script>|" resources/public/index.html
-    sed -i.bak -E "s|<link href=\"/css/style.css\" rel=\"stylesheet\" type=\"text/css\">|<link href=\"/$CSS_VERSIONED_STYLE\"  rel=\"stylesheet\" type=\"text/css\">|" resources/public/index.html
-    sed -i.bak -E "s|<link href=\"/tailwind.css\" rel=\"stylesheet\" type=\"text/css\">|<link href=\"/$CSS_VERSIONED_TAILWIND\"  rel=\"stylesheet\" type=\"text/css\">|" resources/public/index.html
+    sed -i -E "s|<script src=\"/js/main.js\"></script>|<script src=\"js/$NEW_MAIN\"></script>|" resources/public/index.html
+    sed -i -E "s|<link href=\"/css/style.css\" rel=\"stylesheet\" type=\"text/css\">|<link href=\"/$CSS_VERSIONED_STYLE\"  rel=\"stylesheet\" type=\"text/css\">|" resources/public/index.html
+    sed -i -E "s|<link href=\"/tailwind.css\" rel=\"stylesheet\" type=\"text/css\">|<link href=\"/$CSS_VERSIONED_TAILWIND\"  rel=\"stylesheet\" type=\"text/css\">|" resources/public/index.html
 
     printf "Checking index.html after update:\n" >&2
     grep "<script src=\"js/main" resources/public/index.html >&2
@@ -225,7 +225,6 @@ if [[ $compile ]]; then
     # Update manifest
     echo "{\"main.js\": \"js/main.$version_with_v.js\"}" > resources/public/js/manifest.edn
 fi
-
 
 
 # Add trap to clean up on script exit in case there is some issue on syncing.

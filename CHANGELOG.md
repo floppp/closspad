@@ -1,3 +1,8 @@
+v0.2.11 2e9203f41c304efd4e6eb0f9f4b8ae943d7d43b5
+    >> fix: sed was creating bak
+    >> fix: html was dirty
+
+
 v0.2.10 b4232002e11398ff547f7a0e2231afadffe240c8
     >> fix: html was dirty
     >> fix: cleaning new wrong extra white space
