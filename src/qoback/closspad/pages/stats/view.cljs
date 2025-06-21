@@ -1,7 +1,8 @@
 (ns qoback.closspad.pages.stats.view
   (:require [qoback.closspad.components.stats.echarts :as ech]
             [qoback.closspad.components.stats.charts :as charts]
-            [qoback.closspad.components.widgets :as w]))
+            [qoback.closspad.components.widgets :as w]
+            [qoback.closspad.ui.elements :as ui]))
 
 (defn view
   [state]
@@ -13,7 +14,7 @@
                           (-> state :stats :by-player)))
         is-loading? (nil? stats-by-player)]
     (if is-loading?
-        (w/spinner)
+        [:ui/spinner]
         [:div
          [:select.w-full.p-2.mb-4.text-gray-700.bg-white.rounded-md.focus:outline-none.focus:ring-2.focus:border-gray-300
           {:on {:change [[:route/push :event/target.value :route/stats]]}}

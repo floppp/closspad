@@ -37,11 +37,45 @@
              :stroke-width "2"
              :d (first path)}]]))
 
-(defalias right-arrow-icon
+(defalias right-double-arrow-icon
   [attrs]
   [icon attrs "M7 5 l7 7 -7 7 M16 5 l7 7 -7 7"])
 
-(defalias left-arrow-icon
+(defalias right-arrow-icon
+  [attrs]
+  [icon attrs "M9 5l7 7-7 7"])
+
+(defalias left-double-arrow-icon
   [attrs]
   [icon attrs "M19 5 l-7 7 7 7 M10 5 l-7 7 7 7"])
 
+(defalias left-arrow-icon
+  [attrs]
+  [icon attrs "M15 19l-7-7 7-7"])
+
+(defalias button-icon
+  [attrs icon]
+  [:a
+   (cond-> attrs
+     (:href attrs)
+     (update :class
+             #(into
+               (or % [])
+               ["hover:text-gray-500" "hover:scale-110" "transition-all" "duration-200" "easy-in-out"])))
+   icon])
+
+(defalias spinner
+  [{:keys [size] :or {size {:height "100px" :width "100px"}}}]
+  [:div.w-full.flex.justify-center.mt-5.py-5
+   {:style {:background "white"}}
+   [:span.loading.loading-ring.loading-xl
+    {:style size}]])
+
+(defalias error-toast
+  [{:keys [error]}]
+  (if error
+    [:div.toast
+     [:div.alert.alert-error
+      {:on {:click [[:db/dissoc :error]]}}
+      [:span error]]]
+    [:span.hidden]))

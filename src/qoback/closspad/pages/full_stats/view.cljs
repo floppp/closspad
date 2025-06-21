@@ -2,7 +2,7 @@
   (:require [qoback.closspad.utils.datetime :as dt]
             [qoback.closspad.components.stats.echarts :as ech]
             [qoback.closspad.components.stats.charts :as charts]
-            [qoback.closspad.components.widgets :as w]))
+            [qoback.closspad.ui.elements :as ui]))
 
 (defn transform-history-data
   [history all-players]
@@ -27,7 +27,7 @@
         points-history (transform-history-data history all-players)
         is-loading? (nil? (:stats state))]
     (if is-loading?
-      (w/spinner)
+      [:ui/spinner]
       [:div
        [:div.mb-4
         {:style {:height "400px" :width "100%"}

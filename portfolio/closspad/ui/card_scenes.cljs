@@ -8,8 +8,22 @@
 (defscene link-item
   [e/link-item
    {:route "foo" :action [:go/to :bar]}
-   "Classification"]
-  )
+   "Classification"])
 
 (defscene arrow-icons
-  [e/right-arrow-icon {:width "w-6"}])
+  [:div.flex.justify-between
+   [e/left-double-arrow-icon {:width "w-6"}]
+   [e/right-double-arrow-icon {:width "w-6"}]])
+
+(defscene icon-buttons
+  (let [date (js/Date.)]
+    [:div.flex.justify-between
+     [e/button-icon
+      {:href (when date (str "#/match/" date))
+       :class (when-not date "cursor-not-allowed")}
+      [e/left-double-arrow-icon {:width "w-6"}]]
+     [e/button-icon
+      {:class "cursor-not-allowed"}
+      [e/right-double-arrow-icon {:width "w-6"}]]]))
+
+

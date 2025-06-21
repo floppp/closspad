@@ -2,7 +2,8 @@
   (:require [qoback.closspad.components.widgets :as w]
             [qoback.closspad.utils.datetime :as dt]
             [qoback.closspad.pages.match.component :as match]
-            [qoback.closspad.components.classification.component :as classification]))
+            [qoback.closspad.components.classification.component :as classification]
+            [qoback.closspad.ui.elements :as ui]))
 
 (defn- component
   [state]
@@ -30,7 +31,8 @@
   [state]
   (let [is-loading? (-> state :is-loading?)]
     (if is-loading?
-      (w/spinner)
+      [ui/spinner]
       [:div
        (component state)
        (classification/component state)])))
+
