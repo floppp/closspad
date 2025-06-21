@@ -33,10 +33,11 @@
      [:dialog
       {:open opened?
        :style {:border "none"
-               :border-radius "8px"
                :padding "20px"
                :box-shadow "0 4px 12px rgba(0, 0, 0, 0.15)"
                :background "white"
+               :max-height "75vh"
+               :overflow "auto"
                :z-index "100"}}
       (when title [:h2.mb-4.pb-2 title])
       (map
