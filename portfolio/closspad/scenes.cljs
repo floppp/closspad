@@ -1,7 +1,10 @@
 (ns closspad.scenes
   (:require [portfolio.data :as data]
             [portfolio.ui :as portfolio]
-            [replicant.dom :as r]))
+            [replicant.dom :as r]
+            [closspad.ui.card-scenes]))
+
+:closspad.ui.card-scenes/keep
 
 (data/register-collection!
  :closspad.ui
@@ -27,17 +30,9 @@
   (r/set-dispatch! #(prn %2))
 
   (portfolio/start!
-   {:config
-    {:css-paths ["/styles.css"]
-
-     :background/options
-     [{:id :light
-       :title "Light"
-       :value light-theme}
-      {:id :dark
-       :title "Dark"
-       :value dark-theme}]
-
-     :canvas/layout {:kind :rows
-                     :xs [light-theme
-                          dark-theme]}}}))
+   {:config {:css-paths ["/tailwind.css"]
+             :background/options
+             [{:id :light :title "Light" :value light-theme}
+              {:id :dark :title "Dark" :value dark-theme}]
+             :canvas/layout
+             {:kind :rows :xs [light-theme dark-theme]}}}))
