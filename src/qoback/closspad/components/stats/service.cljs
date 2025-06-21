@@ -1,6 +1,6 @@
 (ns qoback.closspad.components.stats.service
   (:require [clojure.string :as str]
-            [qoback.closspad.rating.system :refer [determine-winner]]
+            [qoback.closspad.rating.rating-system :refer [determine-winner]]
             [qoback.closspad.helpers :as h]
             [qoback.closspad.utils.datetime :as dt]))
 
@@ -38,6 +38,7 @@
                    (if (or in-p1 in-p2)
                      (let [opponent-couple (if in-p1 couple_b couple_a)
                            opponent-key (normalize-couple opponent-couple)
+                           ;; winner (determine-winner result)
                            winner (determine-winner result)
                            won (= winner (if in-p1 "A" "B"))
                            current (get acc opponent-key {:wins 0 :losses 0 :total 0})]
@@ -138,6 +139,7 @@
   - :win-percentage - win percentage (string)
   - :loss-percentage - loss percentage (string)"
   [matches]
+  (.log js/console matches)
   (let [stats (reduce
                (fn [acc {:keys [couple_a couple_b result]}]
                  (let [winner (determine-winner result)

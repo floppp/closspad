@@ -31,3 +31,4 @@ pom.xml.asc
 /replicant-todomvc/
 resources/public/js
 /resources/public/tailwind.css
+resources/public/portfolio-js

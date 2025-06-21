@@ -1,6 +1,5 @@
 (ns qoback.closspad.network.domain
   (:require [qoback.closspad.state.db :refer [get-dispatcher]]
-            [qoback.closspad.rating.system :refer [process-matches] :as rat]
             [qoback.closspad.components.stats.service :as stats]
             ["@supabase/supabase-js" :refer [createClient]]
             ["../../../js/ratingSystem" :as rating]))
