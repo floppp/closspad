@@ -1,3 +1,8 @@
+v0.2.9 3f2d5bb24aa4d308a3576859d6a57bd784c7ed74
+    >> fix: cleaning new wrong extra white space
+    >> fix: extra / on main.js
+
+
 v0.2.8 5c47b7ae5ddb8f52023b43293c63a2d50e4861bc
     >> fix: extra / on main.js
     >> fix: main version not being updated
