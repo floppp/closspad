@@ -1,3 +1,8 @@
+v0.2.13 3de3100d61911d5485bcbfc95220ecadb3460779
+    >> fix: cleaning dirty g in html top
+    >> fix: sed was creating bak
+
+
 v0.2.12 1d07c05aca87cf1c474718e8dbcab69bd76a9290
     >> fix: sed was creating bak
     >> fix: sed was creating bak
