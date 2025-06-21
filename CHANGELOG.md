@@ -1,3 +1,8 @@
+v0.2.2 34fd233d1578cdffd86d5b61435632e60032d032
+    >> fix: no version on css
+    >> fix: version to css
+
+
 v0.2.1 fed79b0648ef427d491ec0ef7fa1617a82b7450e
 
 v0.2.0 ef48fbdd6cb7bfe14202908023f4a27797c63666

@@ -151,11 +151,6 @@ for arg in "$@"; do
 done
 
 if [[ $compile ]]; then
-    CSS_VERSIONED_STYLE="css/style.v$version_with_v.css"
-    CSS_VERSIONED_TAILWIND="css/tailwind.v$version_with_v.css"
-    cp resources/public/css/style.css resources/public/"$CSS_VERSIONED_STYLE"
-    cp resources/public/tailwind.css resources/public/"$CSS_VERSIONED_TAILWIND"
-
     if [[ -z "$version" ]]; then
         last_version=$(get_last_version | tail -n 1)
         version=$(increment_version "$last_version" "$minor_upgrade")
@@ -170,6 +165,11 @@ if [[ $compile ]]; then
         version_with_v=${version#v}
         version_with_v="v$version_with_v"
     fi
+
+    CSS_VERSIONED_STYLE="css/style.v$version_with_v.css"
+    CSS_VERSIONED_TAILWIND="tailwind.v$version_with_v.css"
+    cp resources/public/css/style.css resources/public/"$CSS_VERSIONED_STYLE"
+    cp resources/public/tailwind.css resources/public/"$CSS_VERSIONED_TAILWIND"
 
     NEW_MAIN="main.$version_with_v.js"
     printf "NEW_MAIN value: %s\n" "$NEW_MAIN" >&2
