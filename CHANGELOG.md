@@ -1,3 +1,8 @@
+v0.2.14 be664aa2e24ad38071b7390a250e1cf39e54d211
+    >> feat: better match analysis style
+    >> fix: cleaning dirty g in html top
+
+
 v0.2.13 3de3100d61911d5485bcbfc95220ecadb3460779
     >> fix: cleaning dirty g in html top
     >> fix: sed was creating bak
