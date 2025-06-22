@@ -42,13 +42,13 @@
           (range n-sets))))
 
 (defn post
-  [table {:keys [args]}]
+  [table match]
   (let [dispatcher (get-dispatcher)
         {:keys [couple-a-1
                 couple-a-2
                 couple-b-1
                 couple-b-2
-                played-at]} args]
+                played-at]} match]
     (async/go
       (try
         (let [response (<p! (-> supabase
@@ -58,12 +58,13 @@
                                             :couple_a [couple-a-1 couple-a-2]
                                             :couple_b [couple-b-1 couple-b-2]
                                             :organization organization
-                                            :result (extract-scores args)}]))
+                                            :result (extract-scores match)}]))
                                 (.select)))
               error (.-error response)]
           (if error
-            (dispatcher nil [[:data/query [1 2]]])
-            (dispatcher nil [[:data/error error]])))
+            (dispatcher nil [[:data/error error]])
+            (dispatcher nil [[:data/query [1 2]]
+                             [:auth/check-login]])))
         (catch js/Error err
           (dispatcher nil [[:data/error (ex-cause err)]]))))))
 

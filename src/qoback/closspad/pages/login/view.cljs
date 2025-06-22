@@ -8,6 +8,7 @@
 
       ;; FIX-ME:
       ;; Me está dando muchos problemas y no tengo ni idea de por qué.
+      ;; Al crear partido sí funciona correctamente
       #_[:form.flex.flex-col.gap-4
          {:on {:submit [[:event/prevent-default]
                         [:fetch/login email password]]}}]

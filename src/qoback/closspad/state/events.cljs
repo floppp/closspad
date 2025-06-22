@@ -46,7 +46,6 @@
       :auth/check-not-logged  {:effects [[:auth/fx.check-not-logged (:auth state)]]}
       :data/query             {:new-state (assoc state :is-loading? true :error nil)
                                :effects [[:data/fx.query {:state state :args args}]]}
-      :post/match             {:effects [[:post/fx.match {:args (first args)}]]}
       :fetch/login            {:effects [[:fetch/fx.login args]]}
       ;; No refactorizar porque es mucho lío para cambiar `enrich-action-from-event`.
       :event/prevent-default  {:effects [[:dom/fx.prevent-default]]}
@@ -56,14 +55,8 @@
       ;; Routes
       :route/push             {:effects [[:route/fx.push args]]}
       :route                  {:effects [[:route/fx args state]]}
-      ;; :route/login            {:effects [[:route/fx :login (:auth state)]]}
-      ;; :route/not-found        {:effects [[:route/fx.not-found state]]}
-      ;; :route/home             {:effects [[:route/fx.home]]}
-      ;; :route/explanation      {:effects [[:route/fx.explanation]]}
-      ;; :route/match            {:effects [[:route/fx.match args]]}
-      ;; :route/add-match        {:effects [[:route/fx.add-match]]}
-      ;; :route/stats            {:effects [[:route/fx.stats args]]}
-      ;; :route/full-stats       {:effects [[:route/fx.full-stats]]}
+      :post/network           {:new-state (assoc state :is-loading? true :error nil)
+                               :effects [[:post/fx.network args]]}
       (when goog.DEBUG
         (.log js/console "Unknown Event " action-name " with arguments" args)))))
 

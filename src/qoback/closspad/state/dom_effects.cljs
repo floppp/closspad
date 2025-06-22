@@ -1,8 +1,7 @@
 (ns qoback.closspad.state.dom-effects)
 
-(defn process
+(defn perform!
   [[effect-name & args]]
-  ;; (.log js/console effect-name args)
   (case effect-name
     :body/scroll-hidden (set! (.. js/document.body -style -overflow) "hidden")
     :body/scroll-show   (set! (.. js/document.body -style -overflow) "")

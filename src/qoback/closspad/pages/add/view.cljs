@@ -1,4 +1,5 @@
-(ns qoback.closspad.pages.add.view)
+(ns qoback.closspad.pages.add.view
+  (:require [qoback.closspad.pages.add.elements :as ui]))
 
 (def common-style
   ["p-2"])
@@ -43,50 +44,49 @@
 (defn render-task-form
   [state]
   (let [new-match (-> state :add/match)
-        players (-> state :stats :players)
+        player-opts (conj (-> state :stats :players) "")
         {:keys
-         [couple-a-1
-          couple-a-2
-          couple-b-1
-          couple-b-2
-          played-at
-          couple-a-score
-          couple-b-score
-          n-sets]} new-match
+         [couple-a-1 couple-a-2
+          couple-b-1 couple-b-2
+          played-at  n-sets]}   new-match
         n-sets (min (or n-sets 1) 3)]
     [:form.mb-4.flex.gap-2.max-w-screen-sm.flex-col
      {:on {:submit [[:event/prevent-default]
-                    (when-not (empty? couple-a-1)
-                      [:post/match new-match])]}}
+                    [:post/network :match new-match]]}}
 
      [:div.w-full
       [:div.w-full.flex.flex-col
        [:span {:class ["w-1/2" "p-2"]} "Equipo A"]
        [:div.w-full.flex.flex-col.sm:flex-row.gap-4
-        [:select.w-full {:class select-style
-                         :on {:change [[:add-match :event/target.value :couple-a-1]]}}
-         (map (fn [p]
-                [:option {:value p
-                          :selected (= (keyword p) couple-a-1)} p]) players)]
-        [:select.w-full {:class select-style
-                         :on {:change [[:add-match :event/target.value :couple-a-2]]}}
-         (map (fn [p]
-                [:option {:value p
-                          :selected (= (keyword p) couple-a-2)} p]) players)]]]]
+        [ui/player-options
+         {:classes select-style
+          :selected :couple-a-1
+          :actions [[:event/prevent-default]
+                    [:add-match :event/target.value :couple-a-1]]}
+         player-opts]
+        [ui/player-options
+         {:classes select-style
+          :selected :couple-a-2
+          :actions [[:event/prevent-default]
+                    [:add-match :event/target.value :couple-a-2]]}
+         player-opts]
+        ]]]
      [:div.w-full
       [:div.w-full.flex.flex-col
        [:span {:class ["w-1/2" "p-2"]} "Equipo B"]
        [:div.w-full.flex.flex-col.sm:flex-row.gap-4
-        [:select.w-full {:class select-style
-                         :on {:change [[:add-match :event/target.value :couple-b-1]]}}
-         (map (fn [p]
-                [:option {:value p
-                          :selected (= (keyword p) couple-b-1)} p]) players)]
-        [:select.w-full {:class select-style
-                         :on {:change [[:add-match :event/target.value :couple-b-2]]}}
-         (map (fn [p]
-                [:option {:value p
-                          :selected (= (keyword p) couple-b-2)} p]) players)]]]]
+        [ui/player-options
+         {:classes select-style
+          :selected :couple-b-1
+          :actions [[:event/prevent-default]
+                    [:add-match :event/target.value :couple-b-1]]}
+         player-opts]
+        [ui/player-options
+         {:classes select-style
+          :selected :couple-b-2
+          :actions [[:event/prevent-default]
+                    [:add-match :event/target.value :couple-b-2]]}
+         player-opts]]]]
 
      [:div.flex.flex-col.justify-between.gap-4.my-4.sm:flex-row
       [:input.flex-1.py-2
@@ -113,7 +113,8 @@
         [:button.btn.btn-soft.btn-info
          {:class ["w-full" "sm:w-1/2" "md:w-1/4"]
           :style {:border-radius "4px"}
-          :on {:click [[:post/match new-match]]}}
+          ;; :on {:click [[:post/network :match new-match]]}
+          }
          "Crear"]])]))
 
 (defn view

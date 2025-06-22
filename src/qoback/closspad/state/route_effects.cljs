@@ -24,7 +24,7 @@
      nil
      [[:db/assoc :page/navigated {:page page}]])))
 
-(defn effects
+(defn perform!
   [[action & args]]
   (case action
     :not-found (let [date (-> args
