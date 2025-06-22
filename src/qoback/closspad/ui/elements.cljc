@@ -26,7 +26,8 @@
 
 (defalias icon
   [attrs path]
-  (let [h (w->h (:width attrs))]
+  (let [attrs (merge {:width "w-6"} attrs)
+        h (w->h (:width attrs))]
     [:svg {:xmlns "http://www.w3.org/2000/svg"
            :class [(:width attrs) h]
            :fill "none"
@@ -53,8 +54,8 @@
   [attrs]
   [icon attrs "M15 19l-7-7 7-7"])
 
-(defalias button-icon
-  [attrs icon]
+(defalias link-icon
+  [attrs body]
   [:a
    (cond-> attrs
      (:href attrs)
@@ -62,14 +63,14 @@
              #(into
                (or % [])
                ["hover:text-gray-500" "hover:scale-110" "transition-all" "duration-200" "easy-in-out"])))
-   icon])
+   body])
 
 (defalias spinner
-  [{:keys [size] :or {size {:height "100px" :width "100px"}}}]
+  [{:keys [style] :or {style {:height "100px" :width "100px"}}}]
   [:div.w-full.flex.justify-center.mt-5.py-5
    {:style {:background "white"}}
    [:span.loading.loading-ring.loading-xl
-    {:style size}]])
+    {:style style}]])
 
 (defalias error-toast
   [{:keys [error]}]

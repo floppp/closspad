@@ -35,4 +35,3 @@
       [:div
        (component state)
        (classification/component state)])))
-

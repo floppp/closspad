@@ -14,7 +14,7 @@
                           (-> state :stats :by-player)))
         is-loading? (nil? stats-by-player)]
     (if is-loading?
-        [:ui/spinner]
+        [ui/spinner]
         [:div
          [:select.w-full.p-2.mb-4.text-gray-700.bg-white.rounded-md.focus:outline-none.focus:ring-2.focus:border-gray-300
           {:on {:change [[:route/push :event/target.value :route/stats]]}}
@@ -55,7 +55,6 @@
 
             :replicant/on-mount
             (fn [{:replicant/keys [node remember]}]
-              (.log js/console "on mount")
               (let [el (ech/mount-stats node)]
                 (remember el)
                 (.addEventListener js/window "resize" (fn [] (.resize el)))

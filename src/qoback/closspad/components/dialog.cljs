@@ -1,17 +1,6 @@
 (ns qoback.closspad.components.dialog
   (:require [qoback.closspad.state.db :refer [get-dispatcher]]))
 
-(defn component-dialog
-  []
-  ;; <!-- You can open the modal using ID.showModal() method -->
-  ;; <button class="btn" onclick="my_modal_3.showModal()">open modal</button>
-  [:dialog.modal
-   [:div.modal-box
-    [:form {:method "dialog"}
-     [:button.btn.btn-sm.btn-circle.btn-ghost.absolute.right-2.top-2
-      "✕"]]
-    [:div "holan"]]])
-
 (defn component
   [opened? {:keys [title info extra-node]}]
   (let [dispatcher (get-dispatcher)]

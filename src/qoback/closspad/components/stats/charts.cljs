@@ -76,35 +76,6 @@
                         win-data
                         loss-data)}]})))
 
-#_(defn player-stats-dashboard
-    "Renders a complete stats dashboard with:
-  1. Main performance chart (top)
-  2. Win/loss pie chart (bottom)
-  Takes a player name and matches collection"
-    [player matches]
-    (let [stats (stats/compute-player-stats player matches)]
-      [:div {:style {:display "flex"
-                     :flexDirection "column"
-                     :gap "2rem"
-                     :padding "1rem"
-                     :maxWidth "1200px"
-                     :margin "0 auto"}}
-       [:div {:style {:height "400px"
-                      :width "100%"
-                      :border "1px solid #e0e0e0"
-                      :borderRadius "8px"
-                      :boxShadow "0 2px 8px rgba(0,0,0,0.1)"}
-              :ref #(when % (render-player-stats-chart % stats))}]
-       [:div {:style {:display "flex"
-                      :justifyContent "center"
-                      :gap "2rem"}}
-        [:div {:style {:height "300px"
-                       :width "300px"
-                       :border "1px solid #e0e0e0"
-                       :borderRadius "8px"
-                       :boxShadow "0 2px 8px rgba(0,0,0,0.1)"}
-               :ref #(when % (render-win-loss-pie % stats))}]]]))
-
 (defn radial-chart-against-players
   [stats]
   (let [opponents (:against-player stats)

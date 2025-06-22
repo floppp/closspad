@@ -27,7 +27,7 @@
         points-history (transform-history-data history all-players)
         is-loading? (nil? (:stats state))]
     (if is-loading?
-      [:ui/spinner]
+      [ui/spinner]
       [:div
        [:div.mb-4
         {:style {:height "400px" :width "100%"}

@@ -1,6 +1,8 @@
 (ns qoback.closspad.components.classification.component
   (:require [qoback.closspad.helpers :as h]
-            [qoback.closspad.components.icons.info :as info]))
+            [qoback.closspad.components.icons.info :as info]
+            [qoback.closspad.ui.button-elements :as bui]
+            [qoback.closspad.ui.text-elements :as tui]))
 
 (defn player-color?
   [points]
@@ -18,18 +20,15 @@
     [:a.flex.justify-between.items-center.p-4.rounded-lg.shadow-sm
      {:class (concat cl ["transition-all" "duration-300" "ease-in-out"])
       :href (str "#/stats/" name)}
-     [:span.font-medium.text-gray-800 name]
-     [:div.text-right.w-24.flex.items-center
-      [:span
-       {:on {:click [[:event/prevent-default]
-                     [:ui/dialog :player-info name]]}}
+     [tui/text-dark-gray name]
+     [:div.grid.grid-cols-3
+      {:class ["text-right" "w-24"  "items-center"]}
+      [bui/icon-button
+       {:actions [[:event/prevent-default]
+                  [:ui/dialog :player-info name]]}
        info/icon]
-      [:span.text-gray-500.text-right
-       {:class ["w-1/2"]}
-       (str "("  preffix  (.abs js/Math (- prev-points points)) ") ")]
-      [:span.font-bold.text-lg.text-right
-       {:class ["w-1/2"]}
-       (str points)]]]))
+      [tui/text-gray (str "("  preffix  (.abs js/Math (- prev-points points)) ") ")]
+      [tui/text-lg-bold (str points)]]]))
 
 (defn filter-day-ratings
   [c day-str ratings]

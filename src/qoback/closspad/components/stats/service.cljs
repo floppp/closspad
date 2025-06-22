@@ -139,7 +139,6 @@
   - :win-percentage - win percentage (string)
   - :loss-percentage - loss percentage (string)"
   [matches]
-  (.log js/console matches)
   (let [stats (reduce
                (fn [acc {:keys [couple_a couple_b result]}]
                  (let [winner (determine-winner result)

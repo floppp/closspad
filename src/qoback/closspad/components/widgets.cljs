@@ -58,13 +58,11 @@
            (header-item header "Login" "login"))]])]))
 
 (defn- arrow-button
-  [path date]
-  #_(let [date (cb)])
-  [:a
-   {:href (when date (str "#/match/" date))
-    :class (when-not date "cursor-not-allowed")}
-   [:svg {:xmlns "http://www.w3.org/2000/svg" :class ["h-6" "w-6"] :fill "none" :viewBox "0 0 24 24" :stroke "currentColor"}
-    [:path {:stroke-linecap "round" :stroke-linejoin "round" :stroke-width "2" :d path}]]])
+  [date icon]
+  [ui/link-icon
+     {:class (when-not date "cursor-not-allowed")
+      :href (when date (str "#/match/" date))}
+     icon])
 
 (defn- date-only [^js/Date js-date]
   (doto (js/Date. (.getTime js-date))
@@ -81,35 +79,23 @@
   [date match-dates]
   (let [date (when-let [day (add-day date match-dates)]
                (h/format-iso-date day))]
-    [ui/button-icon
-     {:class (when-not date "cursor-not-allowed")
-      :href (when date (str "#/match/" date))}
-     [ui/right-arrow-icon {:width "w-6"}]]))
+    (arrow-button date [ui/right-arrow-icon])))
 
 (defn- arrow-left
   [date match-dates]
   (let [date (when-let [prev-date-with-match (last (filter #(< % date) match-dates))]
                (h/format-iso-date prev-date-with-match))]
-    [ui/button-icon
-     {:class (when-not date "cursor-not-allowed")
-      :href (when date (str "#/match/" date))}
-     [ui/left-arrow-icon {:width "w-6"}]]))
+    (arrow-button date [ui/left-arrow-icon])))
 
 (defn- double-arrow-right
   [match-dates]
   (let [date (h/format-iso-date (last match-dates))]
-    [ui/button-icon
-     {:class (when-not date "cursor-not-allowed")
-      :href (when date (str "#/match/" date))}
-     [ui/right-double-arrow-icon {:width "w-6"}]]))
+    (arrow-button date [ui/right-double-arrow-icon])))
 
 (defn- double-arrow-left
   [match-dates]
   (let [date (h/format-iso-date (first match-dates))]
-    [ui/button-icon
-     {:class (when-not date "cursor-not-allowed")
-      :href (when date (str "#/match/" date))}
-     [ui/left-double-arrow-icon {:width "w-6"}]]))
+    (arrow-button date [ui/left-double-arrow-icon])))
 
 (defn arrow-selector
   [date match-dates]

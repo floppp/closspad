@@ -2,7 +2,8 @@
   (:require [qoback.closspad.state.db :refer [get-dispatcher]]
             [qoback.closspad.components.stats.service :as stats]
             ["@supabase/supabase-js" :refer [createClient]]
-            ["../../../js/ratingSystem" :as rating]))
+            ["../../../js/ratingSystem" :as rating]
+            ["../../../js/playerStats" :as plStats]))
 
 (goog-define organization "")
 (goog-define table "")
@@ -40,13 +41,19 @@
                          dispatcher (get-dispatcher)
                          ratings (filter (comp some? first) classification)
                          all-players (-> ms stats/get-all-players vec sort)
-                         all-players-stats (stats/compute-all-players-stats all-players ms)]
+                         all-players-stats (stats/compute-all-players-stats all-players ms)
+                         js-stats (js->clj
+                                   (plStats/getAllPlayersOpponentStats
+                                    (clj->js all-players)
+                                    (clj->js ms))
+                                   {:keywordize-keys true})]
                      (dispatcher
                       nil
                       [[:db/assoc-in [:classification :ratings] ratings]
                        [:db/assoc-in [:system :history] (filter :date system)]
                        [:db/assoc-in [:stats :players] all-players]
                        [:db/assoc-in [:stats :by-player] all-players-stats]
+                       [:db/assoc-in [:stats :oponents] js-stats]
                        [:db/assoc :match {:results ms}]
                        [:db/dissoc :is-loading?]])))}
     :query/user
