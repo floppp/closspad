@@ -14,7 +14,7 @@
            "focus:ring-2"
            "focus:border-gray-300"]))
 
-(defn set-points
+(defn ui-set-points
   [s total-s]
   [:div.flex.flex-col.gap-4.border.padding
    [:div.flex.gap-4.justify-between.items-center.sm:justify-start
@@ -28,33 +28,27 @@
    [:div.flex.flex-col.gap-4.sm:flex-row
     [:input.flex-1
      {:class (concat common-style) :type "number" :min 0 :max 7
-      :on {:change
-           [[:add-match :event/target.value (keyword (str "couple-a-score-set-" s))]]}}
+      :on {:change [[:add-match :event/target.value :result :a s]]}}
      "Equipo A"]
     [:input.flex-1
      {:class (concat common-style) :type "number" :min 0 :max 7
-      :on {:change
-           [[:add-match :event/target.value (keyword (str "couple-b-score-set-" s))]]}}
+      :on {:change [[:add-match :event/target.value :result :b s]]}}
      "Equipo B"]]])
 
-(defn sets
+(defn ui-sets
   [n-sets]
   (for [s (range n-sets)]
-    (set-points s n-sets)))
+    (ui-set-points s n-sets)))
 
 (defn render-task-form
   [state]
-  (let [new-match (-> state :add/match)
-        player-opts (conj (-> state :stats :players) "")
-        {:keys
-         [couple_a
-          couple-b-1 couple-b-2
-          played-at  n-sets]}   new-match
-        n-sets (min (or n-sets 1) 3)]
+  (let [new-match                          (-> state :add/match)
+        player-opts                        (conj (-> state :stats :players) "")
+        {:keys [couple_a couple_b n-sets]} new-match
+        n-sets                             (min (or n-sets 1) 3)]
     [:form.mb-4.flex.gap-2.max-w-screen-sm.flex-col
      {:on {:submit [[:event/prevent-default]
                     [:post/network :match new-match]]}}
-
      [:div.w-full
       [:div.w-full.flex.flex-col
        [:span {:class ["w-1/2" "p-2"]} "Equipo A"]
@@ -77,15 +71,15 @@
        [:div.w-full.flex.flex-col.sm:flex-row.gap-4
         [ui/player-options
          {:classes select-style
-          :selection couple-b-1
+          :selection (first couple_b)
           :actions [[:event/prevent-default]
-                    [:add-match :event/target.value :couple-b 0]]}
+                    [:add-match :event/target.value :couple_b 0]]}
          player-opts]
         [ui/player-options
          {:classes select-style
-          :selection couple-b-2
+          :selection (second couple_b)
           :actions [[:event/prevent-default]
-                    [:add-match :event/target.value :couple-b 1]]}
+                    [:add-match :event/target.value :couple_b 1]]}
          player-opts]]]]
 
      [:div.flex.flex-col.justify-between.gap-4.my-4.sm:flex-row
@@ -95,16 +89,15 @@
                 :border-radius "4px"}
         :class ["sm:w-1/2"]
         :on {:change
-             [[:add-match :event/target.value :played-at]]}}]
+             [[:add-match/played-at :event/target.value [:add/match :played_at]]]}}]
       [:button.text-blue-600.flex-1
        {:style {:border-radius "4px"}
         :on {:click [[:add/match-set]]}}
        [:strong "Añadir Set"]]]
 
-     (sets n-sets)
+     (ui-sets n-sets)
 
-     (when (m/valid-match? {:couple_a couple_a
-                            :couple_b [couple-b-1 couple-b-2]})
+     (when (m/valid-match? (:add/match state))
        [:div.flex.justify-center
         [:button.btn.btn-soft.btn-info
          {:class ["w-full" "sm:w-1/2" "md:w-1/4"]
