@@ -23,7 +23,6 @@
 
 (s/def ::matches (s/coll-of ::match))
 
-
 (defn valid-set?
   [s]
   (let [[s1 s2] s
@@ -52,24 +51,22 @@
   [[a b] [c d]]
   (= 4 (count (into #{} [a b c d]))))
 
+(defn new-match->match
+  [match]
+  (let [result (:result match)
+        tr-result (mapv (fn [a b] [(js/parseInt a) (js/parseInt b)]) (:a result) (:b result))]
+    (assoc match
+           :result tr-result
+           :organization organization
+           :played_at (js/Date. (:played_at match)))))
+
 (defn valid-match?
   [{:keys [result n-sets] :as match}]
-  (let [tr-result (mapv (fn [a b] [(js/parseInt a) (js/parseInt b)]) (:a result) (:b result))
-        match (assoc match
-                     :result tr-result
-                     :organization organization
-                     :played_at (js/Date. (:played_at match)))]
-
+  (let [match (new-match->match match)]
     (when (s/valid? ::match match)
-      (.log js/console tr-result)
-      (and
-       (=
-        n-sets
-        (count (:a result))
-        (count (:b result))
-        (count tr-result)) ;; this to check when new set with no fields yet
-       (valid-result? tr-result)
-       (valid-couples? (:couple_a match) (:couple_b match))))))
+      (and (= n-sets (count (:a result)) (count (:b result)) (count (:result match))) ;; this to check when new set with no fields yet
+           (valid-result? (:result match))
+           (valid-couples? (:couple_a match) (:couple_b match))))))
 
 (comment
   (valid-set? [6 4])

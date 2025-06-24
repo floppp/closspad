@@ -48,7 +48,7 @@
         n-sets                             (min (or n-sets 1) 3)]
     [:form.mb-4.flex.gap-2.max-w-screen-sm.flex-col
      {:on {:submit [[:event/prevent-default]
-                    [:post/network :match new-match]]}}
+                    [:post/network :match (m/new-match->match new-match)]]}}
      [:div.w-full
       [:div.w-full.flex.flex-col
        [:span {:class ["w-1/2" "p-2"]} "Equipo A"]
