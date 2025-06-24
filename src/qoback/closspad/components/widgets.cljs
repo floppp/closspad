@@ -40,6 +40,7 @@
       (header-item header "Inicio" "")
       (header-item header "Explicación" "explanation")
       (header-item header "Estadísticas" "stats")
+      (header-item header "Simulador" "forecast")
       (header-item header "Cambios" "changelog")
       (if is-logged?
         (header-item header "Añadir Partido" "add-match")
@@ -52,6 +53,7 @@
          (header-item header "Inicio" "")
          (header-item header "Explicación" "explanation")
          (header-item header "Estadísticas" "stats")
+         (header-item header "Simulador" "forecast")
          (header-item header "Cambios" "changelog")
          (if is-logged?
            (header-item header "Añadir Partido" "add")

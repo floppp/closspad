@@ -17,6 +17,7 @@
   [["/login"               {:name :route/login}]
    ["/add-match"           {:name :route/add-match}]
    ["/explanation"         {:name :route/explanation}]
+   ["/forecast"            {:name :route/forecast}]
    ["/changelog"           {:name :route/changelog}]
    ["/stats"               {:name :route/full-stats}]
    ["/stats/:player"       {:name :route/stats          :path [:player string?]}]
@@ -35,6 +36,7 @@
     :route/changelog   [[:route :changelog]]
     :route/full-stats  [[:route :full-stats]]
     :route/explanation [[:route :explanation]]
+    :route/forecast    [[:route :forecast]]
     :route/add-match   (auth-guard [:route :add-match])
     :route/login       [[:route :login]]
     [[:route :not-found]]))
