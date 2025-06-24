@@ -32,7 +32,10 @@
     #_(when goog.DEBUG
         (.log js/console action-name args))
     (case action-name
-      :add-match              {:new-state (assoc-in state [:add/match (second args)] (first args))}
+      :add-match (let [[value & path] args]
+                   {:new-state (assoc-in state
+                                         (into [] (concat  [:add/match] path))
+                                         value)})
       :add/match-set          {:new-state (update-in state [:add/match :n-sets] (fnil inc 1))}
       :remove/match-set       {:new-state (update-in state [:add/match :n-sets] (fnil dec 1))}
       :db/assoc               {:new-state (apply assoc state args)}
@@ -46,7 +49,8 @@
       :auth/check-not-logged  {:effects [[:auth/fx.check-not-logged (:auth state)]]}
       :data/query             {:new-state (assoc state :is-loading? true :error nil)
                                :effects [[:data/fx.query {:state state :args args}]]}
-      :fetch/login            {:effects [[:fetch/fx.login args]]}
+      :fetch/login            {:new-state (assoc state :is-loading? true :error nil)
+                               :effects [[:fetch/fx.login args]]}
       ;; No refactorizar porque es mucho lío para cambiar `enrich-action-from-event`.
       :event/prevent-default  {:effects [[:dom/fx.prevent-default]]}
       ;; Refactorizados ya

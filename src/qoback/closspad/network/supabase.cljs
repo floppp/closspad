@@ -19,7 +19,7 @@
         {:error (ex-cause err)}))))
 
 (defn login
-  [[email pass]]
+  [[email pass] {:keys [on-success on-error]}]
   (async/go
     (let [dispatcher (get-dispatcher)
           auth-fn #(-> supabase .-auth (.signInWithPassword %))
@@ -27,12 +27,14 @@
           {:keys [success error]} result]
       (if error
         ;; TODO: events to dispatch must be pass as params
-        (dispatcher nil [[:db/dissoc :db/login]
-                         [:db/assoc-in [:db/login :error error]]])
-        (dispatcher nil [[:db/dissoc :db/login]
-                         [:db/assoc :auth success]
-                         [:auth/check-login]
-                         #_[:route/match {:date (js/Date.)}]])))))
+        (dispatcher nil (conj [[:db/dissoc :db/login]
+                               [:db/assoc-in [:db/login :error error]]
+                               on-error]))
+        (dispatcher nil (conj
+                         [[:db/dissoc :db/login]
+                          [:db/assoc :auth success]
+                          [:auth/check-login]]
+                         on-success))))))
 
 (defn extract-scores [match]
   (let [n-sets (:n-sets match)]
@@ -41,7 +43,7 @@
              (get match (keyword (str "couple-b-score-set-" set-n)))])
           (range n-sets))))
 
-(defn post
+(defn post-match
   [table match]
   (let [dispatcher (get-dispatcher)
         {:keys [couple-a-1
@@ -63,8 +65,9 @@
               error (.-error response)]
           (if error
             (dispatcher nil [[:data/error error]])
-            (dispatcher nil [[:data/query [1 2]]
-                             [:auth/check-login]])))
+            (dispatcher nil [[:db/dissoc :add/match]
+                             [:auth/check-login]
+                             [:data/query [1 2]]])))
         (catch js/Error err
           (dispatcher nil [[:data/error (ex-cause err)]]))))))
 

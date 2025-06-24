@@ -5,6 +5,6 @@
 (defn perform!
   [[action & args]]
   (case action
-    :match (supabase/post table (first args))
+    :match (supabase/post-match table (first args))
     (when goog.DEBUG
       (.log js/console "Unknown Post Effect " action " with arguments" args))))
