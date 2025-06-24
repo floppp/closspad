@@ -1,5 +1,6 @@
 (ns qoback.closspad.components.match.domain
   (:require [cljs.spec.alpha :as s]
+            [qoback.closspad.network.domain :refer [organization]]
             [qoback.closspad.core-domain :as core]))
 
 (s/def ::player-id ::core/non-empty-string)
@@ -22,28 +23,53 @@
 
 (s/def ::matches (s/coll-of ::match))
 
+
 (defn valid-set?
   [s]
   (let [[s1 s2] s
         bigger (max s1 s2)
-        minor  (min s1 s2)
         diff (Math/abs (- s1 s2))]
-    (when (s/valid? ::game-set s)
+    (when (s/valid? ::game-set [s1 s2])
       (cond
-        (and (>= bigger 6) (>= diff 2)) true
-        (and  (= bigger 7) (= minor 6)) true
+        (and (= bigger 6) (> diff 1)) true
+        (and (= bigger 7) (<= diff 2) (not= diff 0)) true
         :else false))))
+
+(defn is-there-a-winner?
+  [result]
+  (let [sa (count (filter (fn [[a b]] (> a b)) result))
+        sb (count (filter (fn [[a b]] (< a b)) result))]
+    (not= sa sb)))
 
 (defn valid-result?
   [result]
   (and
    (> 4 (count result))
-   (every? valid-set? result)))
+   (every? valid-set? result)
+   (is-there-a-winner? result)))
+
+(defn valid-couples?
+  [[a b] [c d]]
+  (= 4 (count (into #{} [a b c d]))))
 
 (defn valid-match?
-  [{:keys [result] :as match}]
-  (when (s/valid? ::match match)
-    (valid-result? result)))
+  [{:keys [result n-sets] :as match}]
+  (let [tr-result (mapv (fn [a b] [(js/parseInt a) (js/parseInt b)]) (:a result) (:b result))
+        match (assoc match
+                     :result tr-result
+                     :organization organization
+                     :played_at (js/Date. (:played_at match)))]
+
+    (when (s/valid? ::match match)
+      (.log js/console tr-result)
+      (and
+       (=
+        n-sets
+        (count (:a result))
+        (count (:b result))
+        (count tr-result)) ;; this to check when new set with no fields yet
+       (valid-result? tr-result)
+       (valid-couples? (:couple_a match) (:couple_b match))))))
 
 (comment
   (valid-set? [6 4])
@@ -66,10 +92,15 @@
                     :couple_b ["foo" "bar"]
                     :played_at (js/Date.)
                     :organization "fik"})
+  (def match? {:couple_a ["Carlos" "Juan"]
+               :couple_b ["Fober" "Pod"]
+               :n-sets	2
+               :organization	"fik"
+               :played_at (js/Date.)
+               :result	[[6 2] [1 6]]})
+
+  (s/valid? ::match match?)
+
   (valid-match? right-match)
   (s/explain-data ::match right-match)
-  (s/explain-data ::match wrong-match)
-  )
-
-
-
+  (s/explain-data ::match wrong-match))

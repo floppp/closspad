@@ -2,7 +2,8 @@
   (:require [clojure.walk :as walk]
             [qoback.closspad.state.db :refer [!state]]
             [qoback.closspad.state.effects :refer [perform-effect!]]
-            [qoback.closspad.state.ui-events :as ui-events]))
+            [qoback.closspad.state.ui-events :as ui-events]
+            [qoback.closspad.utils.coll-extras :as ext]))
 
 (defn- enrich-action-from-event [{:replicant/keys [js-event node]} actions]
   (walk/postwalk
@@ -32,12 +33,20 @@
     #_(when goog.DEBUG
         (.log js/console action-name args))
     (case action-name
+      :add-match/played-at (let [[value path] args]
+                             {:new-state (assoc-in state path value)})
       :add-match (let [[value & path] args]
-                   {:new-state (assoc-in state
-                                         (into [] (concat  [:add/match] path))
-                                         value)})
+                   {:new-state (ext/update-with-vector state (concat  [:add/match] path) value)})
       :add/match-set          {:new-state (update-in state [:add/match :n-sets] (fnil inc 1))}
-      :remove/match-set       {:new-state (update-in state [:add/match :n-sets] (fnil dec 1))}
+      :remove/match-set       {:new-state
+                               ;; tremenda guarrada, problema de la estructra elegida, hay que mejorar aunque sí funciona
+                               (assoc-in
+                                (assoc-in
+                                 (update-in state [:add/match :n-sets] (fnil dec 1))
+                                 [:add/match :result :a]
+                                 (pop (get-in state [:add/match :result :a])))
+                                [:add/match :result :b]
+                                (pop (get-in state [:add/match :result :b])))}
       :db/assoc               {:new-state (apply assoc state args)}
       :db/assoc-in            (let [[path args] args]
                                 {:new-state (assoc-in state path args)})

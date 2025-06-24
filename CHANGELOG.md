@@ -1,3 +1,16 @@
+v0.2.16 88ca6b7ab4a15f14d598989b6cd8fa7165aec07a
+    >> fix: new match validation working nicely
+    >> feat: login with spinner
+    >> fix: add match do not create same match twice
+    >> fix: match and classification refactor
+    >> feat: player item with aliases
+    >> feat: using aliases in real code
+    >> feat: icon as ui/element
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> wip: portfolio running and replicant upgraded
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+
+
 v0.2.15 3da94a00e001039c06e940af383cb5e61ae696b0
     >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
     >> fix: dialog max-height and scroll
