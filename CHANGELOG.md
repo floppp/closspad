@@ -1,3 +1,9 @@
+v0.2.17 0f5389e54638bb609efc0407616237fe7bb86743
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> hot: issue with closure table
+    >> fix: new match validation working nicely
+
+
 v0.2.16 88ca6b7ab4a15f14d598989b6cd8fa7165aec07a
     >> fix: new match validation working nicely
     >> feat: login with spinner
