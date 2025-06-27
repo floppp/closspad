@@ -7,10 +7,14 @@
         selected (if (seq selected) selected [])]
     (.log js/console selected)
     (if selecting?
-      {:selected     (conj selected player)
+      {:selected     (if (contains? (set selected) player)
+                       selected
+                       (conj selected player))
        :non-selected (filter #(not= % player) non-selected)}
       {:selected     (filter #(not= % player) selected)
-       :non-selected (conj non-selected player)})))
+       :non-selected (if (contains? (set non-selected) player)
+                       non-selected
+                       (conj non-selected player))})))
 
 (defn process
   [state args]
@@ -26,8 +30,6 @@
                   player (-> state :forecast :tmp/element)
                   {:keys [selected non-selected]}
                   (process-drop state player (= dst-col :selected))]
-              (.log js/console dst-col player)
-              (.log js/console selected non-selected)
               (-> state
                   (assoc-in [:forecast :players/selected] selected)
                   (assoc-in [:forecast :players/non-selected] non-selected)))
