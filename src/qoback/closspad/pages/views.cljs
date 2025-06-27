@@ -1,5 +1,5 @@
 (ns qoback.closspad.pages.views
-  (:require [qoback.closspad.components.widgets :as w]
+  (:require [qoback.closspad.components.header :refer [header]]
             [qoback.closspad.ui.elements :as ui]
             [qoback.closspad.components.dialog :as dialog]
             [qoback.closspad.pages.login.view :as login]
@@ -34,7 +34,7 @@
     [:div.flex.h-screen
      [:div.flex-grow
       [:div.flex.flex-col.items-center.min-h-screen.mt-5
-       (w/header state)
+       (header state)
        [ui/error-toast state]
        [:div {:class ["w-full"
                       "md:w-3/4"

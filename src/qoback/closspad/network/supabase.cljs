@@ -54,9 +54,11 @@
 
 (defn post-match
   [table match]
-  (post table match {:on-failure (fn [err]
-                                   [[:data/error err]])
-                     :on-success (fn [_]
-                                   [[:db/dissoc :add/match]
-                                    [:auth/check-login]
-                                    [:data/query [1 2]]])}))
+  (post table
+        (dissoc match :n-sets)
+        {:on-failure (fn [err]
+                       [[:data/error err]])
+         :on-success (fn [_]
+                       [[:db/dissoc :add/match]
+                        [:auth/check-login]
+                        [:data/query [1 2]]])}))

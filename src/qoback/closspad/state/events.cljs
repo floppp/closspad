@@ -1,6 +1,7 @@
 (ns qoback.closspad.state.events
   (:require [clojure.walk :as walk]
             [qoback.closspad.state.db :refer [!state]]
+            [qoback.closspad.state.drag-events :as drag]
             [qoback.closspad.state.effects :refer [perform-effect!]]
             [qoback.closspad.state.ui-events :as ui-events]
             [qoback.closspad.utils.coll-extras :as ext]))
@@ -30,8 +31,10 @@
                              (enrich-action-from-event replicant-data)
                              (enrich-action-from-state state))
         [action-name & args] enrichted-event]
-    #_(when goog.DEBUG
-        (.log js/console action-name args))
+    ;; (when goog.DEBUG
+        ;; (.log js/console action-name args)
+        ;; (.log js/console enrichted-event)
+        ;; )
     (case action-name
       :add-match/played-at (let [[value path] args]
                              {:new-state (assoc-in state path value)})
@@ -60,9 +63,10 @@
                                :effects [[:data/fx.query {:state state :args args}]]}
       :fetch/login            {:new-state (assoc state :is-loading? true :error nil)
                                :effects [[:fetch/fx.login args]]}
+      :drag                   {:new-state (drag/process state args)}
       ;; No refactorizar porque es mucho lío para cambiar `enrich-action-from-event`.
       :event/prevent-default  {:effects [[:dom/fx.prevent-default]]}
-      ;; Refactorizados ya
+      ;; >>>>> Refactorizados ya
       :ui/dialog              {:new-state (ui-events/process-dialogs state args)}
       :dom/effect             {:effects   [[:dom/fx.effect (first args)]]}
       ;; Routes
