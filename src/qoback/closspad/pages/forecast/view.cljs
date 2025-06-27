@@ -58,23 +58,27 @@
              [ui/right-arrow-icon]]]]])
        non-selected)]]))
 
+
 (defn- analysis
-  [state]
-  [:div.flex.flex-col.gap-4
-   [:div.collapse.collapse-arrow.bg-base-100.border.border-base-300.shadow-md.rounded-lg
-    [:input {:type "radio", :name "my-accordion-2", :checked "checked"}]
-    [:div.collapse-title.font-semibold "How do I create an account?"]
-    [:div.collapse-content.text-sm "Click the \"Sign Up\" button in the top right corner and follow the registration process."]]
-
-   [:div.collapse.collapse-arrow.bg-base-100.border.border-base-300.shadow-md.rounded-lg
-    [:input {:type "radio", :name "my-accordion-2"}]
-    [:div.collapse-title.font-semibold "I forgot my password. What should I do?"]
-    [:div.collapse-content.text-sm "Click on \"Forgot Password\" on the login page and follow the instructions sent to your email."]]
-
-   [:div.collapse.collapse-arrow.bg-base-100.border.border-base-300.shadow-md.rounded-lg
-    [:input {:type "radio", :name "my-accordion-2"}]
-    [:div.collapse-title.font-semibold "How do I update my profile information?"]
-    [:div.collapse-content.text-sm "Go to \"My Account\" settings and select \"Edit Profile\" to make changes."]]])
+  [{:keys [forecast] :as state}]
+  (let [ps (:players/selected forecast)
+        cs (for [i (range (count ps))
+                 j (range (inc i) (count ps))]
+             [i j])
+        matches [[(nth cs 0) (nth cs 5)]
+                 [(nth cs 1) (nth cs 4)]
+                 [(nth cs 2) (nth cs 3)]]]
+    [lui/column
+     (for [[[a b] [c d]] matches]
+       [lui/accordion-item
+        [lui/accordion-item-title
+         {:class ["grid" "grid-cols-3" "items-center"]}
+         [:span (str (nth ps a) " &  " (nth ps b))]
+         [:span.text-center "vs"]
+         [:span.text-right (str (nth ps c) " &  " (nth ps d))]
+]
+        [lui/accordion-item-body
+         "CCClick the \"Sign Up\" button in the top right corner and follow the registration process."]])]))
 
 (defn view
   [{:keys [forecast] :as state}]
