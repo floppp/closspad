@@ -37,17 +37,17 @@
      {:class ["flex" "flex-col" "gap-2" "rounded-lg" "w-full"]}
      [lui/column-body
       {:on {:drop [[:drag :drop :non-selected]]}
-       :class ["bg-blue-100" "shadow-md"
-               (when-not selectable? "bg-red-200")]
+       :class ["shadow-md" (when-not selectable? ["bg-base-100"])]
        :style {:min-height "80px"}}
       (map
        (fn [p]
          [cui/card
           {:element p
-           :class ["bg-blue-400" "text-white" "font-bold"
+           :class (concat
+                   ["font-bold"]
                    (if selectable?
-                     "cursor-pointer"
-                     "bg-red-200")]}
+                     ["cursor-pointer" "bg-blue-400" "text-white"]
+                     ["bg-base-100" "text-gray-400" ]))}
           [cui/card-details
            [:p.flex.justify-between
             [:span p]
@@ -57,6 +57,24 @@
                           [:drag :drop :selected]])}
              [ui/right-arrow-icon]]]]])
        non-selected)]]))
+
+(defn- analysis
+  [state]
+  [:div.flex.flex-col.gap-4
+   [:div.collapse.collapse-arrow.bg-base-100.border.border-base-300.shadow-md.rounded-lg
+    [:input {:type "radio", :name "my-accordion-2", :checked "checked"}]
+    [:div.collapse-title.font-semibold "How do I create an account?"]
+    [:div.collapse-content.text-sm "Click the \"Sign Up\" button in the top right corner and follow the registration process."]]
+
+   [:div.collapse.collapse-arrow.bg-base-100.border.border-base-300.shadow-md.rounded-lg
+    [:input {:type "radio", :name "my-accordion-2"}]
+    [:div.collapse-title.font-semibold "I forgot my password. What should I do?"]
+    [:div.collapse-content.text-sm "Click on \"Forgot Password\" on the login page and follow the instructions sent to your email."]]
+
+   [:div.collapse.collapse-arrow.bg-base-100.border.border-base-300.shadow-md.rounded-lg
+    [:input {:type "radio", :name "my-accordion-2"}]
+    [:div.collapse-title.font-semibold "How do I update my profile information?"]
+    [:div.collapse-content.text-sm "Go to \"My Account\" settings and select \"Edit Profile\" to make changes."]]])
 
 (defn view
   [{:keys [forecast] :as state}]
@@ -69,6 +87,9 @@
                    [:forecast :players/non-selected]
                    (-> state :stats :players)]]}}
     "Limpiar"]
-   [:div.flex.gap-4
-    (non-selected-players forecast)
-    (selected-players forecast)]])
+   [:div.flex.flex-col.gap-4
+    [:div.flex.gap-4
+     (non-selected-players forecast)
+     (selected-players forecast)]
+    (when (= 4 (-> state :forecast :players/selected count))
+      (analysis state))]])
