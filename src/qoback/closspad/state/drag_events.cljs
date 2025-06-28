@@ -1,21 +1,15 @@
 (ns qoback.closspad.state.drag-events)
 
-;; non-selected only used here, in ui we filter all-players by
-;; being or not inside selected.
 ;; selectign? -> si estamos seleccionando
 (defn- process-drop
   [{:keys [forecast]} player selecting?]
-  (let [{:players/keys [selected non-selected]} forecast
+  (let [{:players/keys [selected]} forecast
         selected (if (seq selected) selected [])]
     (if selecting?
       {:selected     (if (contains? (set selected) player)
                        selected
-                       (conj selected player))
-       :non-selected (filter #(not= % player) non-selected)}
-      {:selected     (filter #(not= % player) selected)
-       :non-selected (if (contains? (set non-selected) player)
-                       non-selected
-                       (conj non-selected player))})))
+                       (conj selected player))}
+      {:selected     (filter #(not= % player) selected)})))
 
 (defn process
   [state args]
@@ -29,10 +23,8 @@
       :end state
       :drop (let [[dst-col] args
                   player (-> state :forecast :tmp/element)
-                  {:keys [selected non-selected]}
+                  {:keys [selected]}
                   (process-drop state player (= dst-col :selected))]
-              (-> state
-                  (assoc-in [:forecast :players/selected] selected)
-                  (assoc-in [:forecast :players/non-selected] non-selected)))
+              (assoc-in state [:forecast :players/selected] selected))
       (when goog.DEBUG
         (.log js/console "Unknown UI event " action-name "with arguments" args)))))
