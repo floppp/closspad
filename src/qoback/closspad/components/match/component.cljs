@@ -1,8 +1,7 @@
 (ns qoback.closspad.components.match.component
   (:require [clojure.string :as str]
             [qoback.closspad.components.widgets :as w]
-            [qoback.closspad.utils.datetime :as dt]
-            [qoback.closspad.ui.elements :as ui]))
+            [qoback.closspad.utils.datetime :as dt]))
 
 (defn determine-winner [result]
   (let [sets-won-by-a (count (filter (fn [[a b]] (> a b)) result))

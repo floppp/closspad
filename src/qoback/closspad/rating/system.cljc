@@ -34,15 +34,23 @@
               :points rating
               :volatility 1.1}))))
 
-(defn get-ratings [system player-ids]
+(defn get-ratings
+  [system player-ids]
   (reduce
    (fn [acc id]
-     (assoc acc id (get-in system [:players id :points] 0)))
+     (assoc acc id (get-in system [:players id :points] 50)))
    {}
    player-ids))
 
-(defn expected-win [system team-a-rating team-b-rating]
-  (let [exponent (/ (- team-b-rating team-a-rating) (:scale-factor system))]
+(defn get-team-rating [system couple]
+  (reduce
+   (fn [sum id]
+     (+ sum (get-in system [:players id :points] 0)))
+   0
+   couple))
+
+(defn expected-a-win [system team-a-rating team-b-rating]
+  (let [exponent (/ (- team-b-rating team-a-rating) (:scaleFactor system))]
     (/ 1 (+ 1 (Math/pow 10 exponent)))))
 
 (defn proximity-factor [system player]
@@ -61,14 +69,9 @@
       "A"
       "B")))
 
-(defn team-rating [system couple]
-  (reduce
-   (fn [sum id]
-     (+ sum (get-in system [:players id :points] 0)))
-   0
-   couple))
 
-(defn adjusted-points-change
+
+#_(defn adjusted-points-change
   [system player teammate opponent-team-rating is-winner expected-win]
   (let [normalize (fn [points]
                     (max 0 (min 1 (/ (- points (:min-rating system))
@@ -92,7 +95,7 @@
 
     (* base-change proximity (max 0.5 (min 1.5 adjustment)))))
 
-(defn compute-couple-match-points
+#_(defn compute-couple-match-points
   [system couple-id expected-win winner couple opponent-team-rating]
   (let [[p1-id p2-id] couple
         winner? (= winner couple-id)
@@ -122,7 +125,7 @@
          [:players p2-id :points]
          (clamp-rating system (+ (:points p2) change2))))))
 
-(defn compute-match-points
+#_(defn compute-match-points
   [system match]
   (let [{:keys [couple_a couple_b result]} match
         all-players (concat couple_a couple_b)
@@ -157,7 +160,7 @@
 
     (assoc system :date (:played_at match))))
 
-(defn debut-aware-decay
+#_(defn debut-aware-decay
   "Applies decay only after player's first appearance
    Parameters:
    - player-data: Input array
@@ -210,7 +213,7 @@
                players)]
           (recur (rest remaining) new-streaks new-result))))))
 
-(defn activity-decay
+#_(defn activity-decay
   "Applies score decay based on player activity frequency
    Parameters:
    - player-data: The input array of [date players-list]
@@ -249,7 +252,7 @@
                   players)])
           player-data))))
 
-(defn process-matches [matches]
+#_(defn process-matches [matches]
   (let [initial-state (create-system)
         ;; last-match-date (:played_at (last (sort-by :played_at matches)))
         states (reduce
@@ -270,7 +273,7 @@
              (sort-by first >))])
      states)))
 
-(defn logarithmic-decay
+#_(defn logarithmic-decay
   "Applies logarithmic score decay with configurable parameters
    Parameters:
    - player-data: Input array of matches

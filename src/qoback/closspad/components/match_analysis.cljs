@@ -10,7 +10,7 @@
   [a b]
   (str (couple->str a) " vs " (couple->str b)))
 
-(defn- probability
+(defn probability
   [expected-win-a winner]
   [:div
    [:div.bg-blue-50.p-4.my-6

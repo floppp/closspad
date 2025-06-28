@@ -5,7 +5,6 @@
   [{:keys [forecast]} player selecting?]
   (let [{:players/keys [selected non-selected]} forecast
         selected (if (seq selected) selected [])]
-    (.log js/console selected)
     (if selecting?
       {:selected     (if (contains? (set selected) player)
                        selected
