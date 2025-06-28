@@ -38,8 +38,11 @@
       (header-item header "Inicio" "")
       (header-item header "Explicación" "explanation")
       (header-item header "Estadísticas" "stats")
-      (header-item header "Simulador" "forecast"
-                   [:db/assoc-in [:forecast :players/non-selected] (-> state :stats :players)])
+      (header-item
+       header
+       "Simulador"
+       "forecast"
+       [:db/assoc-in [:forecast :players/non-selected] (-> state :stats :players)])
       (header-item header "Cambios" "changelog")
       (if is-logged?
         (header-item header "Añadir Partido" "add-match")
@@ -57,7 +60,7 @@
           "Simulador"
           "forecast"
           [:db/assoc-in
-           [:forecast :players/selected]
+           [:forecast :players/non-selected]
            (-> state :stats :players)])
          (header-item header "Cambios" "changelog")
          (if is-logged?
