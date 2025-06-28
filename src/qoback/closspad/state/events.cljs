@@ -68,9 +68,7 @@
       :event/prevent-default  {:effects [[:dom/fx.prevent-default]]}
       ;; >>>>> Refactorizados ya
       :ui/dialog              {:new-state (ui-events/process-dialogs state args)}
-      :dom/effect             (do
-                                (.log js/console args)
-                                {:effects   [[:dom/fx.effect (first args)]]})
+      :dom/effect             {:effects [[:dom/fx.effect (first args)]]}
       ;; Routes
       :route/push             {:effects [[:route/fx.push args]]}
       :route                  {:effects [[:route/fx args state]]}
