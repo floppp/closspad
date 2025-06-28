@@ -1,5 +1,6 @@
 (ns qoback.closspad.pages.forecast.view
-  (:require [qoback.closspad.ui.layout-elements :as lui]
+  (:require [clojure.string]
+            [qoback.closspad.ui.layout-elements :as lui]
             [qoback.closspad.ui.elements :as ui]
             [qoback.closspad.ui.button-elements :as bui]
             [qoback.closspad.ui.card-elements :as cui]
@@ -99,38 +100,69 @@
        (couple-ratings ca-ratings)
        (couple-ratings cb-ratings)]]))
 
+(defn couple->str
+  [couple]
+  (str "r: " (first couple) ", " "d: " (second couple)))
+
+(defn- ui-match
+  ([match] (ui-match match nil))
+  ([match couple]
+   (let [{:keys [couple_a couple_b played_at result]} match
+         winner (s/determine-winner result)
+         team-letter (if (= (set couple_a) (set couple)) "A" "B")
+         rivals (if (= (set couple_a) (set couple))
+                  couple_b couple_a)]
+     [:div
+      (if (seq couple)
+        [:p.flex.justify-between
+         [:span "Rivales"]
+         [:span
+          {:class ["px-2"
+                   (if (= winner team-letter)
+                     "bg-red-200"
+                     "bg-green-200")]}
+          (couple->str rivals)]]
+        [:p.flex.justify-between
+         [:span "Ganadores"]
+         [:span  (if (= winner "A")
+                   (couple->str couple_a)
+                   (couple->str couple_b))]])
+      [:p.flex.justify-between
+       [:span "Resultado"]
+       [:span (->> result
+                   (map #(str (first %) "-" (second %)))
+                   (clojure.string/join " / "))]]
+      [:p.flex.justify-between
+       [:span "Fecha"]
+       [:span (.toLocaleString (js/Date. played_at))]]])))
+
 (defn ui-matches
   [matches ca cb]
-  [:div
-   [:h2.p-4.text-bold.text-lg.mt-4 "Histórico Enfrentamiento Parejas"]
-   [:hr.mx-4.mb-4
-    {:style {:border "1px solid gray"}}]
-   [:div.px-4.flex.flex-col.gap-4
-    (for [m (fs/same-match? [ca cb] matches)]
-      [:div
-       (for [[k v] (dissoc m :organization)]
-         [:p.flex.justify-between
-          [:span (name k)]
-          [:span v]])])]
+  (let [prev-matches (fs/same-match? [ca cb] matches)
+        prev-matches-id (set (map :id prev-matches))
+        rest-matches (filter #(not (contains? prev-matches-id (:id %)))
+                             matches)
+        ca-matches (fs/couple-matches? ca rest-matches)
+        cb-matches (fs/couple-matches? cb rest-matches)]
+    [:div
+     (when (seq prev-matches)
+       [:div
+        [:h2.p-4.text-bold.text-lg.mt-4 "Histórico Enfrentamiento Parejas"]
+        [:hr.mx-4.mb-4
+         {:style {:border "1px solid gray"}}]
+        [:div.px-4.flex.flex-col.gap-4
+         (map ui-match prev-matches)]])
 
-   [:h2.p-4.text-bold.text-lg.mt-4 "Histórico por Pareja"]
-   [:hr.mx-4.mb-4
-    {:style {:border "1px solid gray"}}]
-   [:div.grid.grid-cols-2
-    [:div.px-4.flex.flex-col.gap-4
-     (for [m (fs/couple-matches? ca matches)]
+     (when (or (seq ca-matches) (seq cb-matches))
        [:div
-        (for [[k v] (dissoc m :organization)]
-          [:p.flex.justify-between
-           [:span (name k)]
-           [:span v]])])]
-    [:div.px-4.flex.flex-col.gap-4
-     (for [m (fs/couple-matches? cb matches)]
-       [:div
-        (for [[k v] (dissoc m :organization)]
-          [:p.flex.justify-between
-           [:span (name k)]
-           [:span v]])])]]])
+        [:h2.p-4.text-bold.text-lg.mt-4 "Histórico por Pareja"]
+        [:hr.mx-4.mb-4
+         {:style {:border "1px solid gray"}}]
+        [:div.grid.grid-cols-2
+         [:div.px-4.flex.flex-col.gap-4
+          (map #(ui-match % ca) ca-matches)]
+         [:div.px-4.flex.flex-col.gap-4
+          (map #(ui-match % cb) cb-matches)]]])]))
 
   (defn- analysis
   [{:keys [forecast] :as state}]

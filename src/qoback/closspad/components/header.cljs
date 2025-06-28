@@ -16,6 +16,7 @@
         is-logged? (not (nil? user-email))]
     [:div.bg-white.rounded-lg.shadow-md.p-4.sticky.top-0.mb-5
      {:class ["w-full"
+              "z-10"
               "md:w-3/4"
               "lg:w-2/3"
               "xl:w-1/2"
