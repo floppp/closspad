@@ -20,8 +20,7 @@
                             (let [dispatcher (get-dispatcher)]
                               (dispatcher
                                nil
-                               [[:event/prevent-default]
-                                [:drag :start (:element attrs)]])))
+                               [[:drag :start (:element attrs)]])))
                :dragend (fn [_]
                           [[:event/prevent-default]
                            [:drag :end]])})
