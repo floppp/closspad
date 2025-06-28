@@ -1,3 +1,10 @@
+v0.3.4 c93cb0b1d7a61e205037b207378d1248a1205331
+    >> fix: cleaning error for non existent preventDefault
+    >> fix: cleaning logs
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+
+
 v0.3.3 a5c1bc1d4a684732b0eb8cb9cc5cf63f2446f51d
     >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
     >> feat: non-selected deleted and the code is far simpler
