@@ -4,7 +4,7 @@
 (defalias match-probability
   [attrs body]
   [:div
-   [:div.bg-blue-50.p-4.my-6
+   [:div.bg-blue-50.p-4
     [:p.text-blue-600.flex.justify-between
      [:span "Probability: "]
      [:span (:expected-win-a attrs)]]

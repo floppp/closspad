@@ -70,7 +70,17 @@
        (non-selected-player-card selectable?)
        non-selected)]]))
 
-(defn probability
+(defn- couple-ratings
+  [ratings]
+  [:div.bg-blue-50.p-4
+   (map
+    (fn [[k v]]
+      [:p.flex.justify-between
+       [:span (name k)]
+       [:span v]])
+    ratings)])
+
+(defn ui-probability
   [state [ca cb]]
   (let [ca (map keyword ca)
         cb (map keyword cb)
@@ -81,29 +91,48 @@
         cb-rating (s/get-team-rating system cb)
         expected-a-win (s/expected-a-win system ca-rating cb-rating)
         winner (if (> expected-a-win 0.5) "A" "B")]
-    [:div.flex.flex-col
-     [:div
-      [:div.grid.grid-cols-2.gap-4
-       [:div.bg-blue-50.p-4
-        (map
-         (fn [[k v]]
-           [:p.flex.justify-between
-            [:span (name k)]
-            [:span v]])
-         ca-ratings)]
-       [:div.bg-blue-50.p-4
-
-        (map
-         (fn [[k v]]
-           [:p.flex.justify-between
-            [:span (name k)]
-            [:span v]])
-         cb-ratings)]]]
+    [:div.flex.flex-col.gap-4
      [mui/match-probability
       {:expected-win-a (.toFixed expected-a-win 2)
-       :winner winner}]]))
+       :winner winner}]
+     [:div.grid.grid-cols-2.gap-4
+       (couple-ratings ca-ratings)
+       (couple-ratings cb-ratings)]]))
 
-(defn- analysis
+(defn ui-matches
+  [matches ca cb]
+  [:div
+   [:h2.p-4.text-bold.text-lg.mt-4 "Histórico Enfrentamiento Parejas"]
+   [:hr.mx-4.mb-4
+    {:style {:border "1px solid gray"}}]
+   [:div.px-4.flex.flex-col.gap-4
+    (for [m (fs/same-match? [ca cb] matches)]
+      [:div
+       (for [[k v] (dissoc m :organization)]
+         [:p.flex.justify-between
+          [:span (name k)]
+          [:span v]])])]
+
+   [:h2.p-4.text-bold.text-lg.mt-4 "Histórico por Pareja"]
+   [:hr.mx-4.mb-4
+    {:style {:border "1px solid gray"}}]
+   [:div.grid.grid-cols-2
+    [:div.px-4.flex.flex-col.gap-4
+     (for [m (fs/couple-matches? ca matches)]
+       [:div
+        (for [[k v] (dissoc m :organization)]
+          [:p.flex.justify-between
+           [:span (name k)]
+           [:span v]])])]
+    [:div.px-4.flex.flex-col.gap-4
+     (for [m (fs/couple-matches? cb matches)]
+       [:div
+        (for [[k v] (dissoc m :organization)]
+          [:p.flex.justify-between
+           [:span (name k)]
+           [:span v]])])]]])
+
+  (defn- analysis
   [{:keys [forecast] :as state}]
   (let [ps (:players/selected forecast)
         cs (for [i (range (count ps))
@@ -126,8 +155,10 @@
            [:span.text-right (str c " &  " d)]]
           [lui/accordion-item-body
            [:div
-            (probability state [[a b] [c d]])
-]]]))]))
+            (ui-probability state [[a b] [c d]])
+            (ui-matches (-> state :match :results)
+                        [a b]
+                        [c d])]]]))]))
 
 (defn view
   [{:keys [forecast] :as state}]

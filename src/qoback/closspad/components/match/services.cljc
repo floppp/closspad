@@ -7,6 +7,13 @@
         cb (set (:couple_b match))]
     (or (= cs ca) (= cs cb))))
 
+(defn same-match?
+  [[csa csb] match]
+  (let [csa (set csa)
+        csb (set csb)]
+    (and (couple-in-match? csa match)
+         (couple-in-match? csb match))))
+
 (defn match-couples-as-set
   [match]
   [(set (:couple_a match)) (set (:couple_b match))])
