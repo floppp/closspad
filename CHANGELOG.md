@@ -1,3 +1,8 @@
+v0.3.1 d8e90d43dae56f5479f0f91b207562654fafde38
+    >> fix: no syncin portfolio
+    >> fix: forecast with better mobile layout
+
+
 v0.3.0 cfd9bf362d9e45e7b3bf13c927f1c185ad0f8120
     >> fix: forecast with better mobile layout
     >> feat: basic forecast analysis done
