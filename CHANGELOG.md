@@ -1,3 +1,8 @@
+v0.3.2 19c752a32411e74ba2dc5bd4c27a8902136b0b2e
+    >> fix: wrong action on mobile header
+    >> fix: no syncin portfolio
+
+
 v0.3.1 d8e90d43dae56f5479f0f91b207562654fafde38
     >> fix: no syncin portfolio
     >> fix: forecast with better mobile layout
