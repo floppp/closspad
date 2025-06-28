@@ -18,9 +18,8 @@
      {:class ["w-full"
               "z-10"
               "md:w-3/4"
-              "lg:w-2/3"
-              "xl:w-1/2"
-              "2xl:w-1/3"]}
+              "xl:w-2/3"
+              "2xl:w-1/2"]}
      [:div.flex.items-center.md:hidden
       {:class (when header "justify-center")}
       [:button.text-gray-700.hover:text-gray-900

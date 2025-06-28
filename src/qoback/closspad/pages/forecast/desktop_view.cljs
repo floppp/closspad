@@ -1,15 +1,12 @@
-(ns qoback.closspad.pages.forecast.view
+(ns qoback.closspad.pages.forecast.desktop-view
   (:require [clojure.string]
             [qoback.closspad.ui.layout-elements :as lui]
             [qoback.closspad.ui.elements :as ui]
             [qoback.closspad.ui.button-elements :as bui]
             [qoback.closspad.ui.card-elements :as cui]
             [qoback.closspad.rating.system :as s]
-            ;; [qoback.closspad.components.match-analysis :as ma]
             [qoback.closspad.components.match.ui :as mui]
-            [qoback.closspad.pages.forecast.services :as fs]
-            [qoback.closspad.pages.forecast.desktop-view :as desktop]
-            [qoback.closspad.pages.forecast.mobile-view :as mobile]))
+            [qoback.closspad.pages.forecast.services :as fs]))
 
 (defn- selected-player-card
   [color]
@@ -73,6 +70,70 @@
        (non-selected-player-card selectable?)
        non-selected)]]))
 
+(defn- couple-ratings
+  [ratings]
+  [:div.bg-blue-50.p-4
+   (map
+    (fn [[k v]]
+      [:p.flex.justify-between
+       [:span (name k)]
+       [:span v]])
+    ratings)])
+
+(defn ui-probability
+  [state [ca cb]]
+  (let [ca (map keyword ca)
+        cb (map keyword cb)
+        system (-> state :system :history first)
+        ca-ratings (s/get-ratings system ca)
+        cb-ratings (s/get-ratings system cb)
+        ca-rating (s/get-team-rating system ca)
+        cb-rating (s/get-team-rating system cb)
+        expected-a-win (s/expected-a-win system ca-rating cb-rating)
+        winner (if (> expected-a-win 0.5) "A" "B")]
+    [:div.flex.flex-col.gap-4
+     [mui/match-probability
+      {:expected-win-a (.toFixed expected-a-win 2)
+       :winner winner}]
+     [:div.grid.grid-cols-2.gap-4
+       (couple-ratings ca-ratings)
+       (couple-ratings cb-ratings)]]))
+
+(defn couple->str
+  [couple]
+  (str "r: " (first couple) ", " "d: " (second couple)))
+
+(defn- ui-match
+  ([match] (ui-match match nil))
+  ([match couple]
+   (let [{:keys [couple_a couple_b played_at result]} match
+         winner (s/determine-winner result)
+         team-letter (if (= (set couple_a) (set couple)) "A" "B")
+         rivals (if (= (set couple_a) (set couple))
+                  couple_b couple_a)]
+     [:div
+      (if (seq couple)
+        [:p.flex.justify-between
+         [:span "Rivales"]
+         [:span
+          {:class ["px-2"
+                   (if (= winner team-letter)
+                     "bg-red-200"
+                     "bg-green-200")]}
+          (couple->str rivals)]]
+        [:p.flex.justify-between
+         [:span "Ganadores"]
+         [:span  (if (= winner "A")
+                   (couple->str couple_a)
+                   (couple->str couple_b))]])
+      [:p.flex.justify-between
+       [:span "Resultado"]
+       [:span (->> result
+                   (map #(str (first %) "-" (second %)))
+                   (clojure.string/join " / "))]]
+      [:p.flex.justify-between
+       [:span "Fecha"]
+       [:span (.toLocaleString (js/Date. played_at))]]])))
 
 (defn ui-matches
   [matches ca cb]
@@ -81,8 +142,7 @@
         rest-matches (filter #(not (contains? prev-matches-id (:id %)))
                              matches)
         ca-matches (fs/couple-matches? ca rest-matches)
-        cb-matches (fs/couple-matches? cb rest-matches)
-        date-fn (fn [d] (.toLocaleSting (js/Date. d)))]
+        cb-matches (fs/couple-matches? cb rest-matches)]
     [:div
      (when (seq prev-matches)
        [:div
@@ -90,7 +150,7 @@
         [:hr.mx-4.mb-4
          {:style {:border "1px solid gray"}}]
         [:div.px-4.flex.flex-col.gap-4
-         (map #(fs/ui-match % date-fn) prev-matches)]])
+         (map ui-match prev-matches)]])
 
      (when (or (seq ca-matches) (seq cb-matches))
        [:div
@@ -99,9 +159,9 @@
          {:style {:border "1px solid gray"}}]
         [:div.grid.grid-cols-2
          [:div.px-4.flex.flex-col.gap-4
-          (map #(fs/ui-match % date-fn ca) ca-matches)]
+          (map #(ui-match % ca) ca-matches)]
          [:div.px-4.flex.flex-col.gap-4
-          (map #(fs/ui-match % date-fn cb) cb-matches)]]])]))
+          (map #(ui-match % cb) cb-matches)]]])]))
 
   (defn- analysis
   [{:keys [forecast] :as state}]
@@ -126,22 +186,16 @@
            [:span.text-right (str c " &  " d)]]
           [lui/accordion-item-body
            [:div
-            (fs/ui-probability state (fn [n] (.toFixed n 2)) [[a b] [c d]])
+            (ui-probability state [[a b] [c d]])
             (ui-matches (-> state :match :results)
                         [a b]
                         [c d])]]]))]))
 
-(defn view
+(defn component
   [{:keys [forecast] :as state}]
-  [:div.bg-white.rounded-lg.shadow-md.p-6.max-w-4xl.mx-auto.w-full.pb-10
-   [:h1.text-3xl.font-bold.text-gray-800.mb-6 "Simulador Partida"]
-   [:button.btn.w-full.mb-4.rounded-lg.text-white.font-bold.shadow-md.bg-blue-400
-    {:on {:click [[:event/prevent-default]
-                  [:db/dissoc :forecast]
-                  [:db/assoc-in
-                   [:forecast :players/non-selected]
-                   (-> state :stats :players)]]}}
-    "Limpiar"]
-   (if (-> state :app :screen/is-mobile?)
-     (mobile/component state)
-     (desktop/component state))])
+  [:div.flex.flex-col.gap-4
+    [:div.flex.gap-4
+     (non-selected-players forecast)
+     (selected-players forecast)]
+    (when (= 4 (-> state :forecast :players/selected count))
+      (analysis state))])

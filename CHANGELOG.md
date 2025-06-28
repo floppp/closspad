@@ -1,3 +1,27 @@
+v0.3.0 cfd9bf362d9e45e7b3bf13c927f1c185ad0f8120
+    >> fix: forecast with better mobile layout
+    >> feat: basic forecast analysis done
+    >> feat: by couple and same match historical
+    >> feat: simple stats shown in accordion
+    >> wip: accordion items with match analysis
+    >> feat: accordaions with hardcoded info
+    >> feat: buttons for select/unselect players
+    >> feat: drag&drop working for deselecting too
+    >> feat: drag & drop for selecting working
+    >> wip: drag & drop
+    >> fix: post refactor
+    >> fix: new match validation working nicely
+    >> feat: login with spinner
+    >> fix: add match do not create same match twice
+    >> fix: match and classification refactor
+    >> feat: player item with aliases
+    >> feat: using aliases in real code
+    >> feat: icon as ui/element
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> wip: portfolio running and replicant upgraded
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+
+
 v0.2.15 3da94a00e001039c06e940af383cb5e61ae696b0
     >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
     >> fix: dialog max-height and scroll

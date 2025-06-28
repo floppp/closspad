@@ -38,9 +38,8 @@
        [ui/error-toast state]
        [:div {:class ["w-full"
                       "md:w-3/4"
-                      "lg:w-2/3"
-                      "xl:w-1/2"
-                      "2xl:w-1/3"]}
+                      "xl:w-2/3"
+                      "2xl:w-1/2"]}
         (case (:page   (:page/navigated state))
           :not-found   (not-found-view)
           :home        (home-view)
