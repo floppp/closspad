@@ -1,3 +1,10 @@
+v0.3.3 a5c1bc1d4a684732b0eb8cb9cc5cf63f2446f51d
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> feat: non-selected deleted and the code is far simpler
+    >> feat: in desktop we filter players to be inside selected or not
+    >> fix: wrong action on mobile header
+
+
 v0.3.2 19c752a32411e74ba2dc5bd4c27a8902136b0b2e
     >> fix: wrong action on mobile header
     >> fix: no syncin portfolio
