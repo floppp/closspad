@@ -1,5 +1,7 @@
 (ns qoback.closspad.state.drag-events)
 
+;; non-selected only used here, in ui we filter all-players by
+;; being or not inside selected.
 ;; selectign? -> si estamos seleccionando
 (defn- process-drop
   [{:keys [forecast]} player selecting?]

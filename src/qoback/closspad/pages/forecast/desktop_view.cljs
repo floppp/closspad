@@ -42,20 +42,23 @@
         [ui/right-arrow-icon]]]]]))
 
 (defn selected-players
-  [{:players/keys [selected]}]
-  [lui/column
-   {:class ["flex" "flex-col" "gap-2" "rounded-lg" "w-full"]}
-   [lui/column-body
-    {:on {:drop (when (> 4 (count selected)) [[:drag :drop :selected]])}
-     :class ["bg-blue-400"  "shadow-md"]
-     :style {:min-height "80px"}}
-    (map
-     (selected-player-card "bg-blue-100")
-     selected)]])
+  [all-players {:players/keys [selected]}]
+  (let [ss (set selected)
+        selectable? (< (count selected) 4)]
+    [lui/column
+     {:class ["flex" "flex-col" "gap-2" "rounded-lg" "w-full"]}
+     [lui/column-body
+      {:on {:drop (when (> 4 (count selected)) [[:drag :drop :selected]])}
+       :class ["bg-blue-400"  "shadow-md"]
+       :style {:min-height "80px"}}
+      (map
+       (selected-player-card "bg-blue-100")
+       (filter #(contains? ss %) all-players))]]))
 
 (defn non-selected-players
-  [{:players/keys [non-selected selected]}]
-  (let [selectable? (< (count selected) 4)]
+  [all-players {:players/keys [selected]}]
+  (let [selectable? (< (count selected) 4)
+        ss (set selected)]
     [lui/column
      {:class ["flex" "flex-col" "gap-2" "rounded-lg" "w-full"]}
      [lui/column-body
@@ -68,7 +71,7 @@
        :style {:min-height "80px"}}
       (map
        (non-selected-player-card selectable?)
-       non-selected)]]))
+       (filter #(not (contains? ss %)) all-players))]]))
 
 (defn- couple-ratings
   [ratings]
@@ -163,7 +166,7 @@
          [:div.px-4.flex.flex-col.gap-4
           (map #(ui-match % cb) cb-matches)]]])]))
 
-  (defn- analysis
+(defn- analysis
   [{:keys [forecast] :as state}]
   (let [ps (:players/selected forecast)
         cs (for [i (range (count ps))
@@ -193,9 +196,10 @@
 
 (defn component
   [{:keys [forecast] :as state}]
-  [:div.flex.flex-col.gap-4
-    [:div.flex.gap-4
-     (non-selected-players forecast)
-     (selected-players forecast)]
-    (when (= 4 (-> state :forecast :players/selected count))
-      (analysis state))])
+  (let [ps (-> state :stats :players)]
+    [:div.flex.flex-col.gap-4
+     [:div.flex.gap-4
+      (non-selected-players ps forecast)
+      (selected-players ps forecast)]
+     (when (= 4 (-> state :forecast :players/selected count))
+       (analysis state))]))
