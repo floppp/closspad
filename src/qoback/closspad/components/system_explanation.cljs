@@ -178,10 +178,9 @@
     [:li "Protección contra la inflación de puntos"]
     [:li "Mantenimiento automático del ecosistema"]]])
 
-(defn component
+(defn view
   []
-  [:div
-   [:div.bg-white.rounded-lg.shadow-md.p-6.max-w-4xl.mx-auto.w-full
+  [:div.bg-white.rounded-lg.shadow-md.p-6.mx-auto.w-full
 
     [:h1.text-3xl.font-bold.text-gray-800.mb-6
      "Sistema de Puntuación de Pádel"]
@@ -285,6 +284,4 @@
       [:li [:strong "Decaimiento Temporal"] ":"]]]
     examples
 
-    implementation-notes]
-
-   ])
+    implementation-notes])

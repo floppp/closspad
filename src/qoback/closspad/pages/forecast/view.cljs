@@ -133,7 +133,7 @@
 
 (defn view
   [{:keys [forecast] :as state}]
-  [:div.bg-white.rounded-lg.shadow-md.p-6.max-w-4xl.mx-auto.w-full.pb-10
+  [:div.bg-white.rounded-lg.shadow-md.p-6.mx-auto.w-full.pb-10
    [:h1.text-3xl.font-bold.text-gray-800.mb-6 "Simulador Partida"]
    [:button.btn.w-full.mb-4.rounded-lg.text-white.font-bold.shadow-md.bg-blue-400
     {:on {:click [[:event/prevent-default]

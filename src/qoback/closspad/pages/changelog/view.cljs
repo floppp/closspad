@@ -2,7 +2,7 @@
 
 (defn view
   [state]
-  [:div.bg-white.rounded-lg.shadow-md.p-6.max-w-4xl.mx-auto.w-full
+  [:div.bg-white.rounded-lg.shadow-md.p-6.mx-auto.w-full
    [:h3.text-xl.font-medium.text-gray-700.mb-3
     "17/06/2025"]
 

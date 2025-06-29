@@ -52,11 +52,10 @@
                              js/Date.
                              dt/datetime->date->str))
                      all-matches)]
-    [:div.bg-white.rounded-t-lg.shadow-md.p-8
-     [:div.mb-6.flex.justify-center
-      (w/arrow-selector match-date (->> all-matches
+    [:div.bg-white.rounded-t-lg.shadow-md.pt-8.flex.justify-center
+     (w/arrow-selector match-date (->> all-matches
                                         (map (comp #(js/Date. %) :played_at))
-                                        sort))]
+                                        sort))
      [:div.space-y-4
       (for [match day-matches]
         [:div.border.border-gray-200.rounded-lg.p-4.shadow-sm

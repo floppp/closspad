@@ -23,10 +23,6 @@
      [:li "foo"]
      [:li "bar"]]]])
 
-(defn explanation-view
-  []
-  (system-explanation/component))
-
 (defn view
   [state]
   (case (:page (:page/navigated state))
@@ -37,17 +33,20 @@
        (header state)
        [ui/error-toast state]
        [:div {:class ["w-full"
+                      "z-10"
                       "md:w-3/4"
                       "xl:w-2/3"
-                      "2xl:w-1/2"]}
+                      "2xl:w-2/5"]}
         (case (:page   (:page/navigated state))
           :not-found   (not-found-view)
           :home        (home-view)
+          :match       (match/view state)
+          :explanation (system-explanation/view)
+          :full-stats  (full-stats/view state)
+          :forecast    (forecast/view state)
           :changelog   (changelog/view state)
           :add-match   (add/view state)
-          :forecast    (forecast/view state)
-          :explanation (explanation-view)
-          :full-stats  (full-stats/view state)
-          :match       (match/view state)
+
+
           :stats       (stats/view state))]]]
      (dialog/component (:ui/dialog state) (:dialog state))]))

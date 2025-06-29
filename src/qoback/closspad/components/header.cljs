@@ -19,7 +19,7 @@
               "z-10"
               "md:w-3/4"
               "xl:w-2/3"
-              "2xl:w-1/2"]}
+              "2xl:w-2/5"]}
      [:div.flex.items-center.md:hidden
       {:class (when header "justify-center")}
       [:button.text-gray-700.hover:text-gray-900
