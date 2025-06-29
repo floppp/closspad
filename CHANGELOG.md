@@ -1,3 +1,8 @@
+v0.3.6 6f80d7c75565dc39010b787ef29c37002cba6045
+    >> fix: padding in match/class
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+
+
 v0.3.5 5afb469df37cdc30184cad8d09ec6b68b54645e1
     >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
     >> fix: all views same width
