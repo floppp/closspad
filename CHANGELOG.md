@@ -1,3 +1,9 @@
+v0.3.5 5afb469df37cdc30184cad8d09ec6b68b54645e1
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> fix: all views same width
+    >> fix: cleaning error for non existent preventDefault
+
+
 v0.3.4 c93cb0b1d7a61e205037b207378d1248a1205331
     >> fix: cleaning error for non existent preventDefault
     >> fix: cleaning logs
