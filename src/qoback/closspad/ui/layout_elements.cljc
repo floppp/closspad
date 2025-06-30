@@ -28,5 +28,5 @@
 (defalias accordion-item
   [attrs body]
   [:div.collapse.collapse-arrow.bg-base-100.border.border-base-300.shadow-md.rounded-lg
-   [:input {:type "radio", :name "my-accordion-2", :checked "checked"}]
+   [:input {:type "radio" :name "my-accordion-2"}]
    body])
