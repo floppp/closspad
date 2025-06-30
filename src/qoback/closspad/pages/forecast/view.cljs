@@ -4,14 +4,12 @@
             [qoback.closspad.ui.elements :as ui]
             [qoback.closspad.ui.button-elements :as bui]
             [qoback.closspad.ui.card-elements :as cui]
-            [qoback.closspad.rating.system :as s]
-            ;; [qoback.closspad.components.match-analysis :as ma]
-            [qoback.closspad.components.match.ui :as mui]
+            [qoback.closspad.pages.forecast.elements :as e]
             [qoback.closspad.pages.forecast.services :as fs]
             [qoback.closspad.pages.forecast.desktop-view :as desktop]
             [qoback.closspad.pages.forecast.mobile-view :as mobile]))
 
-(defn- selected-player-card
+#_(defn- selected-player-card
   [color]
   (fn [p]
     [cui/card
@@ -25,7 +23,7 @@
         [ui/left-arrow-icon]]
        [:span p]]]]))
 
-(defn- non-selected-player-card
+#_(defn- non-selected-player-card
   [selectable?]
   (fn [p]
     [cui/card
@@ -34,7 +32,7 @@
               ["font-bold" "shadow-md" "transition-all" "duration-300" "ease-in-out"]
               (if selectable?
                 ["cursor-pointer" "bg-blue-400" "text-white"]
-                ["bg-base-100" "text-gray-400" ]))}
+                ["bg-base-100" "text-gray-400"]))}
      [cui/card-details
       [:p.flex.justify-between
        [:span p]
@@ -44,7 +42,7 @@
                      [:drag :drop :selected]])}
         [ui/right-arrow-icon]]]]]))
 
-(defn selected-players
+#_(defn selected-players
   [{:players/keys [selected]}]
   [lui/column
    {:class ["flex" "flex-col" "gap-2" "rounded-lg" "w-full"]}
@@ -56,7 +54,7 @@
      (selected-player-card "bg-blue-100")
      selected)]])
 
-(defn non-selected-players
+#_(defn non-selected-players
   [{:players/keys [non-selected selected]}]
   (let [selectable? (< (count selected) 4)]
     [lui/column
@@ -73,8 +71,7 @@
        (non-selected-player-card selectable?)
        non-selected)]]))
 
-
-(defn ui-matches
+#_(defn ui-matches
   [matches ca cb]
   (let [prev-matches (fs/same-match? [ca cb] matches)
         prev-matches-id (set (map :id prev-matches))
@@ -90,7 +87,7 @@
         [:hr.mx-4.mb-4
          {:style {:border "1px solid gray"}}]
         [:div.px-4.flex.flex-col.gap-4
-         (map #(fs/ui-match % date-fn) prev-matches)]])
+         (map #(e/ui-match % date-fn) prev-matches)]])
 
      (when (or (seq ca-matches) (seq cb-matches))
        [:div
@@ -99,11 +96,11 @@
          {:style {:border "1px solid gray"}}]
         [:div.grid.grid-cols-2
          [:div.px-4.flex.flex-col.gap-4
-          (map #(fs/ui-match % date-fn ca) ca-matches)]
+          (map #(e/ui-match % date-fn ca) ca-matches)]
          [:div.px-4.flex.flex-col.gap-4
-          (map #(fs/ui-match % date-fn cb) cb-matches)]]])]))
+          (map #(e/ui-match % date-fn cb) cb-matches)]]])]))
 
-  (defn- analysis
+#_(defn- analysis
   [{:keys [forecast] :as state}]
   (let [ps (:players/selected forecast)
         cs (for [i (range (count ps))
@@ -126,13 +123,13 @@
            [:span.text-right (str c " &  " d)]]
           [lui/accordion-item-body
            [:div
-            (fs/ui-probability state (fn [n] (.toFixed n 2)) [[a b] [c d]])
+            (e/ui-probability state (fn [n] (.toFixed n 2)) [[a b] [c d]])
             (ui-matches (-> state :match :results)
                         [a b]
                         [c d])]]]))]))
 
 (defn view
-  [{:keys [forecast] :as state}]
+  [state]
   [:div.bg-white.rounded-lg.shadow-md.p-6.mx-auto.w-full.pb-10
    [:h1.text-3xl.font-bold.text-gray-800.mb-6 "Simulador Partida"]
    [:button.btn.w-full.mb-4.rounded-lg.text-white.font-bold.shadow-md.bg-blue-400

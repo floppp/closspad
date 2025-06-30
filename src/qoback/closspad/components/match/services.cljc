@@ -9,10 +9,8 @@
 
 (defn same-match?
   [[csa csb] match]
-  (let [csa (set csa)
-        csb (set csb)]
-    (and (couple-in-match? csa match)
-         (couple-in-match? csb match))))
+  (and (couple-in-match? (set csa) match)
+       (couple-in-match? (set csb) match)))
 
 (defn match-couples-as-set
   [match]
@@ -28,7 +26,6 @@
   (->> matches
        (map match-with-couples-as-set)
        (filter #(couple-in-match? couple %))))
-
 
 (defn get-couple-matches
   [couple state]
