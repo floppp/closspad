@@ -1,6 +1,7 @@
 (ns qoback.closspad.pages.forecast.elements
   (:require [clojure.string]
             [qoback.closspad.rating.system :as s]
+            [qoback.closspad.ui.layout-elements :as lui]
             [qoback.closspad.components.match.ui :as mui]
             [qoback.closspad.pages.forecast.services :as fs]))
 
@@ -64,3 +65,68 @@
       [:p.flex.justify-between
        [:span "Fecha"]
        [:span (date-fn played_at)]]])))
+
+(defn ui-matches
+  [matches ca cb is-mobile?]
+  (let [prev-matches (fs/same-match? [ca cb] matches)
+        prev-matches-id (set (map :id prev-matches))
+        rest-matches (filter #(not (contains? prev-matches-id (:id %)))
+                             matches)
+        ca-matches (fs/couple-matches? ca rest-matches)
+        cb-matches (fs/couple-matches? cb rest-matches)
+        date-fn (fn [d] (.toLocaleString (js/Date. d)))]
+    [:div
+     (when (seq prev-matches)
+       [:div
+        [:h2.p-4.text-bold.text-lg.mt-4 "Histórico Enfrentamiento Parejas"]
+        [:hr.mx-4.mb-4
+         {:style {:border "1px solid gray"}}]
+        [:div.px-4.flex.flex-col.gap-4
+         (map #(ui-match % date-fn) prev-matches)]])
+
+     (when (or (seq ca-matches) (seq cb-matches))
+       [:div
+        [:h2.p-4.text-bold.text-lg.mt-4 "Histórico por Pareja"]
+        [:hr.mx-4.mb-4
+         {:style {:border "1px solid gray"}}]
+        [:div
+         {:class (if is-mobile?
+                   ["grid" "grid-cols-2"]
+                   ["flex" "flex-col" "gap-8"])}
+         [:div.px-4.flex.flex-col.gap-4
+          (when is-mobile?
+            [:h2.text-right.text-bold (str (first ca) " &  " (second ca))])
+          (map #(ui-match % date-fn ca) ca-matches)]
+         [:div.px-4.flex.flex-col.gap-4
+          (when is-mobile?
+            [:h2.text-right.text-bold (str (first cb) " &  " (second cb))])
+          (map #(ui-match % date-fn cb) cb-matches)]]])]))
+
+(defn analysis
+  [{:keys [forecast] :as state} is-mobile?]
+  (let [ps (:players/selected forecast)
+        cs (for [i (range (count ps))
+                 j (range (inc i) (count ps))]
+             [i j])
+        matches [[(nth cs 0) (nth cs 5)]
+                 [(nth cs 1) (nth cs 4)]
+                 [(nth cs 2) (nth cs 3)]]]
+    [lui/column
+     (for [[[a b] [c d]] matches]
+       (let [a (nth ps a)
+             b (nth ps b)
+             c (nth ps c)
+             d (nth ps d)]
+         [lui/accordion-item
+          [lui/accordion-item-title
+           {:class ["grid" "grid-cols-3" "items-center"]}
+           [:span (str a " &  " b)]
+           [:span.text-center "vs"]
+           [:span.text-right (str c " &  " d)]]
+          [lui/accordion-item-body
+           [:div
+            (ui-probability state (fn [n] (.toFixed n 2)) [[a b] [c d]])
+            (ui-matches (-> state :match :results)
+                        [a b]
+                        [c d]
+                        is-mobile?)]]]))]))

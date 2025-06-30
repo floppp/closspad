@@ -1,7 +1,5 @@
 (ns qoback.closspad.pages.forecast.services
   (:require [clojure.string]
-            [qoback.closspad.rating.system :as s]
-            [qoback.closspad.components.match.ui :as mui]
             [qoback.closspad.components.match.services :as m]))
 
 (defn couple-matches?
