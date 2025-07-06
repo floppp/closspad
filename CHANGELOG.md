@@ -1,3 +1,8 @@
+v0.4.4 49466630d19dc8a633b24e6c97068d2632916c22
+    >> fix: some margin amongst dates
+    >> feat: adding changes
+
+
 v0.4.3 34af215c163ac9bf4066157ede774e77024d7a3d
     >> feat: adding changes
     >> fix: promises less than regular
