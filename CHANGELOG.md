@@ -1,3 +1,8 @@
+v0.4.2 6d9acdc18e736fd47cd0cc5ba2d639fdc07c850f
+    >> fix: promises less than regular
+    >> fix: no var overriding in release mode
+
+
 v0.4.1 dcee6633e5dd2540ed0e9044d4e46da25ac28c4a
     >> fix: no var overriding in release mode
     >> feat: match importance being taken care

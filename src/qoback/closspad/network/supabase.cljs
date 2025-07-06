@@ -3,7 +3,8 @@
             [cljs.core.async.interop :refer [<p!]]
             [qoback.closspad.components.match.domain :as m]
             [qoback.closspad.state.db :refer [get-dispatcher]]
-            [qoback.closspad.network.domain :refer [supabase]]))
+            [qoback.closspad.network.domain :refer [supabase]]
+            [clojure.string :as str]))
 
 
 (defn handle-supabase-auth
@@ -58,7 +59,7 @@
   (post table
         (-> match
             (dissoc :n-sets)
-            (assoc :importance (-> match :importance keyword m/importances)))
+            (assoc :importance (-> match :importance str/lower-case keyword m/importances)))
         {:on-failure (fn [err]
                        [[:data/error err]])
          :on-success (fn [_]

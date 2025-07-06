@@ -8,8 +8,8 @@
   {:major 1.0
    :p1 0.7
    :p2 0.5
-   :promises 0.3
-   :regular 0.1})
+   :regular 0.3
+   :promises 0.1})
 
 (defn importance->type
   [importance]
@@ -17,8 +17,8 @@
     1.0 :major
     0.7 :p1
     0.5 :p2
-    0.3 :promises
-    0.1 :regular
+    0.3 :regular
+    0.1 :promises
     :undefined))
 
 (defn importance->color
