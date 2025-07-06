@@ -1,3 +1,8 @@
+v0.4.1 dcee6633e5dd2540ed0e9044d4e46da25ac28c4a
+    >> fix: no var overriding in release mode
+    >> feat: match importance being taken care
+
+
 v0.4.0 60be685eaa10710142ffab699bdbc5975390a6a1
     >> feat: match importance being taken care
     >> fix: cleaning
