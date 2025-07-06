@@ -54,5 +54,5 @@
          (header-item header "Simulador" "forecast")
          (header-item header "Cambios" "changelog")
          (if is-logged?
-           (header-item header "Añadir Partido" "add")
+           (header-item header "Añadir Partido" "add-match")
            (header-item header "Login" "login"))]])]))

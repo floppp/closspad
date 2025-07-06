@@ -25,7 +25,9 @@
                                 (when (nil? session)
                                   (rfe/push-state :route/home)))
     ;; TODO: hacer comprobación para enviar o no
-    :data/fx.query (network/query-async {:query/kind :query/matches :query/data args})
+    :data/fx.query (network/query-async
+                    {:query/kind :query/matches
+                     :query/data args})
     ;; :post/fx.match (supabase/post table (first args))
     :fetch/fx.login (supabase/login
                      (first args)

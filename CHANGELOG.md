@@ -1,3 +1,12 @@
+v0.4.0 60be685eaa10710142ffab699bdbc5975390a6a1
+    >> feat: match importance being taken care
+    >> fix: cleaning
+    >> fix: analysis shared too
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> fix: sharing code in both forecast styles
+    >> fix: padding in match/class
+
+
 v0.3.6 6f80d7c75565dc39010b787ef29c37002cba6045
     >> fix: padding in match/class
     >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad

@@ -38,18 +38,17 @@
     (case action-name
       :add-match/played-at (let [[value path] args]
                              {:new-state (assoc-in state path value)})
+      :add-match/importance (let [[value path] args]
+                             {:new-state (assoc-in state path value)})
       :add-match (let [[value & path] args]
                    {:new-state (ext/update-with-vector state (concat  [:add/match] path) value)})
       :add/match-set          {:new-state (update-in state [:add/match :n-sets] (fnil inc 1))}
-      :remove/match-set       {:new-state
-                               ;; tremenda guarrada, problema de la estructra elegida, hay que mejorar aunque sí funciona
-                               (assoc-in
-                                (assoc-in
-                                 (update-in state [:add/match :n-sets] (fnil dec 1))
-                                 [:add/match :result :a]
-                                 (pop (get-in state [:add/match :result :a])))
-                                [:add/match :result :b]
-                                (pop (get-in state [:add/match :result :b])))}
+      :remove/match-set       {:new-state ;; tremenda guarrada, problema de la estructra elegida, hay que mejorar aunque sí funciona
+                               (assoc-in (assoc-in (update-in state [:add/match :n-sets] (fnil dec 1))
+                                                   [:add/match :result :a]
+                                                   (pop (get-in state [:add/match :result :a])))
+                                         [:add/match :result :b]
+                                         (pop (get-in state [:add/match :result :b])))}
       :db/assoc               {:new-state (apply assoc state args)}
       :db/assoc-in            (let [[path args] args]
                                 {:new-state (assoc-in state path args)})

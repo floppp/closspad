@@ -9,7 +9,7 @@
    :compiler-options
    {:shadow-keywords true
     :closure-defines {qoback.closspad.network.domain/organization "fik"
-                      qoback.closspad.network.domain/table "CLOSSPAD_match"
+                      qoback.closspad.network.domain/table "CLOSSPAD_match_dev"
                       qoback.closspad.network.domain/base-url "https://orqwiubnozfouaqyywah.supabase.co/"
                       qoback.closspad.network.domain/anon-key "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ycXdpdWJub3pmb3VhcXl5d2FoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjEzOTkzNzgsImV4cCI6MjAzNjk3NTM3OH0.6vRnb5W7DHSxpt-gQmbL9q_wRJzNW_tgks9Tu16vq1E"}}
    :release

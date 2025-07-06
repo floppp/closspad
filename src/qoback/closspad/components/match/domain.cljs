@@ -1,14 +1,44 @@
 (ns qoback.closspad.components.match.domain
   (:require [cljs.spec.alpha :as s]
+            [clojure.string :as str]
             [qoback.closspad.network.domain :refer [organization]]
             [qoback.closspad.core-domain :as core]))
 
+(def importances
+  {:major 1.0
+   :p1 0.7
+   :p2 0.5
+   :promises 0.3
+   :regular 0.1})
+
+(defn importance->type
+  [importance]
+  (case importance
+    1.0 :major
+    0.7 :p1
+    0.5 :p2
+    0.3 :promises
+    0.1 :regular
+    :undefined))
+
+(defn importance->color
+  [importance]
+  ())
+(defn importance->name
+  [importance]
+  (str/capitalize (name (importance->type importance))))
+
+(def importance-keys
+  (set
+   (->> importances keys (map (comp str/capitalize name)))))
+
 (s/def ::player-id ::core/non-empty-string)
 (s/def ::organization string?)
+(s/def ::importance importance-keys)
 (s/def ::couple (s/tuple ::player-id ::player-id))
 (s/def ::game-set (s/tuple number? number?))
 (s/def ::game-result (s/or
-                      :one-set ::game-set
+                      :one-set (s/tuple ::game-set)
                       :two-sets (s/tuple ::game-set ::game-set)
                       :three-sets (s/tuple ::game-set ::game-set ::game-set)))
 
@@ -16,7 +46,6 @@
 (s/def ::couple_b   ::couple)
 (s/def ::result     ::game-result)
 (s/def ::played_at  inst?)
-(s/def ::importance number?)
 (s/def ::match      (s/keys
                      :req-un [::couple_a ::couple_b ::played_at ::result ::organization]
                      :opt-un [::importance]))
@@ -63,6 +92,7 @@
 (defn valid-match?
   [{:keys [result n-sets] :as match}]
   (let [match (new-match->match match)]
+    (println (s/explain-data ::match match))
     (when (s/valid? ::match match)
       (and (= n-sets (count (:a result)) (count (:b result)) (count (:result match))) ;; this to check when new set with no fields yet
            (valid-result? (:result match))

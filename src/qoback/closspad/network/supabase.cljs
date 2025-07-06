@@ -1,8 +1,9 @@
 (ns qoback.closspad.network.supabase
   (:require [cljs.core.async :as async]
             [cljs.core.async.interop :refer [<p!]]
+            [qoback.closspad.components.match.domain :as m]
             [qoback.closspad.state.db :refer [get-dispatcher]]
-            [qoback.closspad.network.domain :refer [supabase organization]]))
+            [qoback.closspad.network.domain :refer [supabase]]))
 
 
 (defn handle-supabase-auth
@@ -55,10 +56,12 @@
 (defn post-match
   [table match]
   (post table
-        (dissoc match :n-sets)
+        (-> match
+            (dissoc :n-sets)
+            (assoc :importance (-> match :importance keyword m/importances)))
         {:on-failure (fn [err]
                        [[:data/error err]])
          :on-success (fn [_]
                        [[:db/dissoc :add/match]
                         [:auth/check-login]
-                        [:data/query [1 2]]])}))
+                        [:data/query]])}))

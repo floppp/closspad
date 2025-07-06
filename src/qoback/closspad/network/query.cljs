@@ -18,14 +18,15 @@
            (async/>! ch {:error (ex-cause err)}))))
      ch)))
 
-(def method-handler {:get #'GET})
+(def http-verb-handlers
+  {:get #'GET})
 
 (defn query-async
   [params]
-  (let [{:keys [method url options on-success on-failure]}
-        (query->http-request
-         (assoc params :query/date (dt/date->minus-one-year)))
-        chan ((method method-handler)
+  (let [request-params (query->http-request (assoc params :query/date (dt/date->minus-one-year)))
+        {:keys [method url options on-success on-failure]} request-params
+        http-handler (method http-verb-handlers)
+        chan (http-handler
               (str base-url "rest/" url)
               (assoc options :signal (js/AbortSignal.timeout 5000)))]
     (async/go

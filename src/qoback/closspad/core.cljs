@@ -39,6 +39,6 @@
   (swap! !dispatcher assoc :dispatcher event-handler)
   (router/start! router/routes event-handler)
   (watch! render!)
-  (event-handler nil [[:data/query [1 2]]])
+  (event-handler nil [[:data/query]])
   (setup-device-listener event-handler)
   (start!))
