@@ -1,3 +1,8 @@
+v0.4.3 34af215c163ac9bf4066157ede774e77024d7a3d
+    >> feat: adding changes
+    >> fix: promises less than regular
+
+
 v0.4.2 6d9acdc18e736fd47cd0cc5ba2d639fdc07c850f
     >> fix: promises less than regular
     >> fix: no var overriding in release mode
