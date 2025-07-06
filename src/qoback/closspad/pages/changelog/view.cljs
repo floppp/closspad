@@ -4,27 +4,24 @@
   [state]
   [:div.bg-white.rounded-lg.shadow-md.p-6.mx-auto.w-full
    [:div.mb-10
-    [:h3.text-xl.font-medium.text-gray-700.mb-3
+    [:h3.text-xl.font-medium.text-gray-700.mb-3.text-right
      "06/07/2025"]
     [:h4.text-2xl.font-bold.text-blue-400.mb-3.mt-6 "FEATURES"]
     [:ul.list-disc.list-inside.space-y-2.ml-4
-     [:li "Distintos tipos de partidos, los puntos que se ponen en juego son más a mayor importancia"
-      [:ul.list-inside.ml-6.mt-2.space-y-1
-       [:li "promesas"]
-       [:li "regular"]
-       [:li "p2"]
-       [:li "p1"]
-       [:li "major"]]]]]
+     [:li "Distintos tipos de partidos, los puntos que se ponen en juego son más a mayor importancia: promesas, regular, p2, p1, major"
+]]]
 
-   [:div.mb-10
-    [:h3.text-xl.font-medium.text-gray-700.mb-3
+   [:hr]
+   [:div.mt-5.mb-10
+    [:h3.text-xl.font-medium.text-gray-700.mb-3.text-right
      "25/06/2025"]
     [:h4.text-2xl.font-bold.text-blue-400.mb-3.mt-6 "FEATURES"]
     [:ul.list-disc.list-inside.space-y-2.ml-4
      [:li "Simulador, por ahora muy básico, de partidos. Incluye probabilidad de victoria por pareja e histórico de partidos jugados por la pareja y enfrentamientos previos"]]]
 
-   [:div.mb-10
-    [:h3.text-xl.font-medium.text-gray-700.mb-3
+   [:hr]
+   [:div.mt-5.mb-10
+    [:h3.text-xl.font-medium.text-gray-700.mb-3.text-right
      "17/06/2025"]
     [:h4.text-2xl.font-bold.text-blue-400.mb-3.mt-6 "FEATURES"]
     [:ul.list-disc.list-inside.space-y-2.ml-4

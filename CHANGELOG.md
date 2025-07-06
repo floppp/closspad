@@ -1,3 +1,8 @@
+v0.4.5 b7dd47d78c9b113ed67053c593f7156dac44f537
+    >> fix: style
+    >> fix: some margin amongst dates
+
+
 v0.4.4 49466630d19dc8a633b24e6c97068d2632916c22
     >> fix: some margin amongst dates
     >> feat: adding changes
