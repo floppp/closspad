@@ -52,7 +52,7 @@
 
    [:div
     {:class
-     ["text-lg" "font-semibold" "min-w-120" "text-center" "sm:text-xl"]}
+     ["text-lg" "font-semibold" "min-w-60" "text-center" "sm:text-xl"]}
     (dt/datetime->date->str date)]
 
    (arrow-right date match-dates)
