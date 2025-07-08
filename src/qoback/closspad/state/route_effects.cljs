@@ -38,6 +38,7 @@
                   {:day (h/format-iso-date (if date date (js/Date.)))}))
     :home        (goto->page :home)
     :changelog   (goto->page :changelog)
+    :forecast    (goto->page :forecast)
     :explanation (goto->page :explanation)
     :match       (navigated-match-page (first args))
     :add-match   (goto->page :add-match)

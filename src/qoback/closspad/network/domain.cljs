@@ -35,9 +35,7 @@
                       [[:db/assoc :error err]
                        [:db/dissoc :is-loading?]])))
      :on-success (fn [ms]
-                   (let [;; ratings (process-matches ms)
-                         [classification system] (js->clj (rating/processMatches (clj->js ms))
-                                                          {:keywordize-keys true})
+                   (let [[classification system] (js->clj (rating/processMatches (clj->js ms)) {:keywordize-keys true})
                          dispatcher (get-dispatcher)
                          ratings (filter (comp some? first) classification)
                          all-players (-> ms stats/get-all-players vec sort)
@@ -54,7 +52,7 @@
                        [:db/assoc-in [:stats :players] all-players]
                        [:db/assoc-in [:stats :by-player] all-players-stats]
                        [:db/assoc-in [:stats :oponents] js-stats]
-                       [:db/assoc :match {:results ms}]
+                       [:db/assoc-in [:match :results] ms]
                        [:db/dissoc :is-loading?]])))}
     :query/user
     [:get (str "/api/todo/users/" (:user-id data))]))

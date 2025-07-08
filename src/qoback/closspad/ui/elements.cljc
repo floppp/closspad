@@ -46,6 +46,15 @@
   [attrs]
   [icon attrs "M9 5l7 7-7 7"])
 
+(defalias minus-icon
+  [attrs]
+  [icon attrs "M5 12h14"])
+
+(defalias plus-icon
+  [attrs]
+  [icon attrs "M12 5v14M5 12h14"])
+
+
 (defalias left-double-arrow-icon
   [attrs]
   [icon attrs "M19 5 l-7 7 7 7 M10 5 l-7 7 7 7"])

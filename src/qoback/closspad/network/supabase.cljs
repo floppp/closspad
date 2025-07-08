@@ -1,8 +1,10 @@
 (ns qoback.closspad.network.supabase
   (:require [cljs.core.async :as async]
             [cljs.core.async.interop :refer [<p!]]
+            [qoback.closspad.components.match.domain :as m]
             [qoback.closspad.state.db :refer [get-dispatcher]]
-            [qoback.closspad.network.domain :refer [supabase organization]]))
+            [qoback.closspad.network.domain :refer [supabase]]
+            [clojure.string :as str]))
 
 
 (defn handle-supabase-auth
@@ -36,38 +38,31 @@
                           [:auth/check-login]]
                          on-success))))))
 
-(defn extract-scores [match]
-  (let [n-sets (:n-sets match)]
-    (mapv (fn [set-n]
-            [(get match (keyword (str "couple-a-score-set-" set-n)))
-             (get match (keyword (str "couple-b-score-set-" set-n)))])
-          (range n-sets))))
-
-(defn post-match
-  [table match]
-  (let [dispatcher (get-dispatcher)
-        {:keys [couple-a-1
-                couple-a-2
-                couple-b-1
-                couple-b-2
-                played-at]} match]
+(defn post
+  [table entity {:keys [on-success on-failure]}]
+  (let [dispatcher (get-dispatcher)]
     (async/go
       (try
         (let [response (<p! (-> supabase
                                 (.from table)
-                                (.insert (clj->js
-                                          [{:played_at played-at
-                                            :couple_a [couple-a-1 couple-a-2]
-                                            :couple_b [couple-b-1 couple-b-2]
-                                            :organization organization
-                                            :result (extract-scores match)}]))
+                                (.insert (clj->js [entity]))
                                 (.select)))
               error (.-error response)]
           (if error
-            (dispatcher nil [[:data/error error]])
-            (dispatcher nil [[:db/dissoc :add/match]
-                             [:auth/check-login]
-                             [:data/query [1 2]]])))
+            (dispatcher nil (on-failure error))
+            (dispatcher nil (on-success))))
         (catch js/Error err
           (dispatcher nil [[:data/error (ex-cause err)]]))))))
 
+(defn post-match
+  [table match]
+  (post table
+        (-> match
+            (dissoc :n-sets)
+            (assoc :importance (-> match :importance str/lower-case keyword m/importances)))
+        {:on-failure (fn [err]
+                       [[:data/error err]])
+         :on-success (fn [_]
+                       [[:db/dissoc :add/match]
+                        [:auth/check-login]
+                        [:data/query]])}))

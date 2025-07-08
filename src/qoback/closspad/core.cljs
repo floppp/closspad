@@ -9,6 +9,14 @@
 #_(when goog.DEBUG
   (add-tap #(.log js/console %)))
 
+(defn setup-device-listener
+  [dispatcher]
+  (let [query (js/window.matchMedia "(max-width: 768px)")
+        listener (fn [_]
+                   (dispatcher nil [[:dom/effect :screen/update-mobile-state]]))]
+    (.addListener query listener)
+    (dispatcher nil [[:dom/effect :screen/update-mobile-state]])))
+
 (defn- render! [state]
   (r-dom/render
    (js/document.getElementById "app")
@@ -31,5 +39,6 @@
   (swap! !dispatcher assoc :dispatcher event-handler)
   (router/start! router/routes event-handler)
   (watch! render!)
-  (event-handler nil [[:data/query [1 2]]])
+  (event-handler nil [[:data/query]])
+  (setup-device-listener event-handler)
   (start!))

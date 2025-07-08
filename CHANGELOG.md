@@ -1,10 +1,85 @@
-v0.2.17 0f5389e54638bb609efc0407616237fe7bb86743
+v0.4.5 b7dd47d78c9b113ed67053c593f7156dac44f537
+    >> fix: style
+    >> fix: some margin amongst dates
+
+
+v0.4.4 49466630d19dc8a633b24e6c97068d2632916c22
+    >> fix: some margin amongst dates
+    >> feat: adding changes
+
+
+v0.4.3 34af215c163ac9bf4066157ede774e77024d7a3d
+    >> feat: adding changes
+    >> fix: promises less than regular
+
+
+v0.4.2 6d9acdc18e736fd47cd0cc5ba2d639fdc07c850f
+    >> fix: promises less than regular
+    >> fix: no var overriding in release mode
+
+
+v0.4.1 dcee6633e5dd2540ed0e9044d4e46da25ac28c4a
+    >> fix: no var overriding in release mode
+    >> feat: match importance being taken care
+
+
+v0.4.0 60be685eaa10710142ffab699bdbc5975390a6a1
+    >> feat: match importance being taken care
+    >> fix: cleaning
+    >> fix: analysis shared too
     >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
-    >> hot: issue with closure table
-    >> fix: new match validation working nicely
+    >> fix: sharing code in both forecast styles
+    >> fix: padding in match/class
 
 
-v0.2.16 88ca6b7ab4a15f14d598989b6cd8fa7165aec07a
+v0.3.6 6f80d7c75565dc39010b787ef29c37002cba6045
+    >> fix: padding in match/class
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+
+
+v0.3.5 5afb469df37cdc30184cad8d09ec6b68b54645e1
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> fix: all views same width
+    >> fix: cleaning error for non existent preventDefault
+
+
+v0.3.4 c93cb0b1d7a61e205037b207378d1248a1205331
+    >> fix: cleaning error for non existent preventDefault
+    >> fix: cleaning logs
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+
+
+v0.3.3 a5c1bc1d4a684732b0eb8cb9cc5cf63f2446f51d
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> feat: non-selected deleted and the code is far simpler
+    >> feat: in desktop we filter players to be inside selected or not
+    >> fix: wrong action on mobile header
+
+
+v0.3.2 19c752a32411e74ba2dc5bd4c27a8902136b0b2e
+    >> fix: wrong action on mobile header
+    >> fix: no syncin portfolio
+
+
+v0.3.1 d8e90d43dae56f5479f0f91b207562654fafde38
+    >> fix: no syncin portfolio
+    >> fix: forecast with better mobile layout
+
+
+v0.3.0 cfd9bf362d9e45e7b3bf13c927f1c185ad0f8120
+    >> fix: forecast with better mobile layout
+    >> feat: basic forecast analysis done
+    >> feat: by couple and same match historical
+    >> feat: simple stats shown in accordion
+    >> wip: accordion items with match analysis
+    >> feat: accordaions with hardcoded info
+    >> feat: buttons for select/unselect players
+    >> feat: drag&drop working for deselecting too
+    >> feat: drag & drop for selecting working
+    >> wip: drag & drop
+    >> fix: post refactor
+>>>>>>> f85517b3efc749c9e1756f76427bbe359f8b57b0
     >> fix: new match validation working nicely
     >> feat: login with spinner
     >> fix: add match do not create same match twice

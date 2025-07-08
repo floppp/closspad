@@ -1,6 +1,7 @@
 (ns qoback.closspad.state.events
   (:require [clojure.walk :as walk]
             [qoback.closspad.state.db :refer [!state]]
+            [qoback.closspad.state.drag-events :as drag]
             [qoback.closspad.state.effects :refer [perform-effect!]]
             [qoback.closspad.state.ui-events :as ui-events]
             [qoback.closspad.utils.coll-extras :as ext]))
@@ -30,23 +31,24 @@
                              (enrich-action-from-event replicant-data)
                              (enrich-action-from-state state))
         [action-name & args] enrichted-event]
-    #_(when goog.DEBUG
-        (.log js/console action-name args))
+    ;; (when goog.DEBUG
+        ;; (.log js/console action-name args)
+        ;; (.log js/console enrichted-event)
+        ;; )
     (case action-name
       :add-match/played-at (let [[value path] args]
+                             {:new-state (assoc-in state path value)})
+      :add-match/importance (let [[value path] args]
                              {:new-state (assoc-in state path value)})
       :add-match (let [[value & path] args]
                    {:new-state (ext/update-with-vector state (concat  [:add/match] path) value)})
       :add/match-set          {:new-state (update-in state [:add/match :n-sets] (fnil inc 1))}
-      :remove/match-set       {:new-state
-                               ;; tremenda guarrada, problema de la estructra elegida, hay que mejorar aunque sí funciona
-                               (assoc-in
-                                (assoc-in
-                                 (update-in state [:add/match :n-sets] (fnil dec 1))
-                                 [:add/match :result :a]
-                                 (pop (get-in state [:add/match :result :a])))
-                                [:add/match :result :b]
-                                (pop (get-in state [:add/match :result :b])))}
+      :remove/match-set       {:new-state ;; tremenda guarrada, problema de la estructra elegida, hay que mejorar aunque sí funciona
+                               (assoc-in (assoc-in (update-in state [:add/match :n-sets] (fnil dec 1))
+                                                   [:add/match :result :a]
+                                                   (pop (get-in state [:add/match :result :a])))
+                                         [:add/match :result :b]
+                                         (pop (get-in state [:add/match :result :b])))}
       :db/assoc               {:new-state (apply assoc state args)}
       :db/assoc-in            (let [[path args] args]
                                 {:new-state (assoc-in state path args)})
@@ -60,11 +62,12 @@
                                :effects [[:data/fx.query {:state state :args args}]]}
       :fetch/login            {:new-state (assoc state :is-loading? true :error nil)
                                :effects [[:fetch/fx.login args]]}
+      :drag                   {:new-state (drag/process state args)}
       ;; No refactorizar porque es mucho lío para cambiar `enrich-action-from-event`.
       :event/prevent-default  {:effects [[:dom/fx.prevent-default]]}
-      ;; Refactorizados ya
+      ;; >>>>> Refactorizados ya
       :ui/dialog              {:new-state (ui-events/process-dialogs state args)}
-      :dom/effect             {:effects   [[:dom/fx.effect (first args)]]}
+      :dom/effect             {:effects [[:dom/fx.effect (first args)]]}
       ;; Routes
       :route/push             {:effects [[:route/fx.push args]]}
       :route                  {:effects [[:route/fx args state]]}

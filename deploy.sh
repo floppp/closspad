@@ -233,6 +233,8 @@ trap 'mv resources/public/index.html.bak resources/public/index.html' EXIT
 rsync -avz --progress \
       --exclude "js/cljs-runtime" \
       --exclude "js/main.js" \
+      --exclude "portfolio.html" \
+      --exclude "portfolio-js" \
       --exclude "*.edn"\
       resources/public/ \
       nando@157.90.230.213:/home/nando/apps/qoback/fik
@@ -248,6 +250,7 @@ git commit --amend --no-edit
 clean() {
     # Clean old versions
     rm resources/public/*.bak
+    rm resources/public/portfolio-js
     rm resources/public/js/main.v*.js
     rm resources/public/js/manifest.edn
     rm resources/public/css/style.v*.css

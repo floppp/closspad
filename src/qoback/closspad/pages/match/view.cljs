@@ -3,7 +3,6 @@
             [qoback.closspad.components.classification.component :as classification]
             [qoback.closspad.ui.elements :as ui]))
 
-
 (defn view
   [state]
   (let [is-loading? (-> state :is-loading?)]

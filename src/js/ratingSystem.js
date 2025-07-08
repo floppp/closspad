@@ -2,6 +2,7 @@
 // * combinación estable: 20/100
 // * combinación media  : 25/120
 const defaultOptions = {
+    importance: 1.0,
     defaultRating: 50,
     maxRating: 100,
     minRating: 0,
@@ -53,47 +54,6 @@ function addPlayer(
     };
 }
 
-// function updateSystem(system, match) {
-//     const { couple_a, couple_b, result, played_at } = match;
-//     const importance = computeImportance(system, match);
-//     const matchPlayers = [...couple_a, ...couple_b];
-//     const winner = determineWinner(result);
-
-//     const teamARating = getTeamRating(system, couple_a);
-//     const teamBRating = getTeamRating(system, couple_b);
-//     const expectedWinA = calculateExpectedWin(system, teamARating, teamBRating);
-
-//     // Add missing players
-//     let newSystem = system;
-//     for (const playerId of matchPlayers) {
-//         if (!newSystem.players[playerId]) {
-//             newSystem = addPlayer(newSystem, playerId, played_at);
-//         }
-//     }
-
-//     const matchDate = new Date(played_at);
-
-//     // Distribución equitativa puntos
-//     // const pointsTeamA = computeVariation(system, teamARating, teamBRating, winner === 'A', expectedWinA, importance);
-//     // const pointsTeamB = computeVariation(system, teamBRating, teamARating, winner === 'B', 1 - expectedWinA, importance);
-
-//     // newSystem = updateSystemCouple(newSystem, couple_a, pointsTeamA);
-//     // newSystem = updateSystemCouple(newSystem, couple_b, pointsTeamB);
-
-//     // Distribución no equitativa
-//     const playerVariationsA = computeVariationPerPlayer(newSystem, couple_a, teamARating, teamBRating, winner === 'A', expectedWinA, importance);
-//     const playerVariationsB = computeVariationPerPlayer(newSystem, couple_b, teamBRating, teamARating, winner === 'B', 1 - expectedWinA, importance);
-
-//     newSystem = updateSystemCouple(newSystem, couple_a, playerVariationsA, played_at);
-//     newSystem = updateSystemCouple(newSystem, couple_b, playerVariationsB, played_at);
-
-//     const inactivePlayersForDecay = Object.keys(newSystem.players).filter((id) => !matchPlayers.includes(id));
-
-//     return {
-//         ...applyDecay(newSystem, inactivePlayersForDecay, matchDate),
-//         date: matchDate,
-//     };
-// }
 function updateSystem(system, match) {
     const { couple_a, couple_b, result, played_at } = match;
     const importance = computeImportance(system, match);
@@ -277,43 +237,7 @@ function computeVariation(system, coupleRating, otherCoupleRating, isWinner, exp
     return Math.round(variation);
 }
 
-// function computeVariationPerPlayer(system, couple, coupleRating, otherCoupleRating, isWinner, expectedWin, importance) {
-//     const actualResult = isWinner ? 1 : 0;
 
-//     const totalWeightedPoints = couple.reduce(
-//         (sum, id) => sum + Math.pow(system.players[id].points, 0.5),
-//         0
-//     );
-
-//     const baseDelta = importance * system.baseK * (actualResult - expectedWin);
-
-//     // 🎲 BONUS POR SORPRESA
-//     const surpriseBonus = isWinner ? Math.max(0, (0.5 - expectedWin)) * system.baseK * 0.5 : 0;
-
-//     const variations = {};
-
-//     for (const playerId of couple) {
-//         const player = system.players[playerId];
-//         const playerWeight = Math.pow(player.points, 0.5) / totalWeightedPoints;
-
-//         // 💥 RECOMPENSA AL DÉBIL
-//         const reverseWeight = 1 - playerWeight;
-//         const weakBonus = isWinner ? Math.round(reverseWeight * 2) : 0; // Hasta +2 puntos para el más débil
-
-//         // 🧗 BONUS UNDERDOG
-//         const opponentAvg = otherCoupleRating / 2;
-//         const underdogGap = Math.max(0, opponentAvg - player.points);
-//         const underdogBonus = isWinner ? Math.round(underdogGap * 0.015) : 0;
-
-//         // REPARTO BONUS POR SORPRESA
-//         const surpriseShare = isWinner ? surpriseBonus * playerWeight : 0;
-//         const adjustedVariation = Math.round(baseDelta * playerWeight + surpriseShare) + weakBonus + underdogBonus;
-
-//         variations[playerId] = adjustedVariation;
-//     }
-
-//     return variations;
-// }
 function computeVariationPerPlayer(system, couple, coupleRating, otherCoupleRating, isWinner, expectedWin, importance) {
     const actualResult = isWinner ? 1 : 0;
 
@@ -390,7 +314,7 @@ function applyDecay(system, currentMatchPlayers, matchDate) {
 const computeImportance = (system, match) => {
     const { importance = 1 } = match;
 
-    return importance * (match.result.length === 1 ? system.oneSetImportance : 1);
+    return importance * (match.result.length === 1 ? system.oneSetImportance : system.importance);
 }
 
 function updateVolatility(player, resultDelta) {

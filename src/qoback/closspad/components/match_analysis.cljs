@@ -10,7 +10,7 @@
   [a b]
   (str (couple->str a) " vs " (couple->str b)))
 
-(defn- probability
+(defn probability
   [expected-win-a winner]
   [:div
    [:div.bg-blue-50.p-4.my-6
@@ -61,7 +61,6 @@
 
 (defn component [log match]
   (let [{:keys [couple_a couple_b]} match]
-    (.log js/console log)
     (let [{:keys [expectedWinA
                   playersAudit
                   teamARatingBefore
@@ -73,4 +72,3 @@
        [:div.flex.flex-col.flex-gap-8
         (couple-points couple_a playersAudit (= winner "A"))
         (couple-points couple_b playersAudit (= winner "B"))]])))
-

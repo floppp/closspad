@@ -1,9 +1,15 @@
 (ns qoback.closspad.pages.add.elements
-    (:require [replicant.alias :refer [defalias]]))
+  (:require [replicant.alias :refer [defalias]]))
 
-(defalias player-option [{:keys [selection]} [p]]
-  [:option {:value p :selected (= p selection)} p])
+(defalias option
+  [{:keys [selection]} [o]]
+  [:option {:value o :selected (= o selection)} o])
 
-(defalias player-options [{:keys [classes selection actions]} players]
+(defalias select
+  [{:keys [classes selection actions]} options]
   [:select.w-full {:class classes :on {:change actions}}
-   (map (fn [p] [player-option {:selection selection} p]) players)])
+   (map
+    (fn [o] [option {:selection selection} o])
+    options)])
+
+

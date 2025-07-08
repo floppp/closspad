@@ -1,9 +1,10 @@
 (ns qoback.closspad.pages.views
-  (:require [qoback.closspad.components.widgets :as w]
+  (:require [qoback.closspad.components.header :refer [header]]
             [qoback.closspad.ui.elements :as ui]
             [qoback.closspad.components.dialog :as dialog]
             [qoback.closspad.pages.login.view :as login]
             [qoback.closspad.pages.match.view :as match]
+            [qoback.closspad.pages.forecast.view :as forecast]
             [qoback.closspad.pages.stats.view :as stats]
             [qoback.closspad.pages.add.view :as add]
             [qoback.closspad.pages.changelog.view :as changelog]
@@ -22,10 +23,6 @@
      [:li "foo"]
      [:li "bar"]]]])
 
-(defn explanation-view
-  []
-  (system-explanation/component))
-
 (defn view
   [state]
   (case (:page (:page/navigated state))
@@ -33,20 +30,23 @@
     [:div.flex.h-screen
      [:div.flex-grow
       [:div.flex.flex-col.items-center.min-h-screen.mt-5
-       (w/header state)
+       (header state)
        [ui/error-toast state]
        [:div {:class ["w-full"
+                      "z-10"
                       "md:w-3/4"
-                      "lg:w-2/3"
-                      "xl:w-1/2"
-                      "2xl:w-1/3"]}
-        (case (:page (:page/navigated state))
-          :not-found (not-found-view)
-          :home (home-view)
-          :changelog (changelog/view state)
-          :add-match (add/view state)
-          :explanation (explanation-view)
-          :full-stats (full-stats/view state)
-          :match (match/view state)
-          :stats (stats/view state))]]]
+                      "xl:w-2/3"
+                      "2xl:w-2/5"]}
+        (case (:page   (:page/navigated state))
+          :not-found   (not-found-view)
+          :home        (home-view)
+          :match       (match/view state)
+          :explanation (system-explanation/view)
+          :full-stats  (full-stats/view state)
+          :forecast    (forecast/view state)
+          :changelog   (changelog/view state)
+          :add-match   (add/view state)
+
+
+          :stats       (stats/view state))]]]
      (dialog/component (:ui/dialog state) (:dialog state))]))
