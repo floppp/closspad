@@ -9,14 +9,18 @@
 (defn perform-effect!
   [{:replicant/keys [^js js-event]} [effect & args]]
   #_(when goog.DEBUG
-    (.log js/console effect args))
+      (.log js/console effect args))
   (case effect
     :dom/fx.prevent-default   (.preventDefault js-event)
     :dom/fx.effect            (dom/perform! args)
     :post/fx.network          (pe/perform! (first args))
-    :route/fx.push            (rfe/push-state
-                               (-> args first second)
-                               {:player (-> args first first)})
+    :route/fx.push
+    (let [page (-> args first last)]
+      (case page
+        :route/state (rfe/push-state
+                      page
+                      {:player (-> args first first)})
+        :route/unkown (rfe/push-state page)))
     :route/fx                 (re/perform! (first args))
     :auth/fx.check-login      (let [session (-> args first :session :access_token)]
                                 (when-not (nil? session)

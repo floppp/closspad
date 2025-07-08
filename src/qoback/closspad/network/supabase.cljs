@@ -64,5 +64,5 @@
                        [[:data/error err]])
          :on-success (fn [_]
                        [[:db/dissoc :add/match]
-                        [:auth/check-login]
+                        [:route/push :route/unkown] ;; this moves us to home
                         [:data/query]])}))
