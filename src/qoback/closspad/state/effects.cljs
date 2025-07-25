@@ -17,7 +17,7 @@
     :route/fx.push
     (let [page (-> args first last)]
       (case page
-        :route/state (rfe/push-state
+        :route/stats (rfe/push-state
                       page
                       {:player (-> args first first)})
         :route/unkown (rfe/push-state page)))

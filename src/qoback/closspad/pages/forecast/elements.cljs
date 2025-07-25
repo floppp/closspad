@@ -94,12 +94,14 @@
                    ["grid" "grid-cols-2"]
                    ["flex" "flex-col" "gap-8"])}
          [:div.px-4.flex.flex-col.gap-4
-          (when is-mobile?
-            [:h2.text-right.text-bold (str (first ca) " &  " (second ca))])
+          [:h2.text-bold
+           {:class (if is-mobile? ["text-right"] ["text-left"])}
+           (str (first ca) " &  " (second ca))]
           (map #(ui-match % date-fn ca) ca-matches)]
          [:div.px-4.flex.flex-col.gap-4
-          (when is-mobile?
-            [:h2.text-right.text-bold (str (first cb) " &  " (second cb))])
+          [:h2.text-bold
+           {:class (if is-mobile? ["text-right"] ["text-left"])}
+           (str (first cb) " &  " (second cb))]
           (map #(ui-match % date-fn cb) cb-matches)]]])]))
 
 (defn analysis

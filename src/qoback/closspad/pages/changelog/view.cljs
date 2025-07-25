@@ -1,25 +1,40 @@
 (ns qoback.closspad.pages.changelog.view)
 
+(defn- changes
+  [date features bugs]
+  [:div.mb-10
+   [:h3.text-xl.font-medium.text-gray-700.mb-3.text-right date]
+   (when (seq features)
+     [:div
+      [:h4.text-2xl.font-bold.text-blue-400.mb-3.mt-6 "FEATURES"]
+      [:ul.list-disc.list-inside.space-y-2.ml-4
+       (for [e features] [:li e])]])
+   (when (seq bugs)
+     [:div
+      [:h4.text-2xl.font-bold.text-red-400.mb-3.mt-6 "BUGS"]
+      [:ul.list-disc.list-inside.space-y-2.ml-4
+       (for [e bugs] [:li e])]])
+   [:hr.mt-5]])
+
+
 (defn view
   [state]
   [:div.bg-white.rounded-lg.shadow-md.p-6.mx-auto.w-full
-   [:div.mb-10
-    [:h3.text-xl.font-medium.text-gray-700.mb-3.text-right
-     "06/07/2025"]
-    [:h4.text-2xl.font-bold.text-blue-400.mb-3.mt-6 "FEATURES"]
-    [:ul.list-disc.list-inside.space-y-2.ml-4
-     [:li "Distintos tipos de partidos, los puntos que se ponen en juego son más a mayor importancia: promesas, regular, p2, p1, major"
-]]]
+   (changes
+    "26/07/2025"
+    []
+    ["Estadísticas por jugador funcionan de nuevo" "En el análisis de partido se ven los nombres de las parejas otra vez en escritorio"])
 
-   [:hr]
-   [:div.mt-5.mb-10
-    [:h3.text-xl.font-medium.text-gray-700.mb-3.text-right
-     "25/06/2025"]
-    [:h4.text-2xl.font-bold.text-blue-400.mb-3.mt-6 "FEATURES"]
-    [:ul.list-disc.list-inside.space-y-2.ml-4
-     [:li "Simulador, por ahora muy básico, de partidos. Incluye probabilidad de victoria por pareja e histórico de partidos jugados por la pareja y enfrentamientos previos"]]]
+   (changes
+    "06/07/2025"
+    ["Distintos tipos de partidos, los puntos que se ponen en juego son más a mayor importancia: promesas, regular, p2, p1, major"]
+    [])
 
-   [:hr]
+   (changes
+    "25/06/2025"
+    ["Simulador, por ahora muy básico, de partidos. Incluye probabilidad de victoria por pareja e histórico de partidos jugados por la pareja y enfrentamientos previos"]
+    [])
+
    [:div.mt-5.mb-10
     [:h3.text-xl.font-medium.text-gray-700.mb-3.text-right
      "17/06/2025"]
