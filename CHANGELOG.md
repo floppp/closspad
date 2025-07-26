@@ -1,7 +1,12 @@
+v0.4.8 5b1b06804327f3be86c0f4a92273334811b2d8c5
+
+<<<<<<< HEAD
 v0.4.7 2e275706902cefabd3bdefc0d56a8891ffe40e5c
     >> feat: using decimals and stringify floats on render
 
 
+=======
+>>>>>>> 2e275706902cefabd3bdefc0d56a8891ffe40e5c
 v0.4.6 54cc40a063570fab7653c88ef5d4c68f48bdaaad
     >> feat: best importance implementation
     >> fix: some issues with routes and styles
