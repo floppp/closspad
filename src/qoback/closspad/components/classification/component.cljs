@@ -27,8 +27,9 @@
        {:actions [[:event/prevent-default]
                   [:ui/dialog :player-info name]]}
        info/icon]
-      [tui/text-gray (str "("  preffix  (.abs js/Math (- prev-points points)) ") ")]
-      [tui/text-lg-bold (str points)]]]))
+      [tui/text-gray (str "("  preffix  (.toFixed (js/Math.abs (- prev-points points))
+                                                  1) ") ")]
+      [tui/text-lg-bold (.toFixed points 1)]]]))
 
 (defn filter-day-ratings
   [c day-str ratings]
