@@ -1,3 +1,16 @@
+v0.4.6 54cc40a063570fab7653c88ef5d4c68f48bdaaad
+    >> feat: best importance implementation
+    >> fix: some issues with routes and styles
+    >> fix: no login checking after adding match
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> fix: arrow buttons date width
+    >> feat: updating deps and fixing make & dialog style
+    >> fix: style
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> hot: issue with closure table
+    >> fix: new match validation working nicely
+
+
 v0.4.5 b7dd47d78c9b113ed67053c593f7156dac44f537
     >> fix: style
     >> fix: some margin amongst dates
