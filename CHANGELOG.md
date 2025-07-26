@@ -1,3 +1,8 @@
+v0.4.10 4342961b4a212632f3056634bd0bab4d3b2f22cd
+    >> fix: cleaning white spaces
+    >> fix: problems with paths
+
+
 v0.4.9 4e29ab125e1cc8e68b19899283b80dd616da4d54
     >> fix: problems with paths
     >> fix: changed
