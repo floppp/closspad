@@ -13,7 +13,7 @@
      "decayPercentage =\n"
      "   monthsDiff < 5  ~> 0.04 * (log10(1 + (9 * monthsDiff / 4))\n"
      "   monthsDiff >= 5 ~> 0.04"]]
-      [:ul.list-disc.list-inside.pl-4.mb-4.space-y-1
+   [:ul.list-disc.list-inside.pl-4.mb-4.space-y-1
     [:li.text-gray-700 "2 meses inactivo: ~1.6% de puntos perdidos"]
     [:li.text-gray-700 "4 meses inactivo: 4% de puntos perdidos"]
     [:li.text-gray-700 "6 meses inactivo: 4% (se mantiene el tope)"]]])
@@ -178,110 +178,131 @@
     [:li "Protección contra la inflación de puntos"]
     [:li "Mantenimiento automático del ecosistema"]]])
 
+(def games-valoration
+  [:div.mt-8.p-4.bg-blue-50.rounded-lg
+   [:h3.text-xl.font-medium.text-blue-800 "Valoración partidos"]
+   [:p.text-blue-700 "Hay 5 tipos de partidos:"]
+   [:ul.list-disc.list-inside.pl-4.space-y-1.text-blue-700
+    [:li "Major"]
+    [:li "P1"]
+    [:li "P2"]
+    [:li "Regular"]
+    [:li "Promises"]]
+   [:br]
+   [:p.text-blue-700 "Todos los partidos son por defecto" [:strong " Regular"] "."]
+   [:br]
+   [:p.text-blue-700 "Si el partido está formado por parejas de nivel parecido se considera un" [:strong " P2"] ". Nivel parecido sin tener en cuenta esta clasifición, que es bastante volátil, sino una clasifición más clásica del pádel. Por ejemplo, si todos los que juegan son 2.8-3.2, se considera" [:strong " P2"] ", pero si hay un par en torno a 3 y otro par en torno a 3.5, no."]
+   [:br]
+   [:p.text-blue-700 "Los partidos" [:strong " Promises"] " ser reservan para aquéllos donde uno de los 4 desequilibra el partido, ya sea por arriba o por abajo, o para partidos donde participa una persona por primera vez."]
+   [:br]
+   [:p.text-blue-700 "Para que un partido sea" [:strong " P1"] " o" [:strong " Major"] ", hay que comentarlo antes de jugar: varía bastante la puntuación."]])
+
 (defn view
   []
   [:div.bg-white.rounded-lg.shadow-md.p-6.mx-auto.w-full
 
-    [:h1.text-3xl.font-bold.text-gray-800.mb-6
-     "Sistema de Puntuación de Pádel"]
+   [:h1.text-3xl.font-bold.text-gray-800.mb-6
+    "Sistema de Puntuación de Pádel"]
 
-    victory-options
-    change-probability
+   victory-options
+   change-probability
 
-    [:h3.text-xl.font-medium.text-gray-700.mt-6.mb-3
-     "3. Factores de Ajuste"]
-    [:h4.text-lg.font-medium.text-gray-700.mt-4.mb-2
-     "Normalización de Puntos"]
-    [:p.text-gray-600.mb-2 "El sistema usa diferentes métodos de normalización según el contexto:"]
-    [:ul.list-disc.list-inside.pl-4.mb-4.space-y-1
-     [:li.text-gray-700
-      "Escala lineal (para factores de ajuste):"
-      [:pre.bg-gray-100.p-2.rounded.inline-block.ml-2
-       "(PuntosActuales - 0) / (100 - 0)"]]
-     [:li.text-gray-700
-      "Peso por raíz cuadrada (para distribución de puntos):"
-      [:pre.bg-gray-100.p-2.rounded.inline-block.ml-2
-       "√puntosJugador / Σ√puntosEquipo"]]
-     [:li.text-gray-700
-      "Proximidad a extremos (para jugadores top/nuevos):"
-      [:pre.bg-gray-100.p-2.rounded.inline-block.ml-2
-       "min((100-Puntos)/100, Puntos/100) * 2"]]]
-    [:p.text-gray-600.mb-2 "Ejemplos:"]
-    [:ul.list-disc.list-inside.pl-4.mb-4.space-y-1
-     [:li.text-gray-700 "Jugador con 75 puntos → 0.75 (lineal), 0.87 (√), 0.5 (proximidad)"]
-     [:li.text-gray-700 "Jugador con 50 puntos → 0.5 (lineal), 0.71 (√), 1.0 (proximidad)"]
-     [:li.text-gray-700 "Jugador con 25 puntos → 0.25 (lineal), 0.5 (√), 0.5 (proximidad)"]]
+   [:h3.text-xl.font-medium.text-gray-700.mt-6.mb-3
+    "3. Factores de Ajuste"]
+   [:h4.text-lg.font-medium.text-gray-700.mt-4.mb-2
+    "Normalización de Puntos"]
+   [:p.text-gray-600.mb-2 "El sistema usa diferentes métodos de normalización según el contexto:"]
+   [:ul.list-disc.list-inside.pl-4.mb-4.space-y-1
+    [:li.text-gray-700
+     "Escala lineal (para factores de ajuste):"
+     [:pre.bg-gray-100.p-2.rounded.inline-block.ml-2
+      "(PuntosActuales - 0) / (100 - 0)"]]
+    [:li.text-gray-700
+     "Peso por raíz cuadrada (para distribución de puntos):"
+     [:pre.bg-gray-100.p-2.rounded.inline-block.ml-2
+      "√puntosJugador / Σ√puntosEquipo"]]
+    [:li.text-gray-700
+     "Proximidad a extremos (para jugadores top/nuevos):"
+     [:pre.bg-gray-100.p-2.rounded.inline-block.ml-2
+      "min((100-Puntos)/100, Puntos/100) * 2"]]]
+   [:p.text-gray-600.mb-2 "Ejemplos:"]
+   [:ul.list-disc.list-inside.pl-4.mb-4.space-y-1
+    [:li.text-gray-700 "Jugador con 75 puntos → 0.75 (lineal), 0.87 (√), 0.5 (proximidad)"]
+    [:li.text-gray-700 "Jugador con 50 puntos → 0.5 (lineal), 0.71 (√), 1.0 (proximidad)"]
+    [:li.text-gray-700 "Jugador con 25 puntos → 0.25 (lineal), 0.5 (√), 0.5 (proximidad)"]]
 
-    [:h4.text-lg.font-medium.text-gray-700.mt-4.mb-2
-     "Cálculo Real de Variación"]
-    [:p.text-gray-600.mb-2 "El sistema calcula la variación de puntos usando:"]
-    [:pre.bg-gray-100.p-4.rounded.mb-4.overflow-x-auto
-     [:code.text-sm.font-mono
-      "// 1. Peso por jugador (√puntos)\n"
-      "playerWeight = √puntosJugador / Σ√puntosEquipo\n\n"
-      "// 2. Cálculo base\n"
-      "baseDelta = importancia * baseK * (resultado - probabilidad)\n\n"
-      "// 3. Bonuses (solo si gana)\n"
-      "surpriseBonus = max(0, (0.5 - probabilidad)) * baseK * 0.5\n"
-      "weakBonus = (1 - playerWeight) * 2\n"
-      "underdogBonus = max(0, (puntosRivalPromedio - puntosJugador)) * 0.015\n\n"
-      "// 4. Variación final\n"
-      "variación = round(baseDelta * playerWeight + surpriseShare) + weakBonus + underdogBonus"]]
-    [:p.text-gray-600.mb-2 "Donde:"]
-    [:ul.list-disc.list-inside.pl-4.mb-4.space-y-1
-     [:li.text-gray-700 "playerWeight: Da más peso a jugadores con más puntos (usando √)"]
-     [:li.text-gray-700 "surpriseBonus: Bonus por victorias improbables"]
-     [:li.text-gray-700 "weakBonus: Ayuda al jugador más débil del equipo"]
-     [:li.text-gray-700 "underdogBonus: Compensa desventaja contra rivales superiores"]]
+   [:h4.text-lg.font-medium.text-gray-700.mt-4.mb-2
+    "Cálculo Real de Variación"]
+   [:p.text-gray-600.mb-2 "El sistema calcula la variación de puntos usando:"]
+   [:pre.bg-gray-100.p-4.rounded.mb-4.overflow-x-auto
+    [:code.text-sm.font-mono
+     "// 1. Peso por jugador (√puntos)\n"
+     "playerWeight = √puntosJugador / Σ√puntosEquipo\n\n"
+     "// 2. Cálculo base\n"
+     "baseDelta = importancia * baseK * (resultado - probabilidad)\n\n"
+     "// 3. Bonuses (solo si gana)\n"
+     "surpriseBonus = max(0, (0.5 - probabilidad)) * baseK * 0.5\n"
+     "weakBonus = (1 - playerWeight) * 2\n"
+     "underdogBonus = max(0, (puntosRivalPromedio - puntosJugador)) * 0.015\n\n"
+     "// 4. Variación final\n"
+     "variación = round(baseDelta * playerWeight + surpriseShare) + weakBonus + underdogBonus"]]
+   [:p.text-gray-600.mb-2 "Donde:"]
+   [:ul.list-disc.list-inside.pl-4.mb-4.space-y-1
+    [:li.text-gray-700 "playerWeight: Da más peso a jugadores con más puntos (usando √)"]
+    [:li.text-gray-700 "surpriseBonus: Bonus por victorias improbables"]
+    [:li.text-gray-700 "weakBonus: Ayuda al jugador más débil del equipo"]
+    [:li.text-gray-700 "underdogBonus: Compensa desventaja contra rivales superiores"]]
 
-    [:h4.text-lg.font-medium.text-gray-700.mt-4.mb-2
-     "Factor Proximidad"]
-    [:pre.bg-gray-100.p-4.rounded.mb-4.overflow-x-auto
-     [:code.text-sm.font-mono "2 * min(\n  (PuntosMáximos - PuntosJugador)/PuntosMáximos,\n  PuntosJugador/PuntosMáximos\n)"]]
-    [:ul.list-disc.list-inside.pl-4.mb-4.space-y-1
-     [:li.text-gray-700 "Si jugador tiene 90 puntos → 0.2"]
-     [:li.text-gray-700 "Si jugador tiene 50 puntos → 1.0"]
-     [:li.text-gray-700 "Si jugador tiene 10 puntos → 0.2"]]
+   [:h4.text-lg.font-medium.text-gray-700.mt-4.mb-2
+    "Factor Proximidad"]
+   [:pre.bg-gray-100.p-4.rounded.mb-4.overflow-x-auto
+    [:code.text-sm.font-mono "2 * min(\n  (PuntosMáximos - PuntosJugador)/PuntosMáximos,\n  PuntosJugador/PuntosMáximos\n)"]]
+   [:ul.list-disc.list-inside.pl-4.mb-4.space-y-1
+    [:li.text-gray-700 "Si jugador tiene 90 puntos → 0.2"]
+    [:li.text-gray-700 "Si jugador tiene 50 puntos → 1.0"]
+    [:li.text-gray-700 "Si jugador tiene 10 puntos → 0.2"]]
 
-    [:h3.text-xl.font-medium.text-gray-700.mt-6.mb-3
-     "Configuración Base del Sistema"]
-    [:ul.list-disc.list-inside.pl-4.mb-4.space-y-1
-     [:li.text-gray-700 "Puntuación inicial: 50 puntos"]
-     [:li.text-gray-700 "Rango de puntos: 0-100"]
-     [:li.text-gray-700 "BaseK: 25 (factor de variabilidad)"]
-     [:li.text-gray-700 "FactorEscala: 120"]
-     [:li.text-gray-700 "Importancia partido 1 set: 0.6"]]
+   [:h3.text-xl.font-medium.text-gray-700.mt-6.mb-3
+    "Configuración Base del Sistema"]
+   [:ul.list-disc.list-inside.pl-4.mb-4.space-y-1
+    [:li.text-gray-700 "Puntuación inicial: 50 puntos"]
+    [:li.text-gray-700 "Rango de puntos: 0-100"]
+    [:li.text-gray-700 "BaseK: 25 (factor de variabilidad)"]
+    [:li.text-gray-700 "FactorEscala: 120"]
+    [:li.text-gray-700 "Importancia partido 1 set: 0.6"]]
 
-    [:h4.text-lg.font-medium.text-gray-700.mt-4.mb-2
-     "Distribución No Equitativa"]
-    [:p.text-gray-600.mb-2 "Fórmula completa de distribución:"]
-    [:pre.bg-gray-100.p-4.rounded.mb-4.overflow-x-auto
-     [:code.text-sm.font-mono
-      "baseDelta = importancia * baseK * (resultado - probabilidad)\n"
-      "playerWeight = √puntosJugador / Σ√puntosEquipo\n"
-      "surpriseBonus = max(0, (0.5 - probabilidad)) * baseK * 0.5\n"
-      "weakBonus = (1 - playerWeight) * 2\n"
-      "underdogBonus = max(0, (puntosRivalPromedio - puntosJugador)) * 0.015\n"
-      "variaciónFinal = round(baseDelta * playerWeight + surpriseShare) + weakBonus + underdogBonus"]]
-    [:p.text-gray-600.mb-2 "Donde:"]
-    [:ul.list-disc.list-inside.pl-4.mb-4.space-y-1
-     [:li.text-gray-700 "Peso por jugador (√puntos) - Ajusta la distribución según nivel"]
-     [:li.text-gray-700 "Bonus por sorpresa - Hasta +12 puntos cuando gana equipo con <50% probabilidad"]
-     [:li.text-gray-700 "Bonus para jugador más débil - Hasta +2 puntos adicionales"]
-     [:li.text-gray-700 "Bonus underdog - 0.015 puntos por cada punto de diferencia con rival promedio"]
-     [:li.text-gray-700 "Todos los bonuses solo aplican al equipo ganador"]]
+   [:h4.text-lg.font-medium.text-gray-700.mt-4.mb-2
+    "Distribución No Equitativa"]
+   [:p.text-gray-600.mb-2 "Fórmula completa de distribución:"]
+   [:pre.bg-gray-100.p-4.rounded.mb-4.overflow-x-auto
+    [:code.text-sm.font-mono
+     "baseDelta = importancia * baseK * (resultado - probabilidad)\n"
+     "playerWeight = √puntosJugador / Σ√puntosEquipo\n"
+     "surpriseBonus = max(0, (0.5 - probabilidad)) * baseK * 0.5\n"
+     "weakBonus = (1 - playerWeight) * 2\n"
+     "underdogBonus = max(0, (puntosRivalPromedio - puntosJugador)) * 0.015\n"
+     "variaciónFinal = round(baseDelta * playerWeight + surpriseShare) + weakBonus + underdogBonus"]]
+   [:p.text-gray-600.mb-2 "Donde:"]
+   [:ul.list-disc.list-inside.pl-4.mb-4.space-y-1
+    [:li.text-gray-700 "Peso por jugador (√puntos) - Ajusta la distribución según nivel"]
+    [:li.text-gray-700 "Bonus por sorpresa - Hasta +12 puntos cuando gana equipo con <50% probabilidad"]
+    [:li.text-gray-700 "Bonus para jugador más débil - Hasta +2 puntos adicionales"]
+    [:li.text-gray-700 "Bonus underdog - 0.015 puntos por cada punto de diferencia con rival promedio"]
+    [:li.text-gray-700 "Todos los bonuses solo aplican al equipo ganador"]]
 
-    inactivity
+   inactivity
 
-    volatility
+   volatility
 
-    [:div
-     [:h2.text-xl.font-medium.text-gray-700.mt-6.mb-3
-      "Reglas Especiales"]
-     [:ol.list-inside.pl-4.mb-6.space-y-2.bg-gray-50.p-4.rounded-lg
-      [:li [:strong "Límites"] ": Puntos entre 0-100"]
-      [:li [:strong "Partido de 1 Set"] ": Se minoran con un 0.6"]
-      [:li [:strong "Decaimiento Temporal"] ":"]]]
-    examples
+   [:div
+    [:h2.text-xl.font-medium.text-gray-700.mt-6.mb-3
+     "Reglas Especiales"]
+    [:ol.list-inside.pl-4.mb-6.space-y-2.bg-gray-50.p-4.rounded-lg
+     [:li [:strong "Límites"] ": Puntos entre 0-100"]
+     [:li [:strong "Partido de 1 Set"] ": Se minoran con un 0.6"]
+     [:li [:strong "Decaimiento Temporal"] ":"]]]
+   examples
 
-    implementation-notes])
+   implementation-notes
+
+   games-valoration])

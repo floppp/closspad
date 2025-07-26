@@ -1,6 +1,4 @@
-(ns qoback.closspad.components.match-analysis
-  (:require [qoback.closspad.utils.numbers :as numbers]
-            ["../../../js/ratingSystem" :as rating]))
+(ns qoback.closspad.components.match-analysis)
 
 (defn couple->str
   [[a b]]

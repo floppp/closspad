@@ -5,18 +5,18 @@
             [qoback.closspad.core-domain :as core]))
 
 (def importances
-  {:major 1.0
-   :p1 0.7
-   :p2 0.5
+  {:major 2.0
+   :p1 1.0
+   :p2 0.6
    :regular 0.3
    :promises 0.1})
 
 (defn importance->type
   [importance]
   (case importance
-    1.0 :major
-    0.7 :p1
-    0.5 :p2
+    2.0 :major
+    1.0 :p1
+    0.6 :p2
     0.3 :regular
     0.1 :promises
     :undefined))
