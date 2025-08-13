@@ -32,3 +32,4 @@ pom.xml.asc
 resources/public/js
 /resources/public/tailwind.css
 resources/public/portfolio-js
+deploy.sh
