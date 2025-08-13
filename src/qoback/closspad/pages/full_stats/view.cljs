@@ -8,24 +8,35 @@
   [history all-players]
   (reduce
    (fn [acc [date ratings]]
-     (let [date-str (dt/datetime->date->str (js/Date. date))
+     (let [date-str (dt/datetime->date->str (js/Date. date) {:tz "en-US"})
            rating-map (into {} ratings)]
        (reduce (fn [acc player]
                  (update acc
                          player
                          conj {:date date-str
+                               :original-date date
                                :points (get rating-map player)}))
                acc
                all-players)))
    (zipmap all-players (repeat []))
    history))
 
+(defn keep-last-by-date
+  [coll]
+  (->> coll
+       (reduce (fn [m x] (assoc m (:date x) x)) {})
+       vals
+       (sort-by :original-date)))
+
+
 (defn view
   [state]
   (let [all-players (-> state :stats :players)
         history (-> state :classification :ratings reverse)
         points-history (transform-history-data history all-players)
-        is-loading? (nil? (:stats state))]
+        is-loading? (nil? (:stats state))
+        points-history (update-vals points-history keep-last-by-date)]
+
     (if is-loading?
       [ui/spinner]
       [:div
@@ -51,5 +62,5 @@
 
          :replicant/on-unmount
          (fn [{:replicant/keys [memory]}]
-             ;; TODO: Añadir `removeEventListener`
+           ;; TODO: Añadir `removeEventListener`
            #_(.removeEventListener js/window "resize" (fn [] (.resize el))))}]])))

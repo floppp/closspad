@@ -1,3 +1,8 @@
+v0.4.11 b965163a69b531926b72a0bcd983d2f655ada2e2
+    >> fix: full stats showing one rating per day
+    >> fix: cleaning white spaces
+
+
 v0.4.10 4342961b4a212632f3056634bd0bab4d3b2f22cd
     >> fix: cleaning white spaces
     >> fix: problems with paths
