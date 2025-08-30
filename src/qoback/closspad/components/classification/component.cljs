@@ -21,7 +21,7 @@
      {:class (concat cl ["transition-all" "duration-300" "ease-in-out"])
       :href (str "#/stats/" name)}
      [tui/text-dark-gray name]
-     [:div.grid.grid-cols-3.w-32
+     [:div.grid.grid-cols-3
       {:style {:place-items "center"}}
       [bui/icon-button
        {:actions [[:event/prevent-default]
