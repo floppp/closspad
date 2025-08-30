@@ -46,7 +46,5 @@
           :forecast    (forecast/view state)
           :changelog   (changelog/view state)
           :add-match   (add/view state)
-
-
           :stats       (stats/view state))]]]
      (dialog/component (:ui/dialog state) (:dialog state))]))

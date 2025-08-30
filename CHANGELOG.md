@@ -1,3 +1,8 @@
+v0.4.13 3fade9d39b5a598ee0841c950250f79afc8a5146
+    >> fix: Using custom dialog trying to fix issue with cellphone width
+    >> feat: Viewport and scale, and deps updated
+
+
 v0.4.12 92ee58d1a8db0e9331592d35a8a7e7f6520710e7
     >> feat: Viewport and scale, and deps updated
     >> fix: clean
