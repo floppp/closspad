@@ -50,7 +50,14 @@ const matches = [
     ],
     organization: 'fik',
   },
-  // {"id":20,"played_at":"2025-05-29T18:00:00+00:00","couple_a":["Raúl","Mario"],"couple_b":["Alberto","Carlos"],"result":[[6,3]],"organization":"fik"}
+  {
+    id: 20,
+    played_at: '2025-05-29T18:00:00+00:00',
+    couple_a: ['Raúl', 'Mario'],
+    couple_b: ['Alberto', 'Carlos'],
+    result: [[6, 3]],
+    organization: 'fik',
+  },
 ];
 
-processMatches(matches.slice(0, 4));
+processMatches(matches.slice(0, 5)).map(e => e[1].map(e => e[1])).map(ls => ls.reduce((a, b) => a + b, 0));

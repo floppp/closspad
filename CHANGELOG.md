@@ -1,3 +1,9 @@
+v0.4.12 92ee58d1a8db0e9331592d35a8a7e7f6520710e7
+    >> feat: Viewport and scale, and deps updated
+    >> fix: clean
+    >> fix: full stats showing one rating per day
+
+
 v0.4.11 b965163a69b531926b72a0bcd983d2f655ada2e2
     >> fix: full stats showing one rating per day
     >> fix: cleaning white spaces
