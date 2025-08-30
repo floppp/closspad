@@ -1,3 +1,8 @@
+v0.4.15 7fb536487483156f6cdfc81bb8bfdcdf951de81d
+    >> fix: Cleaning debug css
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+
+
 v0.4.14 f6c5cc2058bdf8ea10466906aad68849766058ce
     >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
     >> fix: Not fixed width in arrow selector
