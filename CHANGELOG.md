@@ -1,3 +1,9 @@
+v0.4.14 f6c5cc2058bdf8ea10466906aad68849766058ce
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> fix: Not fixed width in arrow selector
+    >> fix: Using custom dialog trying to fix issue with cellphone width
+
+
 v0.4.13 3fade9d39b5a598ee0841c950250f79afc8a5146
     >> fix: Using custom dialog trying to fix issue with cellphone width
     >> feat: Viewport and scale, and deps updated
