@@ -92,9 +92,11 @@
 (defn valid-match?
   [{:keys [result n-sets] :as match}]
   (let [match (new-match->match match)]
-    (println (s/explain-data ::match match))
+    (when goog.DEBUG
+      (js/console.log  (s/explain-data ::match match)))
     (when (s/valid? ::match match)
-      (and (= n-sets (count (:a result)) (count (:b result)) (count (:result match))) ;; this to check when new set with no fields yet
+      ;; this to check when new set with no fields yet
+      (and (= n-sets (count (:a result)) (count (:b result)) (count (:result match)))
            (valid-result? (:result match))
            (valid-couples? (:couple_a match) (:couple_b match))))))
 

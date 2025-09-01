@@ -1,3 +1,8 @@
+v0.4.16 1d0eb6fa45353f75654312f6dd73a5df378861ab
+    >> fix: Printing valid-match? only on debug
+    >> fix: Cleaning debug css
+
+
 v0.4.15 7fb536487483156f6cdfc81bb8bfdcdf951de81d
     >> fix: Cleaning debug css
     >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
