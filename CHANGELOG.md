@@ -1,3 +1,8 @@
+v0.4.17 e4368b573f183a0676772f7d1a2005a3df3538fc
+    >> fix: Numeric fixes (too much decimals, etc)
+    >> fix: Printing valid-match? only on debug
+
+
 v0.4.16 1d0eb6fa45353f75654312f6dd73a5df378861ab
     >> fix: Printing valid-match? only on debug
     >> fix: Cleaning debug css

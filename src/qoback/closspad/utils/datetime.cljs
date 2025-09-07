@@ -28,6 +28,10 @@
   [date & [{:keys [tz] :or {tz "es-ES"}}]]
   (str (.toLocaleDateString date tz)))
 
+(defn invalid-date? [s]
+  (let [d (js/Date. s)]
+    (js/Number.isNaN (.getTime d))))
+
 (comment
   (date->minus-one-year)
 
@@ -35,3 +39,4 @@
 
   (get-month-name-with-year (js/Date.))
   )
+
