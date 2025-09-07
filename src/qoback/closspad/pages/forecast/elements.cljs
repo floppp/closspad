@@ -12,7 +12,7 @@
     (fn [[k v]]
       [:p.flex.justify-between
        [:span (name k)]
-       [:span v]])
+       [:span (.toFixed v 2)]])
     ratings)])
 
 (defn ui-probability

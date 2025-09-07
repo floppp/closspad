@@ -1,5 +1,6 @@
 (ns qoback.closspad.pages.full-stats.view
   (:require [qoback.closspad.utils.datetime :as dt]
+            [qoback.closspad.utils.numbers :as n]
             [qoback.closspad.components.stats.echarts :as ech]
             [qoback.closspad.components.stats.charts :as charts]
             [qoback.closspad.ui.elements :as ui]))
@@ -15,7 +16,7 @@
                          player
                          conj {:date date-str
                                :original-date date
-                               :points (get rating-map player)}))
+                               :points (n/to-fixed-num (get rating-map player) 2)}))
                acc
                all-players)))
    (zipmap all-players (repeat []))
@@ -36,7 +37,7 @@
         points-history (transform-history-data history all-players)
         is-loading? (nil? (:stats state))
         points-history (update-vals points-history keep-last-by-date)]
-
+    (js/console.log points-history)
     (if is-loading?
       [ui/spinner]
       [:div
