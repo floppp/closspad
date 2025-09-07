@@ -50,7 +50,10 @@
           {:class ["px-2"
                    (if (= winner team-letter)
                      "bg-red-200"
-                     "bg-green-200")]}
+                     "bg-green-200")]
+           :title (if (= winner team-letter)
+                     "Red, the analyzed couple won"
+                     "Green, the oponents won")}
           (fs/couple->str rivals)]]
         [:p.flex.justify-between
          [:span "Ganadores"]
