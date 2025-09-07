@@ -16,7 +16,8 @@
                          player
                          conj {:date date-str
                                :original-date date
-                               :points (n/to-fixed-num (get rating-map player) 2)}))
+                               :points (when-let [v (get rating-map player)]
+                                         (n/to-fixed-num v 2))}))
                acc
                all-players)))
    (zipmap all-players (repeat []))
