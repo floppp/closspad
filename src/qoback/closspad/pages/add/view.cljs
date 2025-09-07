@@ -1,7 +1,7 @@
 (ns qoback.closspad.pages.add.view
   (:require [clojure.string :as str]
             [qoback.closspad.state.db :refer [get-dispatcher]]
-            [qoback.closspad.pages.add.elements :as ui]
+            [qoback.closspad.widgets.select :as ui]
             [qoback.closspad.components.match.domain :as m]))
 
 (def common-style

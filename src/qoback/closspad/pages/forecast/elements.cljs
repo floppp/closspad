@@ -1,8 +1,10 @@
 (ns qoback.closspad.pages.forecast.elements
-  (:require [clojure.string]
+  (:require [clojure.string :as str]
             [qoback.closspad.rating.system :as s]
             [qoback.closspad.ui.layout-elements :as lui]
+            [qoback.closspad.widgets.select :refer [select default-select-style]]
             [qoback.closspad.components.match.ui :as mui]
+            [qoback.closspad.components.match.domain :as m]
             [qoback.closspad.pages.forecast.services :as fs]))
 
 (defn ui-couple-ratings
@@ -43,8 +45,7 @@
          rivals (if (= (set couple_a) (set couple))
                   couple_b couple_a)]
      [:div
-      (if (seq couple)
-        [:p.flex.justify-between
+      [:p.flex.justify-between
          [:span "Rivales"]
          [:span
           {:class ["px-2"
@@ -55,11 +56,24 @@
                      "Red, the analyzed couple won"
                      "Green, the oponents won")}
           (fs/couple->str rivals)]]
-        [:p.flex.justify-between
-         [:span "Ganadores"]
-         [:span  (if (= winner "A")
-                   (fs/couple->str couple_a)
-                   (fs/couple->str couple_b))]])
+      ;; Extraigo arriba el `if` branch, porque el `else` creo que no se gasta nunca.
+      #_(if (seq couple)
+          [:p.flex.justify-between
+           [:span "Rivales"]
+           [:span
+            {:class ["px-2"
+                     (if (= winner team-letter)
+                       "bg-red-200"
+                       "bg-green-200")]
+             :title (if (= winner team-letter)
+                      "Red, the analyzed couple won"
+                      "Green, the oponents won")}
+            (fs/couple->str rivals)]]
+          [:p.flex.justify-between
+           [:span "Ganadores"]
+           [:span  (if (= winner "A")
+                     (fs/couple->str couple_a)
+                     (fs/couple->str couple_b))]])
       [:p.flex.justify-between
        [:span "Resultado"]
        [:span (->> result
@@ -134,4 +148,18 @@
             (ui-matches (-> state :match :results)
                         [a b]
                         [c d]
-                        is-mobile?)]]]))]))
+                        is-mobile?)]]]))
+     [:div
+      [:span "Winner Simulation"]
+      [select
+       {:classes (conj default-select-style "flex-1")
+        :selection (:importance forecast)
+        :actions [[:event/prevent-default]
+                  [:add-match/importance :event/target.value [:add/match :importance]]]}
+       (->> m/importances keys (map (comp str/capitalize name)))]
+      [select
+       {:classes default-select-style
+        :selection (:winner forecast)
+        :actions [[:event/prevent-default]
+                  [:add-match :event/target.value :couple_b 1]]}
+       matches]]]))
