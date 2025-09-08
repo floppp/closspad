@@ -38,7 +38,6 @@
         points-history (transform-history-data history all-players)
         is-loading? (nil? (:stats state))
         points-history (update-vals points-history keep-last-by-date)]
-    (js/console.log points-history)
     (if is-loading?
       [ui/spinner]
       [:div

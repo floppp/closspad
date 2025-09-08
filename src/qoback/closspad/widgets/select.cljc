@@ -13,14 +13,16 @@
            "focus:border-gray-300"]))
 
 (defalias option
-  [{:keys [selection]} [o]]
-  [:option {:value o :selected (= o selection)} o])
+  [{:keys [selection render-fn]} [o]]
+  [:option {:value o
+            :selected (= o selection)}
+   (if render-fn (render-fn o) o)])
 
 (defalias select
-  [{:keys [classes selection actions]} options]
-  [:select.w-full {:class classes :on {:change actions}}
+  [{:keys [classes selection actions render-fn] :as attrs} options]
+  [:select.w-full (conj attrs {:class classes :on {:change actions}})
    (map
-    (fn [o] [option {:selection selection} o])
+    (fn [o] [option {:selection selection :render-fn render-fn} o])
     options)])
 
 

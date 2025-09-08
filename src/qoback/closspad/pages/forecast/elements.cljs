@@ -1,5 +1,6 @@
 (ns qoback.closspad.pages.forecast.elements
   (:require [clojure.string :as str]
+            [qoback.closspad.state.db :refer [get-dispatcher]]
             [qoback.closspad.rating.system :as s]
             [qoback.closspad.ui.layout-elements :as lui]
             [qoback.closspad.widgets.select :refer [select default-select-style]]
@@ -46,16 +47,16 @@
                   couple_b couple_a)]
      [:div
       [:p.flex.justify-between
-         [:span "Rivales"]
-         [:span
-          {:class ["px-2"
-                   (if (= winner team-letter)
-                     "bg-red-200"
-                     "bg-green-200")]
-           :title (if (= winner team-letter)
-                     "Red, the analyzed couple won"
-                     "Green, the oponents won")}
-          (fs/couple->str rivals)]]
+       [:span "Rivales"]
+       [:span
+        {:class ["px-2"
+                 (if (= winner team-letter)
+                   "bg-red-200"
+                   "bg-green-200")]
+         :title (if (= winner team-letter)
+                  "Red, the analyzed couple won"
+                  "Green, the oponents won")}
+        (fs/couple->str rivals)]]
       ;; Extraigo arriba el `if` branch, porque el `else` creo que no se gasta nunca.
       #_(if (seq couple)
           [:p.flex.justify-between
@@ -121,6 +122,57 @@
            (str (first cb) " &  " (second cb))]
           (map #(ui-match % date-fn cb) cb-matches)]]])]))
 
+(defn- match-simulation
+  [state is-mobile? [a b] [c d]]
+  [lui/accordion-item
+   [lui/accordion-item-title
+    {:class ["grid" "grid-cols-3" "items-center"]}
+    [:span (str a " &  " b)]
+    [:span.text-center "vs"]
+    [:span.text-right (str c " &  " d)]]
+   [lui/accordion-item-body
+    [:div
+     (ui-probability state (fn [n] (.toFixed n 2)) [[a b] [c d]])
+     (ui-matches (-> state :match :results)
+                 [a b]
+                 [c d]
+                 is-mobile?)]]])
+
+(defn forecast-match-simulation
+  [forecast combinations]
+  (let [dispatcher (get-dispatcher)
+        importances-str (->> m/importances keys (map (comp str/capitalize name)))]
+    [:div.flex.flex-col.gap-1.mt-4
+     [:span [:strong "Winner Simulation"]]
+     [select
+      {:classes (concat default-select-style
+                        ["bg-white" "border-1" "border-gray-300" "border-solid"])
+       :selection (:importance forecast)
+       :actions [[:event/prevent-default]
+                 [:db/assoc-in [:forecast :importance] :event/target.value]]
+       :replicant/key :forecast-importance
+       :replicant/on-mount
+       (fn []
+         (dispatcher
+          nil
+          [[:db/assoc-in [:forecast :importance] (first importances-str)]]))}
+      importances-str]
+
+     [select
+      {:classes (concat default-select-style
+                        ["bg-white" "border-1" "border-gray-300" "border-solid"])
+       :selection (:winner forecast)
+       :actions [[:event/prevent-default]
+                 [:db/assoc-in [:forecast :winners] :event/target.value]]
+       :render-fn (fn [c] (str (first c) " & " (second c)))
+       :replicant/key :forecast-winner
+       :replicant/on-mount
+       (fn []
+         (dispatcher
+          nil
+          [[:db/assoc-in [:forecast :winner] (-> combinations first first)]]))}
+      (apply concat combinations)]]))
+
 (defn analysis
   [{:keys [forecast] :as state} is-mobile?]
   (let [ps (:players/selected forecast)
@@ -129,37 +181,14 @@
              [i j])
         matches [[(nth cs 0) (nth cs 5)]
                  [(nth cs 1) (nth cs 4)]
-                 [(nth cs 2) (nth cs 3)]]]
+                 [(nth cs 2) (nth cs 3)]]
+        combinations (map (fn [[[a b] [c d]]]
+                            [[(nth ps a) (nth ps b)]
+                             [(nth ps c) (nth ps d)]])
+                          matches)]
     [lui/column
-     (for [[[a b] [c d]] matches]
-       (let [a (nth ps a)
-             b (nth ps b)
-             c (nth ps c)
-             d (nth ps d)]
-         [lui/accordion-item
-          [lui/accordion-item-title
-           {:class ["grid" "grid-cols-3" "items-center"]}
-           [:span (str a " &  " b)]
-           [:span.text-center "vs"]
-           [:span.text-right (str c " &  " d)]]
-          [lui/accordion-item-body
-           [:div
-            (ui-probability state (fn [n] (.toFixed n 2)) [[a b] [c d]])
-            (ui-matches (-> state :match :results)
-                        [a b]
-                        [c d]
-                        is-mobile?)]]]))
-     [:div
-      [:span "Winner Simulation"]
-      [select
-       {:classes (conj default-select-style "flex-1")
-        :selection (:importance forecast)
-        :actions [[:event/prevent-default]
-                  [:add-match/importance :event/target.value [:add/match :importance]]]}
-       (->> m/importances keys (map (comp str/capitalize name)))]
-      [select
-       {:classes default-select-style
-        :selection (:winner forecast)
-        :actions [[:event/prevent-default]
-                  [:add-match :event/target.value :couple_b 1]]}
-       matches]]]))
+     (map
+      (fn [[ca cb]] (match-simulation state is-mobile? ca cb))
+      combinations)
+
+     (forecast-match-simulation forecast combinations)]))
