@@ -35,7 +35,9 @@
                       [[:db/assoc :error err]
                        [:db/dissoc :is-loading?]])))
      :on-success (fn [ms]
-                   (let [[classification system] (js->clj (rating/processMatches (clj->js ms)) {:keywordize-keys true})
+                   (let [[classification system] (js->clj
+                                                  (rating/processMatches (clj->js ms))
+                                                  {:keywordize-keys true})
                          dispatcher (get-dispatcher)
                          ratings (filter (comp some? first) classification)
                          all-players (-> ms stats/get-all-players vec sort)
@@ -45,6 +47,7 @@
                                     (clj->js all-players)
                                     (clj->js ms))
                                    {:keywordize-keys true})]
+                     (js/console.log classification)
                      (dispatcher
                       nil
                       [[:db/assoc-in [:classification :ratings] ratings]

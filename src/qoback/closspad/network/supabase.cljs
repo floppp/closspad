@@ -38,7 +38,7 @@
                           [:auth/check-login]]
                          on-success))))))
 
-(defn post
+(defn- post
   [table entity {:keys [on-success on-failure]}]
   (let [dispatcher (get-dispatcher)]
     (async/go

@@ -347,6 +347,18 @@ function reactivateVolatilityIfInactive(volatility, lastMatchDate, currentMatchD
     return volatility;
 }
 
+// refactor this.
+const processSingleMatch = (systemHistory, match) => {
+    return [match].reduce(
+        (acc, match) => {
+            const [lastState] = acc;
+            const newState = updateSystem(lastState, match);
+            return [newState, ...acc];
+        },
+        systemHistory
+    )
+}
+
 const processMatches = (matches) => {
     const systemHistory = matches.reduce(
         (acc, match) => {

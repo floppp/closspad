@@ -144,6 +144,7 @@
         importances-str (->> m/importances keys (map (comp str/capitalize name)))]
     [:div.flex.flex-col.gap-1.mt-4
      [:span [:strong "Winner Simulation"]]
+
      [select
       {:classes (concat default-select-style
                         ["bg-white" "border-1" "border-gray-300" "border-solid"])
@@ -159,18 +160,21 @@
       importances-str]
 
      [select
-      {:classes (concat default-select-style
-                        ["bg-white" "border-1" "border-gray-300" "border-solid"])
-       :selection (:winner forecast)
+      {:classes (concat
+                 default-select-style
+                 ["bg-white" "border-1" "border-gray-300" "border-solid"])
+       :selection (:winners forecast)
        :actions [[:event/prevent-default]
-                 [:db/assoc-in [:forecast :winners] :event/target.value]]
+                 ;; [:db/assoc-in [:forecast :winners] :event/target.value]
+                 [:forecast/winners :event/target.value (first combinations)]]
        :render-fn (fn [c] (str (first c) " & " (second c)))
        :replicant/key :forecast-winner
        :replicant/on-mount
        (fn []
          (dispatcher
           nil
-          [[:db/assoc-in [:forecast :winner] (-> combinations first first)]]))}
+          ;; [[:db/assoc-in [:forecast :winner] (-> combinations first first)]]
+          [[:forecast/winners (-> combinations first first) combinations]]))}
       (apply concat combinations)]]))
 
 (defn analysis

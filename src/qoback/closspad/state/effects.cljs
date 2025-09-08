@@ -1,10 +1,25 @@
 (ns qoback.closspad.state.effects
   (:require [reitit.frontend.easy :as rfe]
+            [clojure.set :refer [difference]]
             [qoback.closspad.network.query :as network]
             [qoback.closspad.network.supabase :as supabase]
             [qoback.closspad.state.dom-effects :as dom]
             [qoback.closspad.state.route-effects :as re]
-            [qoback.closspad.state.post-effects :as pe]))
+            [qoback.closspad.state.post-effects :as pe]
+
+            [qoback.closspad.state.db :refer [get-dispatcher]]))
+
+(defn perform!
+  [subeffect [winners all-players]]
+  (let [dispatcher (get-dispatcher)]
+    (case subeffect
+      :classification
+      (let [winners (into #{} winners)
+            all-players (into #{} (flatten all-players))
+            losers (difference all-players winners)]
+        (js/console.log winners losers))
+      (tap> (str "[FORECAST] Unknown effect " subeffect)))))
+
 
 (defn perform-effect!
   [{:replicant/keys [^js js-event]} [effect & args]]
@@ -14,6 +29,7 @@
     :dom/fx.prevent-default   (.preventDefault js-event)
     :dom/fx.effect            (dom/perform! args)
     :post/fx.network          (pe/perform! (first args))
+    :forecast/fx.effect       (perform! (first args) (first (rest args)))
     :route/fx.push
     (let [page (-> args first last)]
       (case page

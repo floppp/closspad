@@ -31,15 +31,14 @@
                              (enrich-action-from-event replicant-data)
                              (enrich-action-from-state state))
         [action-name & args] enrichted-event]
-    ;; (when goog.DEBUG
-        ;; (.log js/console action-name args)
-        ;; (.log js/console enrichted-event)
-        ;; )
+    #_(when goog.DEBUG
+        (.log js/console action-name args)
+        (.log js/console enrichted-event))
     (case action-name
       :add-match/played-at (let [[value path] args]
                              {:new-state (assoc-in state path value)})
       :add-match/importance (let [[value path] args]
-                             {:new-state (assoc-in state path value)})
+                              {:new-state (assoc-in state path value)})
       :add-match (let [[value & path] args]
                    {:new-state (ext/update-with-vector state (concat  [:add/match] path) value)})
       :add/match-set          {:new-state (update-in state [:add/match :n-sets] (fnil inc 1))}
@@ -63,6 +62,8 @@
       :fetch/login            {:new-state (assoc state :is-loading? true :error nil)
                                :effects [[:fetch/fx.login args]]}
       :drag                   {:new-state (drag/process state args)}
+      :forecast/winners       {:new-state (assoc-in state [:forecast :winners] (first args))
+                               :effects [[:forecast/fx.effect :classification args]]}
       ;; No refactorizar porque es mucho lío para cambiar `enrich-action-from-event`.
       :event/prevent-default  {:effects [[:dom/fx.prevent-default]]}
       ;; >>>>> Refactorizados ya
@@ -92,7 +93,7 @@
   (let [{:keys [new-state effects]} (handle-events @!state replicant-data events)]
     (when new-state
       (reset! !state new-state)
-      (when goog.DEBUG
+      #_(when goog.DEBUG
         #_(prn  (->  @!state :classification :ratings))
         (.log js/console  @!state)))
     (when effects

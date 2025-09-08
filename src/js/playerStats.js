@@ -4,7 +4,6 @@ function calculatePlayerStats(matches) {
     const winner = determineWinner(result);
     const allPlayers = [...couple_a, ...couple_b];
 
-    // Initialize players if not exists (immutably)
     const initializedStats = allPlayers.reduce((acc, playerId) => {
       if (acc[playerId]) return acc;
 
@@ -38,7 +37,6 @@ function updatePlayerStats(stats, playerId, opponents, isWinner) {
     opponents: {}
   };
 
-  // Update player stats immutably
   const updatedPlayer = Object.assign({}, currentPlayer, {
     totalMatches: currentPlayer.totalMatches + 1,
     wins: currentPlayer.wins + (isWinner ? 1 : 0),
