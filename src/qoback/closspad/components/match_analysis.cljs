@@ -24,10 +24,10 @@
   [:div.flex.flex-col.bg-gray-50.g-8.p-4
    [:div.flex.gap-4.items-end.justify-between
     [:h3.text-lg.font-semibold.text-gray-700 "Team A"]
-    [:p.text-gray-600 (str "Rating: " rating-a)]]
+    [:p.text-gray-600 (str "Rating: " (.toFixed rating-a))]]
    [:div.flex.gap-4.items-end.justify-between
     [:h3.text-lg.font-semibold.text-gray-700.text-right "Team B"]
-    [:p.text-gray-600.text-right (str "Rating: " rating-b)]]])
+    [:p.text-gray-600.text-right (str "Rating: " (.toFixed rating-b 2))]]])
 
 (def audit-fields
   {:baseDelta "Valor Base"
@@ -54,19 +54,19 @@
        [:span v]
        (for [n couple]
          (let [data (-> n keyword log :breakdown)]
-           [:span.text-right (-> k keyword data)]))])
+           [:span.text-right (-> k keyword data (.toFixed 2))]))])
     audit-fields)])
 
 (defn component [log match]
-  (let [{:keys [couple_a couple_b]} match]
-    (let [{:keys [expectedWinA
-                  playersAudit
-                  teamARatingBefore
-                  teamBRatingBefore
-                  winner]} log]
-      [:div
-       (teams-rating teamARatingBefore teamBRatingBefore)
-       (probability expectedWinA winner)
-       [:div.flex.flex-col.flex-gap-8
-        (couple-points couple_a playersAudit (= winner "A"))
-        (couple-points couple_b playersAudit (= winner "B"))]])))
+  (let [{:keys [couple_a couple_b]} match
+        {:keys [expectedWinA
+                playersAudit
+                teamARatingBefore
+                teamBRatingBefore
+                winner]} log]
+    [:div
+     (teams-rating teamARatingBefore teamBRatingBefore)
+     (probability expectedWinA winner)
+     [:div.flex.flex-col.flex-gap-8
+      (couple-points couple_a playersAudit (= winner "A"))
+      (couple-points couple_b playersAudit (= winner "B"))]]))
