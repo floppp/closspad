@@ -1,9 +1,7 @@
 (ns qoback.closspad.network.domain
   (:require [qoback.closspad.state.db :refer [get-dispatcher]]
-            [qoback.closspad.components.stats.service :as stats]
-            ["@supabase/supabase-js" :refer [createClient]]
-            ["../../../js/ratingSystem" :as rating]
-            ["../../../js/playerStats" :as plStats]))
+            [qoback.closspad.rating.match :refer [full-matches-process]]
+            ["@supabase/supabase-js" :refer [createClient]]))
 
 (goog-define organization "")
 (goog-define table "")
@@ -35,27 +33,17 @@
                       [[:db/assoc :error err]
                        [:db/dissoc :is-loading?]])))
      :on-success (fn [ms]
-                   (let [[classification system] (js->clj
-                                                  (rating/processMatches (clj->js ms))
-                                                  {:keywordize-keys true})
-                         dispatcher (get-dispatcher)
-                         ratings (filter (comp some? first) classification)
-                         all-players (-> ms stats/get-all-players vec sort)
-                         all-players-stats (stats/compute-all-players-stats all-players ms)
-                         js-stats (js->clj
-                                   (plStats/getAllPlayersOpponentStats
-                                    (clj->js all-players)
-                                    (clj->js ms))
-                                   {:keywordize-keys true})]
-                     (js/console.log classification)
-                     (dispatcher
+                   (let [{:keys [ratings history players stats-by-player oponent-stats matches]}
+                         (full-matches-process ms)
+                         dispatch (get-dispatcher)]
+                     (dispatch
                       nil
                       [[:db/assoc-in [:classification :ratings] ratings]
-                       [:db/assoc-in [:system :history] (filter :date system)]
-                       [:db/assoc-in [:stats :players] all-players]
-                       [:db/assoc-in [:stats :by-player] all-players-stats]
-                       [:db/assoc-in [:stats :oponents] js-stats]
-                       [:db/assoc-in [:match :results] ms]
+                       [:db/assoc-in [:system :history] history]
+                       [:db/assoc-in [:stats :players] players]
+                       [:db/assoc-in [:stats :by-player] stats-by-player]
+                       [:db/assoc-in [:stats :oponents] oponent-stats]
+                       [:db/assoc-in [:match :results] matches]
                        [:db/dissoc :is-loading?]])))}
     :query/user
     [:get (str "/api/todo/users/" (:user-id data))]))

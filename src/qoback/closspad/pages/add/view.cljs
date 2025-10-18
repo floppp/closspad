@@ -28,14 +28,12 @@
        "Eliminar Set"])]
    [:div.flex.flex-col.gap-4.sm:flex-row
     [:input.flex-1
-     {:class (concat common-style)
-      :type "number"
-      :min 0
-      :max 7
+     {:class common-style
+      :type "number" :min 0 :max 7
       :on {:change [[:add-match :event/target.value :result :a s]]}}
      "Equipo A"]
     [:input.flex-1
-     {:class (concat common-style)
+     {:class common-style
       :type "number" :min 0 :max 7
       :on {:change [[:add-match :event/target.value :result :b s]]}}
      "Equipo B"]]])
@@ -105,8 +103,7 @@
 
        [:input.flex-1
         {:type "datetime-local"
-         :style {:background "white"
-                 :border-radius "4px"}
+         :style {:border-radius "4px"}
          :class (concat common-style ["sm:w-1/2" "p0"])
          :on {:change
               [[:add-match/played-at :event/target.value [:add/match :played_at]]]}}]]]

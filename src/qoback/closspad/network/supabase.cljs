@@ -50,7 +50,11 @@
               error (.-error response)]
           (if error
             (dispatcher nil (on-failure error))
-            (dispatcher nil (on-success))))
+            (dispatcher nil (on-success
+                             (-> response
+                                 .-data
+                                 (aget 0)
+                                 (js->clj {:keywordize-keys true}))))))
         (catch js/Error err
           (dispatcher nil [[:data/error (ex-cause err)]]))))))
 
@@ -62,7 +66,7 @@
             (assoc :importance (-> match :importance str/lower-case keyword m/importances)))
         {:on-failure (fn [err]
                        [[:data/error err]])
-         :on-success (fn [_]
+         :on-success (fn [added-match]
                        [[:db/dissoc :add/match]
-                        [:route/push :route/unkown] ;; this moves us to home
-                        [:data/query]])}))
+                        [:route/push :route/unkown]
+                        #_[:match :new added-match]])}))
