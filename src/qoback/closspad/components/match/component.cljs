@@ -22,7 +22,8 @@
     (if (> sets-won-by-a sets-won-by-b) 0 1)))
 
 
-(defn- component [{:keys [couple_a couple_b result importance] :as match}]
+(defn- component
+  [{:keys [couple_a couple_b result importance] :as match}]
   (let [f (first result)
         s (second result)
         t (get result 2)
@@ -74,8 +75,10 @@
                      all-matches)]
     [:div.bg-white.rounded-t-lg.shadow-md.p-8
      [:div.mb-6.flex.justify-center
-      (w/arrow-selector match-date (->> all-matches
-                                        (map (comp #(js/Date. %) :played_at))
-                                        sort))]
+      (w/arrow-selector
+       match-date
+       (->> all-matches
+            (map (comp #(js/Date. %) :played_at))
+            sort))]
      [:div.space-y-4 (map component day-matches)]]))
 

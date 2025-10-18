@@ -1,3 +1,18 @@
+v0.4.18 1232aaf38becd9d2f42257ef3435def6f07550e1
+    >> wip: working on forecast
+    >> fix: player stats sorted
+    >> fix: numbers with 2 decimals
+    >> fix: size and header z-index
+    >> wip: Preparing data to send to update local classification
+    >> wip: Inputs for game result simulation on classification
+    >> wip: Match forecast with winner and importance
+    >> feat: Title to info about who won
+    >> fix: Merge issues
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> fix: More coherent code for to-fixed-num
+    >> fix: Numeric fixes (too much decimals, etc)
+
+
 v0.4.17 e4368b573f183a0676772f7d1a2005a3df3538fc
     >> fix: Numeric fixes (too much decimals, etc)
     >> fix: Printing valid-match? only on debug

@@ -4,6 +4,7 @@
             [qoback.closspad.state.drag-events :as drag]
             [qoback.closspad.state.effects :refer [perform-effect!]]
             [qoback.closspad.state.ui-events :as ui-events]
+            [qoback.closspad.state.match-events :as match-events]
             [qoback.closspad.utils.coll-extras :as ext]))
 
 (defn- enrich-action-from-event [{:replicant/keys [js-event node]} actions]
@@ -69,6 +70,7 @@
       ;; >>>>> Refactorizados ya
       :ui/dialog              {:new-state (ui-events/process-dialogs state args)}
       :dom/effect             {:effects [[:dom/fx.effect (first args)]]}
+      :match                  {:new-state (match-events/process state args)}
       ;; Routes
       :route/push             {:effects [[:route/fx.push args]]}
       :route                  {:effects [[:route/fx args state]]}

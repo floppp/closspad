@@ -31,3 +31,4 @@
   [couple state]
   (let [matches (-> state :stats :match)]
     (couple-matches? couple matches)))
+
