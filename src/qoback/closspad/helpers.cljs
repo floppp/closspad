@@ -2,7 +2,7 @@
 
 (def month-order
   {"jan" 1 "feb" 2 "mar" 3 "abr" 4 "may" 5 "jun" 6
-   "jul" 7 "ago" 8 "sep" 9 "oct" 10 "nov" 11 "dic" 12})
+   "jul" 7 "ago" 8 "sept" 9 "oct" 10 "nov" 11 "dic" 12})
 
 (defn days-between [date1 date2]
   (let [d1 (.getTime (js/Date. date1))
@@ -10,14 +10,26 @@
         diff (js/Math.abs (- d1 d2))]
     (/ diff (* 1000 60 60 24))))
 
-(defn rotate-months [months]
+#_(defn rotate-months [months]
   (let [current-month (-> (js/Date.) .getMonth inc) ; 1-12
         months-vec (vec (sort-by month-order months))
         rotate-point (- 13 current-month)]
     (concat (drop rotate-point months-vec)
             (take rotate-point months-vec))))
 
-(defn first-day-next-month-prev-year
+(defn parse-month-year [s]
+  (let [[month year] (clojure.string/split s #"/")]
+    [(js/parseInt year) (month-order month)]))
+
+#_(defn sort-month-keys
+  [m]
+  (into (sorted-map-by
+          (fn [a b]
+            (compare (parse-month-year a)
+                     (parse-month-year b))))
+        m))
+
+#_(defn first-day-next-month-prev-year
   ([] (first-day-next-month-prev-year (js/Date.)))
   ([date]
    (let [now (js/Date.)
@@ -28,6 +40,22 @@
          first-day (doto (js/Date. next-month)
                      (.setDate 1))]
      (-> first-day .toISOString (.split "T") first))))
+
+(defn sort-months [data]
+  (cond
+    (map? data)
+    (into (sorted-map-by
+            (fn [a b]
+              (compare (parse-month-year a)
+                       (parse-month-year b))))
+          data)
+
+    (sequential? data)
+    (sort-by parse-month-year data)
+
+    ;; 🚫 Fallback
+    :else
+    (throw (js/Error. "sort-months expects a map or a sequence of strings"))))
 
 (defn format-iso-date [date]
   (let [d (js/Date. date)

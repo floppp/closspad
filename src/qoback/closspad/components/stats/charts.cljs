@@ -11,16 +11,21 @@
   ;; (.log js/console stats)
   (let [months (->> (:by-month stats)
                     (keys)
-                    (h/rotate-months))
+                    (h/sort-months))
         win-data (map #(get-in stats [:by-month % :wins] 0) months)
         loss-data (map #(get-in stats [:by-month % :losses] 0) months)
         total-wins (:wins stats)
         total-losses (:losses stats)
         win-rate (js/parseFloat (:win-percentage stats))]
+    (js/console.log (:by-month stats))
     (clj->js
      {:backgroundColor "#ffffff"
       :title  {:text (str (:player stats)
-                          "  " total-wins "W / " total-losses "L     "
+                          "  "
+                          total-wins
+                          "W / "
+                          total-losses
+                          "L     "
                           (.toFixed win-rate 2)
                           "% ")
                :left "center"
