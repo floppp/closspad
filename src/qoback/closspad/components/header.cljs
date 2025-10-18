@@ -14,10 +14,11 @@
   [{:ui/keys [header] :as state}]
   (let [user-email (get-in state [:auth :user :email])
         is-logged? (not (nil? user-email))]
-    [:div.bg-white.rounded-lg.shadow-md.p-4.sticky.top-0.mb-5
+    [:div.rounded-lg.shadow-md.p-4.sticky.top-0.mb-5
      {:class ["w-full"
-              "z-10"
               "md:w-3/4"
+              "bg-white"
+              "z-10"
               "xl:w-2/3"
               "2xl:w-2/5"]}
      [:div.flex.items-center.md:hidden

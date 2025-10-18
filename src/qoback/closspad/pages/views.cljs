@@ -27,13 +27,13 @@
   [state]
   (case (:page (:page/navigated state))
     :login (login/view state)
-    [:div.flex.h-screen
+    [:div
      [:div.flex-grow
       [:div.flex.flex-col.items-center.min-h-screen.mt-5
        (header state)
        [ui/error-toast state]
        [:div {:class ["w-full"
-                      "z-10"
+                      "z-5"
                       "md:w-3/4"
                       "xl:w-2/3"
                       "2xl:w-2/5"]}
