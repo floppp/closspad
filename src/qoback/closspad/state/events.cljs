@@ -58,8 +58,11 @@
       :ui/header              {:new-state (update state :ui/header not)}
       :auth/check-login       {:effects [[:auth/fx.check-login (:auth state)]]}
       :auth/check-not-logged  {:effects [[:auth/fx.check-not-logged (:auth state)]]}
+      :data/error             {:new-state (assoc state :error (first args)
+                                              :is-loading? false)
+                                :effects []}
       :data/query             {:new-state (assoc state :is-loading? true :error nil)
-                               :effects [[:data/fx.query {:state state :args args}]]}
+                                :effects [[:data/fx.query {:state state :args args}]]}
       :fetch/login            {:new-state (assoc state :is-loading? true :error nil)
                                :effects [[:fetch/fx.login args]]}
       :drag                   {:new-state (drag/process state args)}
