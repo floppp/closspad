@@ -68,5 +68,5 @@
                        [[:data/error err]])
          :on-success (fn [added-match]
                        [[:db/dissoc :add/match]
-                        [:route/push :route/unkown]
+                        [:route :match {:date (-> added-match :played_at)}]
                         #_[:match :new added-match]])}))

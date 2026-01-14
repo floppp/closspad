@@ -35,8 +35,7 @@
       (case page
         :route/stats (rfe/push-state
                       page
-                      {:player (-> args first first)})
-        :route/unkown (rfe/push-state page)))
+                      {:player (-> args first first)})))
     :route/fx                 (re/perform! (first args))
     :auth/fx.check-login      (let [session (-> args first :session :access_token)]
                                 (when-not (nil? session)
@@ -47,8 +46,7 @@
     ;; TODO: hacer comprobación para enviar o no
     :data/fx.query (network/query-async
                     {:query/kind :query/matches
-                     :query/data args})
-    ;; :post/fx.match (supabase/post table (first args))
+                                           :query/data args})
     :fetch/fx.login (supabase/login
                      (first args)
                      {:on-failure [:db/dissoc :is-loading?]

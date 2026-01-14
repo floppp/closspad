@@ -12,7 +12,7 @@ curl 'https://orqwiubnozfouaqyywah.supabase.co/rest/v1/CLOSSPAD_match?select=*&o
 #+END_SRC
 
 
-** Tasks [3/7]
+** Tasks [4/12]
 
 *** DONE [#A] BUG next day
 when clicked in the last one 1-1-1970 is selected, and no disable working
@@ -20,6 +20,12 @@ when clicked in the last one 1-1-1970 is selected, and no disable working
 /event-handler/ code structure in replicant examples to use some of the ideas there.
 *** DONE [#A] BUG deploy.sh
 main.js no se están versionando/modificando -> subiendo
+*** DONE [#A] BUG POST route typo
+changed :route/push :route/unkown to [:route :match {:date (-> added-match :played_at)}] in supabase.cljs:71. Removed dead :route/unkown case in effects.cljs:39.
+*** TODO [#A] BUG POST no data refresh
+add [:data/query] dispatch after successful POST in supabase.cljs:69-72. New matches not visible until page refresh or re-query.
+*** TODO [#A] BUG POST missing error handler
+add :data/error event handler in events.cljs. POST failures don't clear loading state or show errors to users.
 *** TODO [#A] Better keywordization
 so =played_at= becomes =played-at=. Do not use libraries but code from scratch.
 *** TODO [#B] Load session on start
@@ -28,8 +34,12 @@ when app is first time loaded/rendered, it must read from localStorage the sessi
 using some js library so I can learn js interop too.
 *** TODO [#B] Adding configuration
 and save into local storage with some /effect/.
+*** TODO [#B] BUG POST no success feedback
+add toast notification after successful POST. Users don't know if match was saved.
 *** TODO [#C] Rating system configurable
 through some dialog or expandible widget.
+*** DONE [#C] Clean up dead code
+removed commented :post/fx.match code in effects.cljs:50.
 
 
 
