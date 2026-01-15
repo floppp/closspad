@@ -114,8 +114,13 @@
        [:div.flex.justify-center
         [:button.btn.btn-soft.btn-info
          {:class ["w-full" "sm:w-1/2" "md:w-1/4"]
-          :style {:border-radius "4px"}}
-         "Crear"]])]))
+          :style {:border-radius "4px"}
+          :disabled (:is-loading? state)}
+         (if (:is-loading? state)
+           [:span.flex.items-center.gap-2
+            [:span.loading.loading-spinner.loading-sm]
+            "Procesando..."]
+           "Crear")]])]))
 
 (defn view
   [state]
