@@ -29,17 +29,17 @@
                    (or (str/includes? error-str "timeout")
                        (str/includes? error-str "abort"))
                    "Error de conexión: tiempo de espera agotado"
-                   
+
                    ;; Network error
                    (str/includes? error-str "failed to fetch")
                    "Error de conexión con Supabase"
-                   
+
                    ;; Duplicate constraint (code 23505)
                    (or (str/includes? error-str "23505")
                        (str/includes? error-str "duplicate")
                        (str/includes? error-str "already exists"))
                    "El partido ya existe"
-                   
+
                    ;; Default
                    :else "Error al guardar el partido")]
     {:friendly-message friendly
@@ -93,7 +93,7 @@
             (dissoc :n-sets)
             (assoc :importance (-> match :importance str/lower-case keyword m/importances)))
         {:on-failure (fn [err]
-                       [[:data/error err]])
+                       [[:data/error (user-friendly-error err)]])
          :on-success (fn [added-match]
                         [[:db/dissoc :add/match]
                          [:data/query]
