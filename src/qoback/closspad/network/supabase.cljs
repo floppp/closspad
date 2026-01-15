@@ -17,8 +17,35 @@
         (if error
           {:error error}
           {:success data}))
-      (catch js/Error err
-        {:error (ex-cause err)}))))
+       (catch js/Error err
+         {:error (ex-cause err)}))))
+
+
+
+(defn user-friendly-error [error]
+  (let [error-str (if (string? error) error (str error))
+        friendly (cond
+                   ;; Timeout or abort
+                   (or (str/includes? error-str "timeout")
+                       (str/includes? error-str "abort"))
+                   "Error de conexión: tiempo de espera agotado"
+                   
+                   ;; Network error
+                   (str/includes? error-str "failed to fetch")
+                   "Error de conexión con Supabase"
+                   
+                   ;; Duplicate constraint (code 23505)
+                   (or (str/includes? error-str "23505")
+                       (str/includes? error-str "duplicate")
+                       (str/includes? error-str "already exists"))
+                   "El partido ya existe"
+                   
+                   ;; Default
+                   :else "Error al guardar el partido")]
+    {:friendly-message friendly
+     :full-error error-str
+     :show-details false}))
+
 
 (defn login
   [[email pass] {:keys [on-success on-error]}]
