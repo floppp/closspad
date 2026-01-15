@@ -1,9 +1,11 @@
 (ns qoback.closspad.network.supabase
   (:require [cljs.core.async :as async]
             [cljs.core.async.interop :refer [<p!]]
+            [reitit.frontend.easy :as rfe]
             [qoback.closspad.components.match.domain :as m]
             [qoback.closspad.state.db :refer [get-dispatcher]]
             [qoback.closspad.network.domain :refer [supabase]]
+            [qoback.closspad.helpers :as h]
             [clojure.string :as str]))
 
 
@@ -95,7 +97,10 @@
         {:on-failure (fn [err]
                        [[:data/error (user-friendly-error err)]])
          :on-success (fn [added-match]
-                        [[:db/dissoc :add/match]
-                         [:data/query]
-                         [:route :match {:date (-> added-match :played_at)}]
-                         [:match :new added-match]])}))
+                       (let [date (-> added-match :played_at)]
+                         (rfe/push-state
+                          :route/match
+                          {:day (h/format-iso-date date)})
+                         [[:db/dissoc :add/match]
+                          [:data/query]
+                          [:match :new added-match]]))}))
