@@ -95,6 +95,7 @@
         {:on-failure (fn [err]
                        [[:data/error err]])
          :on-success (fn [added-match]
-                       [[:db/dissoc :add/match]
-                        [:route :match {:date (-> added-match :played_at)}]
-                        #_[:match :new added-match]])}))
+                        [[:db/dissoc :add/match]
+                         [:data/query]
+                         [:route :match {:date (-> added-match :played_at)}]
+                         #_[:match :new added-match]])}))
