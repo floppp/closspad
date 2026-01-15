@@ -57,7 +57,8 @@
       (if error
         ;; TODO: events to dispatch must be pass as params
         (dispatcher nil (conj [[:db/dissoc :db/login]
-                               [:db/assoc-in [:db/login :error error]]
+                               [:db/assoc-in [:db/login :error (->> error user-friendly-error :friendly-message)]]
+                               [:db/dissoc :is-loading?]
                                on-error]))
         (dispatcher nil (conj
                          [[:db/dissoc :db/login]
