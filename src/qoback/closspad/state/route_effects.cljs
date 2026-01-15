@@ -5,10 +5,11 @@
 
 (defn navigated-match-page
   [{:keys [date]}]
-  (let [dispatcher (get-dispatcher)]
+  (let [dispatcher (get-dispatcher)
+        date-obj (if (string? date) (js/Date. date) date)]
     (dispatcher
      nil
-     [[:db/assoc :page/navigated {:page :match :date date}]])))
+     [[:db/assoc :page/navigated {:page :match :date date-obj}]])))
 
 (defn goto->stats
   [player]
