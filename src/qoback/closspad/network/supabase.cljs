@@ -98,4 +98,4 @@
                         [[:db/dissoc :add/match]
                          [:data/query]
                          [:route :match {:date (-> added-match :played_at)}]
-                         #_[:match :new added-match]])}))
+                         [:match :new added-match]])}))

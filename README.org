@@ -12,7 +12,7 @@ curl 'https://orqwiubnozfouaqyywah.supabase.co/rest/v1/CLOSSPAD_match?select=*&o
 #+END_SRC
 
 
-** Tasks [4/12]
+** Tasks [7/12]
 
 *** DONE [#A] BUG next day
 when clicked in the last one 1-1-1970 is selected, and no disable working
@@ -22,10 +22,16 @@ when clicked in the last one 1-1-1970 is selected, and no disable working
 main.js no se están versionando/modificando -> subiendo
 *** DONE [#A] BUG POST route typo
 changed :route/push :route/unkown to [:route :match {:date (-> added-match :played_at)}] in supabase.cljs:71. Removed dead :route/unkown case in effects.cljs:39.
-*** TODO [#A] BUG POST no data refresh
-add [:data/query] dispatch after successful POST in supabase.cljs:69-72. New matches not visible until page refresh or re-query.
-*** TODO [#A] BUG POST missing error handler
-add :data/error event handler in events.cljs. POST failures don't clear loading state or show errors to users.
+*** DONE [#A] BUG POST no data refresh
+Added user-friendly-error function with error detection (timeout/abort → "Error de conexión: tiempo de espera agotado", network → "Error de conexión con Supabase", duplicate → "El partido ya existe", default → "Error al guardar el partido"). Updated login error handling (supabase.cljs:33) and POST failure callback (supabase.cljs:98) to use user-friendly-error. Added [:data/query] dispatch after successful POST (supabase.cljs:101) to refresh data from Supabase before navigation.
+*** DONE [#A] BUG POST missing error handler
+Added :data/error event handler (events.cljs:61-62) that sets error state and clears :is-loading? on errors.
+*** DONE [#A] BUG POST error handling
+Updated login error handling and POST failure callback to use user-friendly-error function. Error toast will display user-friendly messages with :show-details flag for technical details.
+*** DONE [#A] BUG POST button loading state
+Added :disabled (:is-loading? state) attribute to submit button with conditional rendering of spinner + "Procesando..." during loading state (add/view.cljs:117-123). Prevents double-submit during POST→query→navigate flow.
+*** TODO [#C] POST error toast technical details
+Enhance error toast with "Mostrar detalles técnicos" checkbox to toggle display of full error information in ui/elements.cljc
 *** TODO [#A] Better keywordization
 so =played_at= becomes =played-at=. Do not use libraries but code from scratch.
 *** TODO [#B] Load session on start

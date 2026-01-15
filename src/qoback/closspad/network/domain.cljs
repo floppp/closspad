@@ -44,7 +44,7 @@
                        [:db/assoc-in [:stats :by-player] stats-by-player]
                        [:db/assoc-in [:stats :oponents] oponent-stats]
                        [:db/assoc-in [:match :results] matches]
-                       [:db/dissoc :is-loading?]])))}
+                       [:db/assoc :is-loading? false]])))}
     :query/user
     [:get (str "/api/todo/users/" (:user-id data))]))
 

@@ -10,12 +10,14 @@
     :href (when date (str "#/match/" date))}
    icon])
 
-(defn- date-only [^js/Date js-date]
-  (doto (js/Date. (.getTime js-date))
-    (.setHours 0 0 0 0)))
+(defn- date-only [js-date]
+  (when js-date
+    (let [d (js/Date. js-date)]
+      (when (instance? js/Date d)
+        (doto d (.setHours 0 0 0 0))))))
 
 (defn add-day [current-date match-dates]
-  (let [current-day (date-only current-date)]
+  (when-let [current-day (date-only current-date)]
     (some #(when (> (.getTime %) (.getTime current-day)) %)
           (->> match-dates
                (map date-only)
@@ -29,18 +31,21 @@
 
 (defn- arrow-left
   [date match-dates]
-  (let [date (when-let [prev-date-with-match (last (filter #(< % date) match-dates))]
-               (h/format-iso-date prev-date-with-match))]
+  (let [date (when (and date (every? identity match-dates))
+               (when-let [prev-date-with-match (last (filter #(< % date) match-dates))]
+                 (h/format-iso-date prev-date-with-match)))]
     (arrow-button date [ui/left-arrow-icon])))
 
 (defn- double-arrow-right
   [match-dates]
-  (let [date (h/format-iso-date (last match-dates))]
+  (let [date (when (seq match-dates)
+               (h/format-iso-date (last match-dates)))]
     (arrow-button date [ui/right-double-arrow-icon])))
 
 (defn- double-arrow-left
   [match-dates]
-  (let [date (h/format-iso-date (first match-dates))]
+  (let [date (when (seq match-dates)
+               (h/format-iso-date (first match-dates)))]
     (arrow-button date [ui/left-double-arrow-icon])))
 
 (defn arrow-selector
@@ -58,6 +63,3 @@
    (arrow-right date match-dates)
 
    (double-arrow-right match-dates)])
-
-
-

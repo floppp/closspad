@@ -26,7 +26,9 @@
 
 (defn datetime->date->str
   [date & [{:keys [tz] :or {tz "es-ES"}}]]
-  (str (.toLocaleDateString date tz)))
+  (if (instance? js/Date date)
+    (str (.toLocaleDateString date tz))
+    "Fecha no disponible"))
 
 (defn invalid-date? [s]
   (let [d (js/Date. s)]
