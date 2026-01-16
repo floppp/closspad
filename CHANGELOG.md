@@ -1,3 +1,21 @@
+v0.4.23 11cae5ff1ba1218659b520c4e54cd187c4bb4390
+    >> fix: Cleaning
+    >> fix: Refactoring deploy.sh
+    >> fix: Functions on top
+    >> fix: Step 11 done
+    >> fix: Step 10 done
+    >> fix: Step 9 done
+    >> fix: Step 8 done
+    >> fix: Step 7 done
+    >> fix: Step 6 done
+    >> fix: Step 5 done
+    >> fix: Step 4 done
+    >> fix: Step 3 done
+    >> fix: Stem 2 done
+    >> fix: Clean
+    >> Release v0.4.22
+
+
 v0.4.22 57e4a35bb566fb46762d9640ba8a21a3a2f745e1
     >> fix: Clean before call
     >> Release v0.4.21
