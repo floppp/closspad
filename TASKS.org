@@ -100,13 +100,15 @@
   **Impact:** Cleaner, more efficient code
 
 * Step 10: Extract Configuration
-  **Status:** TODO
-  **Lines:** Top of script, 243-251
-  **Description:** Move hardcoded values to configuration variables
-  - Add: PUBLIC_DIR="resources/public"
-  - Add: REMOTE_SERVER="nando@157.90.230.213:/home/nando/apps/qoback/fik"
-  - Add: RSYNC_EXCLUDES="--exclude 'js/cljs-runtime' ..."
-  - Replace hardcoded values in code
+  **Status:** COMPLETED
+  **Lines:** 9-14 (new config), 218 (rsync), all directory refs
+  **Description:** Moved hardcoded values to configuration variables
+  - Added configuration section (lines 9-14):
+    - PUBLIC_DIR="resources/public"
+    - REMOTE_SERVER="nando@157.90.230.213:/home/nando/apps/qoback/fik"
+    - RSYNC_EXCLUDES="--exclude 'js/cljs-runtime' --exclude 'js/main.js' ..."
+  - Replaced rsync command to use variables (line 218)
+  - Replaced all 21 occurrences of "resources/public" with "$PUBLIC_DIR"
   **Impact:** Easier to maintain, changeable values in one place
 
 * Step 11: Improve Error Handling
@@ -120,5 +122,5 @@
 
 * Progress Summary
   - Total Steps: 11
-  - Completed: 9
-  - Pending: 2
+  - Completed: 10
+  - Pending: 1

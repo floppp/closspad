@@ -7,26 +7,33 @@ if [ -z "$SSH_AUTH_SOCK" ]; then
     fi
 
 # ======================================================================
+# Configuration
+# ======================================================================
+PUBLIC_DIR="resources/public"
+REMOTE_SERVER="nando@157.90.230.213:/home/nando/apps/qoback/fik"
+RSYNC_EXCLUDES="--exclude 'js/cljs-runtime' --exclude 'js/main.js' --exclude 'portfolio.html' --exclude 'portfolio-js' --exclude '*.edn' --exclude '*.bak'"
+
+# ======================================================================
 # Functions
 # ======================================================================
 
 rollback() {
     echo "Deployment failed. Rolling back changes..."
-    rm -f resources/public/css/style.v*.css
-    rm -f resources/public/tailwind.v*.css
-    rm -f resources/public/js/main.v*.js
-    mv resources/public/index.html.bak resources/public/index.html
+    rm -f $PUBLIC_DIR/css/style.v*.css
+    rm -f $PUBLIC_DIR/tailwind.v*.css
+    rm -f $PUBLIC_DIR/js/main.v*.js
+    mv $PUBLIC_DIR/index.html.bak $PUBLIC_DIR/index.html
     echo "Rollback complete. No commit was created."
 }
 
 clean() {
     # Clean old versions
-    rm resources/public/*.bak
-    rm -rf resources/public/portfolio-js
-    rm resources/public/js/main.v*.js
-    rm resources/public/js/manifest.edn
-    rm resources/public/css/style.v*.css
-    rm resources/public/tailwind.v*.css
+    rm $PUBLIC_DIR/*.bak
+    rm -rf $PUBLIC_DIR/portfolio-js
+    rm $PUBLIC_DIR/js/main.v*.js
+    rm $PUBLIC_DIR/js/manifest.edn
+    rm $PUBLIC_DIR/css/style.v*.css
+    rm $PUBLIC_DIR/tailwind.v*.css
 }
 
 # ======================================================================
@@ -54,8 +61,8 @@ if [[ -n $(git log HEAD..$TRACKING_BRANCH) ]]; then
 fi
 
 # Folder guard
-if [ ! -d "resources/public" ]; then
-    echo "Error: resources/public directory not found"
+if [ ! -d "$PUBLIC_DIR" ]; then
+    echo "Error: $PUBLIC_DIR directory not found"
     exit 1
 fi
 # <<<<<
@@ -63,7 +70,7 @@ fi
 
 # Creating clean copy to restore later
 
-cp resources/public/index.html resources/public/index.html.bak
+cp $PUBLIC_DIR/index.html $PUBLIC_DIR/index.html.bak
 
 get_last_version() {
     # Try CHANGELOG.md first
@@ -77,7 +84,7 @@ get_last_version() {
     [ ! -z "$version" ] && echo "$version" && return 0
     
     # Try JS files
-    local version=$(ls resources/public/js/main.v*.js 2>/dev/null | sed 's/.*main\.\(v[0-9]*\.[0-9]*\.[0-9]*\)\.js/\1/' | sort -V | tail -n 1)
+    local version=$(ls $PUBLIC_DIR/js/main.v*.js 2>/dev/null | sed 's/.*main\.\(v[0-9]*\.[0-9]*\.[0-9]*\)\.js/\1/' | sort -V | tail -n 1)
     [ ! -z "$version" ] && echo "$version" && return 0
     
     # Default
@@ -155,8 +162,8 @@ if [[ $compile ]]; then
 
     CSS_VERSIONED_STYLE="css/style.$version_with_v.css"
     CSS_VERSIONED_TAILWIND="tailwind.$version_with_v.css"
-    cp resources/public/css/style.css resources/public/"$CSS_VERSIONED_STYLE"
-    cp resources/public/tailwind.css resources/public/"$CSS_VERSIONED_TAILWIND"
+    cp $PUBLIC_DIR/css/style.css $PUBLIC_DIR/"$CSS_VERSIONED_STYLE"
+    cp $PUBLIC_DIR/tailwind.css $PUBLIC_DIR/"$CSS_VERSIONED_TAILWIND"
 
     NEW_MAIN="main.$version_with_v.js"
     
@@ -183,7 +190,7 @@ if [[ $compile ]]; then
       -e "s|<script src=\"js/main.js\"></script>|<script src=\"js/$NEW_MAIN\"></script>|" \
       -e "s|<link href=\"css/style.css\" rel=\"stylesheet\" type=\"text/css\">|<link href=\"/$CSS_VERSIONED_STYLE\"  rel=\"stylesheet\" type=\"text/css\">|" \
       -e "s|<link href=\"tailwind.css\" rel=\"stylesheet\" type=\"text/css\">|<link href=\"/$CSS_VERSIONED_TAILWIND\"  rel=\"stylesheet\" type=\"text/css\">|" \
-      resources/public/index.html
+      $PUBLIC_DIR/index.html
 
     # Build normally first
     echo "Building application..."
@@ -196,7 +203,7 @@ if [[ $compile ]]; then
 
     # Rename to versioned file
     echo "Creating versioned file: main.$version_with_v.js"
-    cp resources/public/js/main.js "resources/public/js/main.$version_with_v.js"
+    cp $PUBLIC_DIR/js/main.js "$PUBLIC_DIR/js/main.$version_with_v.js"
     if [ $? -ne 0 ]; then
         echo "Error: Failed to create versioned JS file"
         rollback
@@ -204,19 +211,11 @@ if [[ $compile ]]; then
     fi
 
     # Update manifest
-    echo "{\"main.js\": \"js/main.$version_with_v.js\"}" > resources/public/js/manifest.edn
+    echo "{\"main.js\": \"js/main.$version_with_v.js\"}" > $PUBLIC_DIR/js/manifest.edn
 fi
 
 
-rsync -avz --progress \
-      --exclude "js/cljs-runtime" \
-      --exclude "js/main.js" \
-      --exclude "portfolio.html" \
-      --exclude "portfolio-js" \
-      --exclude "*.edn" \
-      --exclude "*.bak" \
-      resources/public/ \
-      nando@157.90.230.213:/home/nando/apps/qoback/fik
+rsync -avz --progress $RSYNC_EXCLUDES "$PUBLIC_DIR/" "$REMOTE_SERVER"
 
 if [ $? -ne 0 ]; then
     rollback
@@ -224,7 +223,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Commit build artifacts and version updates
-git add CHANGELOG.md resources/public/index.html resources/public/css/ resources/public/tailwind.v*.css
+git add CHANGELOG.md $PUBLIC_DIR/index.html $PUBLIC_DIR/css/ $PUBLIC_DIR/tailwind.v*.css
 git commit -m "Release $version_with_v"
 
 # Push to remote
