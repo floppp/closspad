@@ -93,14 +93,10 @@ increment_version() {
         echo "Invalid version format: $input_version" >&2
         return 1
     fi
-
+ 
     local major minor patch
     IFS='.' read -r major minor patch <<< "$version"
-    if ! [[ "$major" =~ ^[0-9]+$ ]] || ! [[ "$minor" =~ ^[0-9]+$ ]] || ! [[ "$patch" =~ ^[0-9]+$ ]]; then
-        echo "Invalid version numbers: $major.$minor.$patch" >&2
-        return 1
-    fi
-
+ 
     if [ "$upgrade_minor" = true ]; then
         minor=$((minor + 1))
         patch=0
