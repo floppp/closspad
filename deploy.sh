@@ -77,6 +77,76 @@ increment_version() {
     echo "$major.$minor.$patch"
 }
 
+compile_release() {
+    # Determine version
+    if [[ -z "$version" ]]; then
+        last_version=$(get_last_version | tail -n 1)
+        version=$(increment_version "$last_version" "$minor_upgrade")
+        version_with_v="v$version"
+        if [ "$minor_upgrade" = true ]; then
+            echo "Auto-incrementing minor version to: $version_with_v"
+        else
+            echo "Auto-incrementing patch version to: $version_with_v"
+        fi
+    else
+        version_with_v="v${version#v}"
+    fi
+
+    # Create versioned CSS files
+    CSS_VERSIONED_STYLE="css/style.$version_with_v.css"
+    CSS_VERSIONED_TAILWIND="tailwind.$version_with_v.css"
+    cp $PUBLIC_DIR/css/style.css "$PUBLIC_DIR/$CSS_VERSIONED_STYLE"
+    cp $PUBLIC_DIR/tailwind.css "$PUBLIC_DIR/$CSS_VERSIONED_TAILWIND"
+
+    NEW_MAIN="main.$version_with_v.js"
+
+    # Update CHANGELOG.md
+    current_commit=$(git rev-parse HEAD)
+    last_commit=$(head -n 1 CHANGELOG.md | grep -o "[a-f0-9]\{40\}" || echo "")
+
+    printf "%s %s\n" "$version_with_v" "$current_commit" > CHANGELOG.md.tmp
+    if [ ! -z "$last_commit" ]; then
+        commit_log=$(git log --pretty=format:"    >> %s" ${last_commit}..HEAD)
+        if [ ! -z "$commit_log" ]; then
+            echo "$commit_log" >> CHANGELOG.md.tmp
+            echo "" >> CHANGELOG.md.tmp
+        fi
+    fi
+    echo "" >> CHANGELOG.md.tmp
+    if [ -f CHANGELOG.md ]; then
+        cat CHANGELOG.md >> CHANGELOG.md.tmp
+    fi
+    mv CHANGELOG.md.tmp CHANGELOG.md
+
+    # Update index.html with versioned assets
+    sed -i -E \
+      -e "s|<script src=\"js/main.js\"></script>|<script src=\"js/$NEW_MAIN\"></script>|" \
+      -e "s|<link href=\"css/style.css\" rel=\"stylesheet\" type=\"text/css\">|<link href=\"/$CSS_VERSIONED_STYLE\"  rel=\"stylesheet\" type=\"text/css\">|" \
+      -e "s|<link href=\"tailwind.css\" rel=\"stylesheet\" type=\"text/css\">|<link href=\"/$CSS_VERSIONED_TAILWIND\"  rel=\"stylesheet\" type=\"text/css\">|" \
+      $PUBLIC_DIR/index.html
+
+    # Build application
+    echo "Building application..."
+    npx shadow-cljs release app
+    if [ $? -ne 0 ]; then
+        echo "Error: Shadow-cljs compilation failed"
+        rollback
+        exit 1
+    fi
+
+    # Create versioned JS file
+    echo "Creating versioned file: main.$version_with_v.js"
+    cp $PUBLIC_DIR/js/main.js "$PUBLIC_DIR/js/main.$version_with_v.js"
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to create versioned JS file"
+        rollback
+        exit 1
+    fi
+
+    # Update manifest
+    echo "{\"main.js\": \"js/main.$version_with_v.js\"}" > $PUBLIC_DIR/js/manifest.edn
+}
+
 # ======================================================================
 # >>>>> Guards
 git fetch origin
@@ -147,71 +217,7 @@ for arg in "$@"; do
 done
 
 if [[ $compile ]]; then
-    if [[ -z "$version" ]]; then
-        last_version=$(get_last_version | tail -n 1)
-        version=$(increment_version "$last_version" "$minor_upgrade")
-        version_with_v="v$version"
-        if [ "$minor_upgrade" = true ]; then
-            echo "Auto-incrementing minor version to: $version_with_v"
-        else
-            echo "Auto-incrementing patch version to: $version_with_v"
-        fi
-    else
-        version_with_v="v${version#v}"
-    fi
-
-    CSS_VERSIONED_STYLE="css/style.$version_with_v.css"
-    CSS_VERSIONED_TAILWIND="tailwind.$version_with_v.css"
-    cp $PUBLIC_DIR/css/style.css $PUBLIC_DIR/"$CSS_VERSIONED_STYLE"
-    cp $PUBLIC_DIR/tailwind.css $PUBLIC_DIR/"$CSS_VERSIONED_TAILWIND"
-
-    NEW_MAIN="main.$version_with_v.js"
-
-    # git commits since last version
-    current_commit=$(git rev-parse HEAD)
-    last_commit=$(head -n 1 CHANGELOG.md | grep -o "[a-f0-9]\{40\}" || echo "")
-
-    # Update CHANGELOG.md
-    printf "%s %s\n" "$version_with_v" "$current_commit" > CHANGELOG.md.tmp
-    if [ ! -z "$last_commit" ]; then
-        commit_log=$(git log --pretty=format:"    >> %s" ${last_commit}..HEAD)
-        if [ ! -z "$commit_log" ]; then
-            echo "$commit_log" >> CHANGELOG.md.tmp
-            echo "" >> CHANGELOG.md.tmp
-        fi
-    fi
-    echo "" >> CHANGELOG.md.tmp
-    if [ -f CHANGELOG.md ]; then
-        cat CHANGELOG.md >> CHANGELOG.md.tmp
-    fi
-    mv CHANGELOG.md.tmp CHANGELOG.md
-
-    sed -i -E \
-      -e "s|<script src=\"js/main.js\"></script>|<script src=\"js/$NEW_MAIN\"></script>|" \
-      -e "s|<link href=\"css/style.css\" rel=\"stylesheet\" type=\"text/css\">|<link href=\"/$CSS_VERSIONED_STYLE\"  rel=\"stylesheet\" type=\"text/css\">|" \
-      -e "s|<link href=\"tailwind.css\" rel=\"stylesheet\" type=\"text/css\">|<link href=\"/$CSS_VERSIONED_TAILWIND\"  rel=\"stylesheet\" type=\"text/css\">|" \
-      $PUBLIC_DIR/index.html
-
-    # Build normally first
-    echo "Building application..."
-    npx shadow-cljs release app
-    if [ $? -ne 0 ]; then
-        echo "Error: Shadow-cljs compilation failed"
-        rollback
-        exit 1
-    fi
-
-    # Rename to versioned file
-    echo "Creating versioned file: main.$version_with_v.js"
-    cp $PUBLIC_DIR/js/main.js "$PUBLIC_DIR/js/main.$version_with_v.js"
-    if [ $? -ne 0 ]; then
-        echo "Error: Failed to create versioned JS file"
-        rollback
-        exit 1
-    fi
-
-    # Update manifest
-    echo "{\"main.js\": \"js/main.$version_with_v.js\"}" > $PUBLIC_DIR/js/manifest.edn
+    compile_release
 fi
 
 

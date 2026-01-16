@@ -132,6 +132,28 @@
   - Completed: 11
   - Pending: 0
 
+* Step 12: Extract Compilation to Function [EXTRA]
+  **Status:** COMPLETED
+  **Lines:** 80-148 (new function), 219-221 (replaced with function call)
+  **Description:** Extracted compilation logic to compile_release() function
+  - Created new function compile_release() (lines 80-148)
+  - Replaced 67 lines of inline compilation logic with function call
+  - Function is self-contained, handles all errors internally
+  - Uses global variables: version, minor_upgrade
+  - Sets version_with_v for use by subsequent operations
+  **Main script change:**
+    - From: if [[ $compile ]]; then [67 lines of logic]; fi
+    - To: if [[ $compile ]]; then compile_release; fi
+  **Impact:** Cleaner separation of concerns, more readable code, functions organized
+
 * COMPLETION STATUS: ALL TASKS COMPLETED ✓
 * NOTE: Step 7 was corrected to include ALL functions (not just rollback and clean)
   - get_last_version() and increment_version() also moved to Functions section
+* EXTRA: Step 12 added to extract compilation logic to function
+
+* Final Function Organization:
+  - rollback(): Line 20
+  - clean(): Line 29
+  - get_last_version(): Line 39
+  - increment_version(): Line 58
+  - compile_release(): Line 80 (NEW)
