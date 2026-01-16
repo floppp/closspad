@@ -227,6 +227,15 @@ if [[ $compile ]]; then
 fi
 
 
+rollback() {
+    echo "Deployment failed. Rolling back changes..."
+    rm -f resources/public/css/style.v*.css
+    rm -f resources/public/tailwind.v*.css
+    rm -f resources/public/js/main.v*.js
+    mv resources/public/index.html.bak resources/public/index.html
+    echo "Rollback complete. No commit was created."
+}
+
 # Add trap to clean up on script exit in case there is some issue on syncing.
 trap 'mv resources/public/index.html.bak resources/public/index.html' EXIT
 
@@ -239,12 +248,20 @@ rsync -avz --progress \
       resources/public/ \
       nando@157.90.230.213:/home/nando/apps/qoback/fik
 
+if [ $? -ne 0 ]; then
+    rollback
+    exit 1
+fi
+
 # Altough trap we must `mv` to avoid git issues.
 mv resources/public/index.html.bak resources/public/index.html
 
 # Commit build artifacts and version updates
 git add CHANGELOG.md resources/public/index.html resources/public/css/ resources/public/js/
 git commit -m "Release $version_with_v"
+
+# Push to remote
+git push
 
 
 clean() {
