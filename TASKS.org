@@ -33,22 +33,22 @@
   **Impact:** Cleaner, more maintainable code
 
 * Step 4: Refine Verbosity
-  **Status:** TODO
-  **Lines:** 46-91, 178, 199-200, 206-207, 227
-  **Description:** Keep essential output, remove excessive debug noise
-  **Keep:**
+  **Status:** COMPLETED
+  **Lines:** 46-91, 154, 175-176, 182-183, 204-205 (modified/removed)
+  **Description:** Removed excessive debug noise, kept essential output
+  **Removed:**
+    - All get_last_version debug prints (Starting version detection, Found CHANGELOG.md, etc.)
+    - "NEW_MAIN value: %s" debug print (line 154)
+    - "Checking index.html before/after update" (lines 175, 182)
+    - grep calls showing script tags (lines 176, 183)
+    - "Build artifacts:" + ls -la output (lines 204-205)
+  **Kept:**
     - Version increment messages (e.g., "Auto-incrementing patch version to: v0.4.22")
     - "Creating versioned file: main.v0.4.22.js"
     - "Cleaning old version files..."
     - Error messages
     - rsync progress (built-in)
-  **Remove:**
-    - get_last_version debug prints (printf ... >&2 with detection steps)
-    - "NEW_MAIN value: %s" debug print
-    - "Checking index.html before/after update"
-    - grep calls showing script tags
-    - "Build artifacts:" + ls -la output
-  **Impact:** Cleaner output during normal operation
+  **Impact:** Cleaner output during normal operation, reduced noise
 
 * Step 5: Simplify Version Logic
   **Status:** TODO
@@ -110,5 +110,5 @@
 
 * Progress Summary
   - Total Steps: 11
-  - Completed: 0
-  - Pending: 11
+  - Completed: 4
+  - Pending: 7

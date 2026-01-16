@@ -45,49 +45,28 @@ cp resources/public/index.html resources/public/index.html.bak
 
 get_last_version() {
     local found_version=""
-    printf "Starting version detection...\n" >&2
     if [ -f CHANGELOG.md ]; then
-        printf "Found CHANGELOG.md\n" >&2
-        printf "First line of CHANGELOG.md:\n\t" >&2
-        head -n 1 CHANGELOG.md >&2
         found_version=$(head -n 1 CHANGELOG.md | grep -o "^v[0-9]*\.[0-9]*\.[0-9]* [a-f0-9]\{40\}" | cut -d' ' -f1 || echo "")
-        if [ ! -z "$found_version" ]; then
-            printf "Found version in CHANGELOG.md: %s\n" "$found_version" >&2
-        else
-            printf "No version found in first line of CHANGELOG.md\n" >&2
-        fi
-    else
-        printf "CHANGELOG.md not found\n" >&2
     fi
 
     if [ -z "$found_version" ]; then
-        printf "Checking git tags...\n" >&2
         git_version=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
         if [ ! -z "$git_version" ]; then
-            printf "Found version in git tags: %s\n" "$git_version" >&2
             found_version=$git_version
-        else
-            printf "No git tags found\n" >&2
         fi
     fi
 
     if [ -z "$found_version" ]; then
-        printf "Checking JS files...\n" >&2
         js_version=$(ls resources/public/js/main.v*.js 2>/dev/null | sed 's/.*main\.\(v[0-9]*\.[0-9]*\.[0-9]*\)\.js/\1/' | sort -V | tail -n 1)
         if [ ! -z "$js_version" ]; then
-            printf "Found version in JS files: %s\n" "$js_version" >&2
             found_version=$js_version
-        else
-            printf "No versioned JS files found\n" >&2
         fi
     fi
 
     if [ -z "$found_version" ]; then
         found_version="v0.0.1"
-        printf "No version found anywhere, using default: %s\n" "$found_version" >&2
     fi
 
-    printf "Final version selected: %s\n" "$found_version" >&2
     printf "%s\n" "$found_version"
 }
 
@@ -172,8 +151,7 @@ if [[ $compile ]]; then
     cp resources/public/tailwind.css resources/public/"$CSS_VERSIONED_TAILWIND"
 
     NEW_MAIN="main.$version_with_v.js"
-    printf "NEW_MAIN value: %s\n" "$NEW_MAIN" >&2
-
+    
     # git commits since last version
     current_commit=$(git rev-parse HEAD)
     last_commit=$(head -n 1 CHANGELOG.md | grep -o "[a-f0-9]\{40\}" || echo "")
@@ -193,15 +171,9 @@ if [[ $compile ]]; then
     fi
     mv CHANGELOG.md.tmp CHANGELOG.md
 
-    printf "Checking index.html before update:\n" >&2
-    grep "<script src=\"js/main" resources/public/index.html >&2
-
     sed -i -E "s|<script src=\"js/main.js\"></script>|<script src=\"js/$NEW_MAIN\"></script>|" resources/public/index.html
     sed -i -E "s|<link href=\"css/style.css\" rel=\"stylesheet\" type=\"text/css\">|<link href=\"/$CSS_VERSIONED_STYLE\"  rel=\"stylesheet\" type=\"text/css\">|" resources/public/index.html
     sed -i -E "s|<link href=\"tailwind.css\" rel=\"stylesheet\" type=\"text/css\">|<link href=\"/$CSS_VERSIONED_TAILWIND\"  rel=\"stylesheet\" type=\"text/css\">|" resources/public/index.html
-
-    printf "Checking index.html after update:\n" >&2
-    grep "<script src=\"js/main" resources/public/index.html >&2
 
     # Build normally first
     echo "Building application..."
@@ -220,10 +192,6 @@ if [[ $compile ]]; then
         rollback
         exit 1
     fi
-
-    # Verify new version
-    echo "Build artifacts:"
-    ls -la resources/public/js/
 
     # Update manifest
     echo "{\"main.js\": \"js/main.$version_with_v.js\"}" > resources/public/js/manifest.edn
