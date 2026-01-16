@@ -143,6 +143,10 @@ for arg in "$@"; do
             minor_upgrade=true
             shift 1
             ;;
+        --clean)
+            clean=true
+            shift 1
+            ;;
         *)
             other_args+=("$arg")
             ;;
@@ -244,7 +248,8 @@ rsync -avz --progress \
       --exclude "js/main.js" \
       --exclude "portfolio.html" \
       --exclude "portfolio-js" \
-      --exclude "*.edn"\
+      --exclude "*.edn" \
+      --exclude "*.bak" \
       resources/public/ \
       nando@157.90.230.213:/home/nando/apps/qoback/fik
 
@@ -253,15 +258,18 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Altough trap we must `mv` to avoid git issues.
-mv resources/public/index.html.bak resources/public/index.html
-
 # Commit build artifacts and version updates
-git add CHANGELOG.md resources/public/index.html resources/public/css/ resources/public/js/
+git add CHANGELOG.md resources/public/index.html resources/public/css/ resources/public/tailwind.v*.css
 git commit -m "Release $version_with_v"
 
 # Push to remote
 git push
+
+# Clean old versions if requested
+if [[ $clean ]]; then
+    echo "Cleaning old version files..."
+    clean
+fi
 
 
 clean() {
