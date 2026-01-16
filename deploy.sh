@@ -240,9 +240,6 @@ rollback() {
     echo "Rollback complete. No commit was created."
 }
 
-# Add trap to clean up on script exit in case there is some issue on syncing.
-trap 'mv resources/public/index.html.bak resources/public/index.html' EXIT
-
 rsync -avz --progress \
       --exclude "js/cljs-runtime" \
       --exclude "js/main.js" \
@@ -269,7 +266,7 @@ git push
 clean() {
     # Clean old versions
     rm resources/public/*.bak
-    rm resources/public/portfolio-js
+    rm -rf resources/public/portfolio-js
     rm resources/public/js/main.v*.js
     rm resources/public/js/manifest.edn
     rm resources/public/css/style.v*.css
