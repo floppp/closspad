@@ -1,3 +1,9 @@
+v0.4.21 1d81f9c2ef80ac3dbe9d0dce97ebf5a47b843771
+    >> feat: Clean option
+    >> fix: Last tailwind added manually
+    >> Release v0.4.20
+
+
 v0.4.20 60467dcef6563a3f8037a23a15aac4814219cc28
     >> fix: Rollback if rsync fails and push if success
     >> Release v0.4.19
