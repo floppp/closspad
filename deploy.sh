@@ -147,9 +147,6 @@ for arg in "$@"; do
             clean=true
             shift 1
             ;;
-        *)
-            other_args+=("$arg")
-            ;;
     esac
 done
 
