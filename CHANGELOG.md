@@ -1,3 +1,8 @@
+v0.4.22 57e4a35bb566fb46762d9640ba8a21a3a2f745e1
+    >> fix: Clean before call
+    >> Release v0.4.21
+
+
 v0.4.21 1d81f9c2ef80ac3dbe9d0dce97ebf5a47b843771
     >> feat: Clean option
     >> fix: Last tailwind added manually
