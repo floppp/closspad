@@ -1,3 +1,8 @@
+v0.4.27 fcb8a08e9b9969b6ee26f66fdd4241b6c1cc221c
+    >> fix:
+    >> Release v0.4.26
+
+
 v0.4.26 c58542b4011c7e1c8fe18ee8fd4d06ff20ea3f4d
     >> fix: index.html without versioning
     >> Release v0.4.25
