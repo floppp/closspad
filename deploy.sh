@@ -265,12 +265,6 @@ git commit -m "Release $version_with_v"
 # Push to remote
 git push
 
-# Clean old versions if requested
-if [[ $clean ]]; then
-    echo "Cleaning old version files..."
-    clean
-fi
-
 
 clean() {
     # Clean old versions
@@ -281,3 +275,11 @@ clean() {
     rm resources/public/css/style.v*.css
     rm resources/public/tailwind.v*.css
 }
+
+
+# Clean old versions if requested
+if [[ $clean ]]; then
+    echo "Cleaning old version files..."
+    clean
+fi
+
