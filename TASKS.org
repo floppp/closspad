@@ -80,12 +80,14 @@
   **Impact:** Functions available earlier, better code organization
 
 * Step 8: Simplify get_last_version()
-  **Status:** TODO
-  **Lines:** 46-92
-  **Description:** Use early returns to reduce nesting
-  - Remove redundant debug output (handled in Step 4)
-  - Flatten if-else structure with early returns
-  - Keep core version detection logic
+  **Status:** COMPLETED
+  **Lines:** 68-93 (simplified)
+  **Description:** Flattened structure with early returns
+  - Removed nested if-else statements
+  - Used early returns: [ ! -z "$version" ] && echo "$version" && return 0
+  - Each version source (CHANGELOG, git tags, JS files) now returns early when found
+  - Much flatter, more readable code
+  - Kept all core version detection logic
   **Impact:** More readable, maintainable code
 
 * Step 9: Simplify increment_version()
@@ -117,5 +119,5 @@
 
 * Progress Summary
   - Total Steps: 11
-  - Completed: 7
-  - Pending: 4
+  - Completed: 8
+  - Pending: 3

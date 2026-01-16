@@ -66,30 +66,22 @@ fi
 cp resources/public/index.html resources/public/index.html.bak
 
 get_last_version() {
-    local found_version=""
+    # Try CHANGELOG.md first
     if [ -f CHANGELOG.md ]; then
-        found_version=$(head -n 1 CHANGELOG.md | grep -o "^v[0-9]*\.[0-9]*\.[0-9]* [a-f0-9]\{40\}" | cut -d' ' -f1 || echo "")
+        local version=$(head -n 1 CHANGELOG.md | grep -o "^v[0-9]*\.[0-9]*\.[0-9]* [a-f0-9]\{40\}" | cut -d' ' -f1 || echo "")
+        [ ! -z "$version" ] && echo "$version" && return 0
     fi
-
-    if [ -z "$found_version" ]; then
-        git_version=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-        if [ ! -z "$git_version" ]; then
-            found_version=$git_version
-        fi
-    fi
-
-    if [ -z "$found_version" ]; then
-        js_version=$(ls resources/public/js/main.v*.js 2>/dev/null | sed 's/.*main\.\(v[0-9]*\.[0-9]*\.[0-9]*\)\.js/\1/' | sort -V | tail -n 1)
-        if [ ! -z "$js_version" ]; then
-            found_version=$js_version
-        fi
-    fi
-
-    if [ -z "$found_version" ]; then
-        found_version="v0.0.1"
-    fi
-
-    printf "%s\n" "$found_version"
+    
+    # Try git tags
+    local version=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+    [ ! -z "$version" ] && echo "$version" && return 0
+    
+    # Try JS files
+    local version=$(ls resources/public/js/main.v*.js 2>/dev/null | sed 's/.*main\.\(v[0-9]*\.[0-9]*\.[0-9]*\)\.js/\1/' | sort -V | tail -n 1)
+    [ ! -z "$version" ] && echo "$version" && return 0
+    
+    # Default
+    echo "v0.0.1"
 }
 
 increment_version() {
