@@ -1,3 +1,8 @@
+v0.4.24 8ba34d5311e4c050297e187bb1e26c6ba1ff585b
+    >> fix: Broken by opencode
+    >> Release v0.4.23
+
+
 v0.4.23 11cae5ff1ba1218659b520c4e54cd187c4bb4390
     >> fix: Cleaning
     >> fix: Refactoring deploy.sh
