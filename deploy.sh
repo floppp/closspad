@@ -231,6 +231,8 @@ if ! rsync -avz --progress \
     exit 1
 fi
 
+mv $PUBLIC_DIR/index.html.bak $PUBLIC_DIR/index.html
+
 # Commit build artifacts and version updates
 git add CHANGELOG.md $PUBLIC_DIR/index.html $PUBLIC_DIR/css/ $PUBLIC_DIR/tailwind.v*.css
 git commit -m "Release $version_with_v"
