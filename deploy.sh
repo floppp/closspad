@@ -10,8 +10,6 @@ if [ -z "$SSH_AUTH_SOCK" ]; then
 # Configuration
 # ======================================================================
 PUBLIC_DIR="resources/public"
-REMOTE_SERVER="nando@157.90.230.213:/home/nando/apps/qoback/fik"
-RSYNC_EXCLUDES="--exclude 'js/cljs-runtime' --exclude 'js/main.js' --exclude 'portfolio.html' --exclude 'portfolio-js' --exclude '*.edn' --exclude '*.bak'"
 
 # ======================================================================
 # Functions
@@ -221,7 +219,14 @@ if [[ $compile ]]; then
 fi
 
 
-if ! rsync -avz --progress $RSYNC_EXCLUDES "$PUBLIC_DIR/" "$REMOTE_SERVER"; then
+if ! rsync -avz --progress \
+     --exclude 'js/cljs-runtime' \
+     --exclude 'js/main.js' \
+     --exclude 'portfolio.html' \
+     --exclude 'portfolio-js' \
+     --exclude '*.edn' \
+     --exclude '*.bak' "$PUBLIC_DIR/" \
+     nando@157.90.230.213:/home/nando/apps/qoback/fik; then
     rollback
     exit 1
 fi
