@@ -1,3 +1,24 @@
+v0.4.19 7813123b2240c30f08de14552335aa0898229bf4
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> fix: Changelog commited
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> fix: After posting hoome page shown
+    >> fix: After posting hoome page shown
+    >> wip: Fixing issue after posting, not route to last date
+    >> feat: Crear button disabled if posting
+    >> fix: User friendly error message
+    >> fix: Getting data after posting
+    >> fix: Step 3 of post error done
+    >> fix: Step 2 of bug about post error done
+    >> fix: Step 1 for data POST transition
+    >> fix: Chaning structure of :release to override supabase table
+    >> fix: Typo in route and adding bugs detecte by opencode
+    >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
+    >> fix: removing useless file
+    >> wip: working on forecast
+
+
 v0.4.18 1232aaf38becd9d2f42257ef3435def6f07550e1
     >> wip: working on forecast
     >> fix: player stats sorted
