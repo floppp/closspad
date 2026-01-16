@@ -51,11 +51,15 @@
   **Impact:** Cleaner output during normal operation, reduced noise
 
 * Step 5: Simplify Version Logic
-  **Status:** TODO
-  **Lines:** 166-170
-  **Description:** Consolidate version_with_v assignment
-  - Replace two lines with single assignment
-  **Impact:** Code readability
+  **Status:** COMPLETED
+  **Lines:** 142-145 (consolidated)
+  **Description:** Consolidated version_with_v assignment
+  - Replaced two lines with single assignment
+  - Changed from:
+    - version_with_v=${version#v}
+    - version_with_v="v$version_with_v"
+  - To: version_with_v="v${version#v}"
+  **Impact:** Cleaner, more readable code
 
 * Step 6: Consolidate Sed Commands
   **Status:** TODO
@@ -110,5 +114,5 @@
 
 * Progress Summary
   - Total Steps: 11
-  - Completed: 4
-  - Pending: 7
+  - Completed: 5
+  - Pending: 6

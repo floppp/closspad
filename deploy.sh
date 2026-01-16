@@ -140,9 +140,7 @@ if [[ $compile ]]; then
             echo "Auto-incrementing patch version to: $version_with_v"
         fi
     else
-        # If version was provided via -v flag, add 'v' prefix if not present
-        version_with_v=${version#v}
-        version_with_v="v$version_with_v"
+        version_with_v="v${version#v}"
     fi
 
     CSS_VERSIONED_STYLE="css/style.$version_with_v.css"
