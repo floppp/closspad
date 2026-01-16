@@ -1,0 +1,112 @@
+#+TITLE: deploy.sh Improvement Tasks
+
+* Overview
+  Tracking improvements to deploy.sh for simplification and cleanup.
+
+* Step 1: Verify Critical Typos [CRITICAL]
+  **Status:** COMPLETED - NO ISSUES FOUND
+  **Lines:** 98, 168
+  **Description:** Verified syntax is correct (initial analysis was mistaken)
+  - Line 98: `${input_version#v}` - CORRECT bash parameter expansion
+  - Line 168: `${version#v}` - CORRECT bash parameter expansion
+  - No typos exist, syntax was already correct
+  - No changes needed to deploy.sh
+  **Impact:** Verified - no fixes required
+  **Note:** Initial analysis incorrectly identified these as typos, but they are valid syntax
+
+* Step 2: Add Missing Rollback on Build Failure [CRITICAL]
+  **Status:** COMPLETED
+  **Lines:** 212-215, 220-223
+  **Description:** Call rollback() if build steps fail
+  - Line 213: Added rollback() call after npx shadow-cljs release app failure
+  - Line 221: Added rollback() call after cp command failure
+  - Previously exited without calling rollback, leaving modified files
+  **Impact:** Ensures clean state when build fails
+
+* Step 3: Remove Unused Variable
+  **Status:** TODO
+  **Lines:** 151
+  **Description:** Remove unused `other_args+=("$arg")` case
+  - Variable is never used anywhere in the script
+  **Impact:** Code cleanup, reduces complexity
+
+* Step 4: Refine Verbosity
+  **Status:** TODO
+  **Lines:** 46-91, 178, 199-200, 206-207, 227
+  **Description:** Keep essential output, remove excessive debug noise
+  **Keep:**
+    - Version increment messages (e.g., "Auto-incrementing patch version to: v0.4.22")
+    - "Creating versioned file: main.v0.4.22.js"
+    - "Cleaning old version files..."
+    - Error messages
+    - rsync progress (built-in)
+  **Remove:**
+    - get_last_version debug prints (printf ... >&2 with detection steps)
+    - "NEW_MAIN value: %s" debug print
+    - "Checking index.html before/after update"
+    - grep calls showing script tags
+    - "Build artifacts:" + ls -la output
+  **Impact:** Cleaner output during normal operation
+
+* Step 5: Simplify Version Logic
+  **Status:** TODO
+  **Lines:** 166-170
+  **Description:** Consolidate version_with_v assignment
+  - Replace two lines with single assignment
+  **Impact:** Code readability
+
+* Step 6: Consolidate Sed Commands
+  **Status:** TODO
+  **Lines:** 202-204
+  **Description:** Combine 3 sed calls into 1
+  - Use -e flags for multiple expressions
+  **Impact:** More efficient, readable code
+
+* Step 7: Reorder Functions
+  **Status:** TODO
+  **Lines:** 234, 266
+  **Description:** Move rollback() and clean() to top of script
+  - Place after SSH check, before guards
+  - Follows better scripting conventions
+  **Impact:** Functions available earlier, better code organization
+
+* Step 8: Simplify get_last_version()
+  **Status:** TODO
+  **Lines:** 46-92
+  **Description:** Use early returns to reduce nesting
+  - Remove redundant debug output (handled in Step 4)
+  - Flatten if-else structure with early returns
+  - Keep core version detection logic
+  **Impact:** More readable, maintainable code
+
+* Step 9: Simplify increment_version()
+  **Status:** TODO
+  **Lines:** 94-118
+  **Description:** Remove redundant validation
+  - Line 106 validation is redundant (line 99 already validates format)
+  - Simplify function logic
+  **Impact:** Cleaner code
+
+* Step 10: Extract Configuration
+  **Status:** TODO
+  **Lines:** Top of script, 243-251
+  **Description:** Move hardcoded values to configuration variables
+  - Add: PUBLIC_DIR="resources/public"
+  - Add: REMOTE_SERVER="nando@157.90.230.213:/home/nando/apps/qoback/fik"
+  - Add: RSYNC_EXCLUDES="--exclude 'js/cljs-runtime' ..."
+  - Replace hardcoded values in code
+  **Impact:** Easier to maintain, changeable values in one place
+
+* Step 11: Improve Error Handling
+  **Status:** TODO
+  **Lines:** 253-256, git push section
+  **Description:** Replace brittle $? checks with direct conditionals
+  - Change `command; if [ $? -ne 0 ]; then` to `if ! command; then`
+  - Apply to rsync command
+  - Apply to git push command
+  **Impact:** More robust error handling, cleaner code
+
+* Progress Summary
+  - Total Steps: 11
+  - Completed: 0
+  - Pending: 11

@@ -211,6 +211,7 @@ if [[ $compile ]]; then
     npx shadow-cljs release app
     if [ $? -ne 0 ]; then
         echo "Error: Shadow-cljs compilation failed"
+        rollback
         exit 1
     fi
 
@@ -219,6 +220,7 @@ if [[ $compile ]]; then
     cp resources/public/js/main.js "resources/public/js/main.$version_with_v.js"
     if [ $? -ne 0 ]; then
         echo "Error: Failed to create versioned JS file"
+        rollback
         exit 1
     fi
 
