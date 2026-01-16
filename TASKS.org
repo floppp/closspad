@@ -70,10 +70,12 @@
   **Impact:** More efficient, cleaner code
 
 * Step 7: Reorder Functions
-  **Status:** TODO
-  **Lines:** 234, 266
-  **Description:** Move rollback() and clean() to top of script
-  - Place after SSH check, before guards
+  **Status:** COMPLETED
+  **Lines:** Moved from 234, 246 to 13, 22
+  **Description:** Moved rollback() and clean() to top of script
+  - Moved functions from middle of script (lines 234, 246)
+  - Placed after SSH key check (line 8)
+  - Added dedicated "Functions" section (lines 10-30)
   - Follows better scripting conventions
   **Impact:** Functions available earlier, better code organization
 
@@ -115,5 +117,5 @@
 
 * Progress Summary
   - Total Steps: 11
-  - Completed: 6
-  - Pending: 5
+  - Completed: 7
+  - Pending: 4

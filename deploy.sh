@@ -4,8 +4,30 @@
 if [ -z "$SSH_AUTH_SOCK" ]; then
     eval $(ssh-agent -s)
     ssh-add ~/.ssh/id_ed25519
-fi
+    fi
 
+# ======================================================================
+# Functions
+# ======================================================================
+
+rollback() {
+    echo "Deployment failed. Rolling back changes..."
+    rm -f resources/public/css/style.v*.css
+    rm -f resources/public/tailwind.v*.css
+    rm -f resources/public/js/main.v*.js
+    mv resources/public/index.html.bak resources/public/index.html
+    echo "Rollback complete. No commit was created."
+}
+
+clean() {
+    # Clean old versions
+    rm resources/public/*.bak
+    rm -rf resources/public/portfolio-js
+    rm resources/public/js/main.v*.js
+    rm resources/public/js/manifest.edn
+    rm resources/public/css/style.v*.css
+    rm resources/public/tailwind.v*.css
+}
 
 # ======================================================================
 # >>>>> Guards
@@ -198,15 +220,6 @@ if [[ $compile ]]; then
 fi
 
 
-rollback() {
-    echo "Deployment failed. Rolling back changes..."
-    rm -f resources/public/css/style.v*.css
-    rm -f resources/public/tailwind.v*.css
-    rm -f resources/public/js/main.v*.js
-    mv resources/public/index.html.bak resources/public/index.html
-    echo "Rollback complete. No commit was created."
-}
-
 rsync -avz --progress \
       --exclude "js/cljs-runtime" \
       --exclude "js/main.js" \
@@ -228,17 +241,6 @@ git commit -m "Release $version_with_v"
 
 # Push to remote
 git push
-
-
-clean() {
-    # Clean old versions
-    rm resources/public/*.bak
-    rm -rf resources/public/portfolio-js
-    rm resources/public/js/main.v*.js
-    rm resources/public/js/manifest.edn
-    rm resources/public/css/style.v*.css
-    rm resources/public/tailwind.v*.css
-}
 
 
 # Clean old versions if requested
