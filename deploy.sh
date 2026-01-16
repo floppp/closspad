@@ -36,6 +36,47 @@ clean() {
     rm $PUBLIC_DIR/tailwind.v*.css
 }
 
+get_last_version() {
+    # Try CHANGELOG.md first
+    if [ -f CHANGELOG.md ]; then
+        local version=$(head -n 1 CHANGELOG.md | grep -o "^v[0-9]*\.[0-9]*\.[0-9]* [a-f0-9]\{40\}" | cut -d' ' -f1 || echo "")
+        [ ! -z "$version" ] && echo "$version" && return 0
+    fi
+
+    # Try git tags
+    local version=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+    [ ! -z "$version" ] && echo "$version" && return 0
+
+    # Try JS files
+    local version=$(ls $PUBLIC_DIR/js/main.v*.js 2>/dev/null | sed 's/.*main\.\(v[0-9]*\.[0-9]*\.[0-9]*\)\.js/\1/' | sort -V | tail -n 1)
+    [ ! -z "$version" ] && echo "$version" && return 0
+
+    # Default
+    echo "v0.0.1"
+}
+
+increment_version() {
+    local input_version=$1
+    local upgrade_minor=$2
+    # Strip any leading 'v' if present
+    local version=${input_version#v}
+    if [[ ! $version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        echo "Invalid version format: $input_version" >&2
+        return 1
+    fi
+
+    local major minor patch
+    IFS='.' read -r major minor patch <<< "$version"
+
+    if [ "$upgrade_minor" = true ]; then
+        minor=$((minor + 1))
+        patch=0
+    else
+        patch=$((patch + 1))
+    fi
+    echo "$major.$minor.$patch"
+}
+
 # ======================================================================
 # >>>>> Guards
 git fetch origin
@@ -71,47 +112,6 @@ fi
 # Creating clean copy to restore later
 
 cp $PUBLIC_DIR/index.html $PUBLIC_DIR/index.html.bak
-
-get_last_version() {
-    # Try CHANGELOG.md first
-    if [ -f CHANGELOG.md ]; then
-        local version=$(head -n 1 CHANGELOG.md | grep -o "^v[0-9]*\.[0-9]*\.[0-9]* [a-f0-9]\{40\}" | cut -d' ' -f1 || echo "")
-        [ ! -z "$version" ] && echo "$version" && return 0
-    fi
-    
-    # Try git tags
-    local version=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-    [ ! -z "$version" ] && echo "$version" && return 0
-    
-    # Try JS files
-    local version=$(ls $PUBLIC_DIR/js/main.v*.js 2>/dev/null | sed 's/.*main\.\(v[0-9]*\.[0-9]*\.[0-9]*\)\.js/\1/' | sort -V | tail -n 1)
-    [ ! -z "$version" ] && echo "$version" && return 0
-    
-    # Default
-    echo "v0.0.1"
-}
-
-increment_version() {
-    local input_version=$1
-    local upgrade_minor=$2
-    # Strip any leading 'v' if present
-    local version=${input_version#v}
-    if [[ ! $version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-        echo "Invalid version format: $input_version" >&2
-        return 1
-    fi
- 
-    local major minor patch
-    IFS='.' read -r major minor patch <<< "$version"
- 
-    if [ "$upgrade_minor" = true ]; then
-        minor=$((minor + 1))
-        patch=0
-    else
-        patch=$((patch + 1))
-    fi
-    echo "$major.$minor.$patch"
-}
 
 minor_upgrade=false
 version=""
@@ -166,7 +166,7 @@ if [[ $compile ]]; then
     cp $PUBLIC_DIR/tailwind.css $PUBLIC_DIR/"$CSS_VERSIONED_TAILWIND"
 
     NEW_MAIN="main.$version_with_v.js"
-    
+
     # git commits since last version
     current_commit=$(git rev-parse HEAD)
     last_commit=$(head -n 1 CHANGELOG.md | grep -o "[a-f0-9]\{40\}" || echo "")
@@ -236,4 +236,3 @@ if [[ $clean ]]; then
     echo "Cleaning old version files..."
     clean
 fi
-

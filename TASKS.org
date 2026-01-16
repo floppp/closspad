@@ -70,14 +70,16 @@
   **Impact:** More efficient, cleaner code
 
 * Step 7: Reorder Functions
-  **Status:** COMPLETED
-  **Lines:** Moved from 234, 246 to 13, 22
-  **Description:** Moved rollback() and clean() to top of script
-  - Moved functions from middle of script (lines 234, 246)
-  - Placed after SSH key check (line 8)
-  - Added dedicated "Functions" section (lines 10-30)
+  **Status:** COMPLETED (CORRECTED)
+  **Lines:** All 4 functions now at lines 20, 29, 39, 58
+  **Description:** Moved ALL functions to top of script
+  - rollback(): Line 20
+  - clean(): Line 29
+  - get_last_version(): Line 39
+  - increment_version(): Line 58
+  - Added dedicated "Functions" section (lines 17-71)
   - Follows better scripting conventions
-  **Impact:** Functions available earlier, better code organization
+  **Impact:** All functions available earlier, better code organization
 
 * Step 8: Simplify get_last_version()
   **Status:** COMPLETED
@@ -131,3 +133,5 @@
   - Pending: 0
 
 * COMPLETION STATUS: ALL TASKS COMPLETED ✓
+* NOTE: Step 7 was corrected to include ALL functions (not just rollback and clean)
+  - get_last_version() and increment_version() also moved to Functions section
