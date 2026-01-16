@@ -215,9 +215,7 @@ if [[ $compile ]]; then
 fi
 
 
-rsync -avz --progress $RSYNC_EXCLUDES "$PUBLIC_DIR/" "$REMOTE_SERVER"
-
-if [ $? -ne 0 ]; then
+if ! rsync -avz --progress $RSYNC_EXCLUDES "$PUBLIC_DIR/" "$REMOTE_SERVER"; then
     rollback
     exit 1
 fi
@@ -227,7 +225,10 @@ git add CHANGELOG.md $PUBLIC_DIR/index.html $PUBLIC_DIR/css/ $PUBLIC_DIR/tailwin
 git commit -m "Release $version_with_v"
 
 # Push to remote
-git push
+if ! git push; then
+    echo "Error: Git push failed"
+    exit 1
+fi
 
 
 # Clean old versions if requested
