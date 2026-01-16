@@ -169,9 +169,11 @@ if [[ $compile ]]; then
     fi
     mv CHANGELOG.md.tmp CHANGELOG.md
 
-    sed -i -E "s|<script src=\"js/main.js\"></script>|<script src=\"js/$NEW_MAIN\"></script>|" resources/public/index.html
-    sed -i -E "s|<link href=\"css/style.css\" rel=\"stylesheet\" type=\"text/css\">|<link href=\"/$CSS_VERSIONED_STYLE\"  rel=\"stylesheet\" type=\"text/css\">|" resources/public/index.html
-    sed -i -E "s|<link href=\"tailwind.css\" rel=\"stylesheet\" type=\"text/css\">|<link href=\"/$CSS_VERSIONED_TAILWIND\"  rel=\"stylesheet\" type=\"text/css\">|" resources/public/index.html
+    sed -i -E \
+      -e "s|<script src=\"js/main.js\"></script>|<script src=\"js/$NEW_MAIN\"></script>|" \
+      -e "s|<link href=\"css/style.css\" rel=\"stylesheet\" type=\"text/css\">|<link href=\"/$CSS_VERSIONED_STYLE\"  rel=\"stylesheet\" type=\"text/css\">|" \
+      -e "s|<link href=\"tailwind.css\" rel=\"stylesheet\" type=\"text/css\">|<link href=\"/$CSS_VERSIONED_TAILWIND\"  rel=\"stylesheet\" type=\"text/css\">|" \
+      resources/public/index.html
 
     # Build normally first
     echo "Building application..."

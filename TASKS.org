@@ -62,11 +62,12 @@
   **Impact:** Cleaner, more readable code
 
 * Step 6: Consolidate Sed Commands
-  **Status:** TODO
-  **Lines:** 202-204
-  **Description:** Combine 3 sed calls into 1
-  - Use -e flags for multiple expressions
-  **Impact:** More efficient, readable code
+  **Status:** COMPLETED
+  **Lines:** 172-174 (consolidated)
+  **Description:** Combined 3 sed calls into 1
+  - Replaced 3 separate sed commands with 1 using multiple -e flags
+  - More efficient single file read/write operation
+  **Impact:** More efficient, cleaner code
 
 * Step 7: Reorder Functions
   **Status:** TODO
@@ -114,5 +115,5 @@
 
 * Progress Summary
   - Total Steps: 11
-  - Completed: 5
-  - Pending: 6
+  - Completed: 6
+  - Pending: 5
