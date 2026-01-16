@@ -1,3 +1,8 @@
+v0.4.20 60467dcef6563a3f8037a23a15aac4814219cc28
+    >> fix: Rollback if rsync fails and push if success
+    >> Release v0.4.19
+
+
 v0.4.19 7813123b2240c30f08de14552335aa0898229bf4
     >> Merge branch 'main' of git.sr.ht:~fernando-lopez/closspad
     >> fix: Changelog commited
