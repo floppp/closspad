@@ -56,17 +56,13 @@
       :db/login               (let [[_ value element] enrichted-event]
                                 {:new-state (assoc-in state [:db/login element] value)})
        :ui/header              {:new-state (update state :ui/header not)}
-       :ui/elo-unbounded       (do
-                                 (js/console.log "Elo unbounded checkbox, current value:" (:ui/elo-unbounded? state) "new value:" (not (:ui/elo-unbounded? state)))
-                                 {:new-state (update state :ui/elo-unbounded? not)
-                                  :effects [[:rating-system :recalculate-all]]})
-       :ui/toggle              (do
-                                 (js/console.log "UI toggle event, current toggle-value:" (:ui/toggle-value state) "new toggle-value:" (not (:ui/toggle-value state)))
-                                 {:new-state (-> state
-                                               (update :ui/toggle-value not)
-                                               ;; When switching to ATP (toggle true), disable unbounded checkbox
-                                               (assoc :ui/elo-unbounded? false))
-                                  :effects [[:rating-system :recalculate-all]]})
+       :ui/elo-unbounded       {:new-state (update state :ui/elo-unbounded? not)
+                                 :effects [[:rating-system :recalculate-all]]}
+       :ui/toggle              {:new-state (-> state
+                                                (update :ui/toggle-value not)
+                                                ;; When switching to ATP (toggle true), disable unbounded checkbox
+                                                (assoc :ui/elo-unbounded? false))
+                                   :effects [[:rating-system :recalculate-all]]}
       :auth/check-login       {:effects [[:auth/fx.check-login (:auth state)]]}
       :auth/check-not-logged  {:effects [[:auth/fx.check-not-logged (:auth state)]]}
       :data/error             {:new-state (assoc state :error (first args)

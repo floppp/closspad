@@ -44,8 +44,7 @@
                                  (when (nil? session)
                                    (rfe/push-state :route/home)))
      :rating-system (let [dispatcher (get-dispatcher)]
-                     (js/console.log "Rating system effect triggered with args:" args)
-                     (dispatcher nil [[:match :rating-system/recalculate-all]]))
+                      (dispatcher nil [[:match :rating-system/recalculate-all]]))
     ;; TODO: hacer comprobación para enviar o no
     :data/fx.query (network/query-async
                     {:query/kind :query/matches

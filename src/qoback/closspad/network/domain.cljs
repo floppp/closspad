@@ -48,7 +48,6 @@
                             {:keys [ratings history players stats-by-player oponent-stats matches]}
                             (full-matches-process ms :system-type system-type)
                             dispatch (get-dispatcher)]
-                        (js/console.log "Network domain: toggle-value =" toggle-value "system-type =" system-type)
                      (dispatch
                       nil
                       [[:db/assoc-in [:classification :ratings] ratings]

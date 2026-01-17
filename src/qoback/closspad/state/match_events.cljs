@@ -17,9 +17,6 @@
                                 (if (:ui/elo-unbounded? state)
                                   "elo-unbounded"  ; Toggle false + checkbox checked = unbounded Elo
                                   "elo"))  ; Toggle false + checkbox unchecked = bounded Elo
-                  _ (js/console.log "Match processing - toggle:" (:ui/toggle-value state) 
-                     "checkbox:" (:ui/elo-unbounded? state) 
-                     "system-type:" system-type)
                  {:keys [ratings history players stats-by-player oponent-stats matches]}
                  (full-matches-process all-ms :system-type system-type)]
              (-> state
@@ -38,9 +35,6 @@
                                                           (if (:ui/elo-unbounded? state)
                                                             "elo-unbounded"  ; Toggle false + checkbox checked = unbounded Elo
                                                             "elo"))  ; Toggle false + checkbox unchecked = bounded Elo
-                                            _ (js/console.log "Recalculation - toggle:" (:ui/toggle-value state) 
-                                               "checkbox:" (:ui/elo-unbounded? state) 
-                                               "system-type:" system-type)
                                             {:keys [ratings history players stats-by-player oponent-stats matches]}
                                             (full-matches-process current-ms :system-type system-type)]
                                         (js/console.log "Recalculation: toggle-value =" (:ui/toggle-value state) "system-type =" system-type)
