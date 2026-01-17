@@ -14,13 +14,16 @@
      "Cargando..."
      "Actualizar")])
 
-(defalias toggle-button [state off-text on-text]
+(defn- toggle-text [active off-text on-text]
+  (if active
+    on-text
+    off-text))
+
+(defalias toggle-button [{:keys [active on-text off-text]}]
   [:button.flex.items-center.gap-2.bg-gray-200.hover:bg-gray-300.text-gray-700.px-4.py-2.rounded
    {:on {:click [[:ui/toggle]]}}
    [:div.w-4.h-4.rounded-full.border-2.border-gray-400.relative
-    {:class (if (-> state :ui/toggle-value)
+    {:class (if active
               "bg-blue-500.translate-x-full"
               "bg-gray-400")}]
-   (if (-> state :ui/toggle-value)
-     on-text
-     off-text)])
+   [:span (toggle-text active on-text off-text)]])

@@ -67,6 +67,6 @@
      [:div.flex.justify-between.items-center.mb-6
       [:h2.text-3xl.font-bold.text-gray-800 "Clasificación"]
       [:div.flex.gap-2
-       [bui/toggle-button state "Ocultar" "Mostrar"]
+       [bui/toggle-button {:active (:ui/toggle-value state) :on-text "Oficial" :off-text "Llorón"}]
        [bui/refresh-button state]]]
      (players-list prev-day-player-ratings players-ratings)]))
