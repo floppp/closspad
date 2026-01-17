@@ -173,8 +173,6 @@ function updateSystemCouple(system, couple, playerVariations, matchDate) {
         const player = updatedPlayers[playerId];
         const matchCount = (player.matchCount ?? 0) + 1;
         const delta = playerVariations[playerId] ?? 0;
-        // const updatedVolatility = updateVolatility(player, delta);
-        // let volatility = player.volatility ?? 1;
         let volatility = calculateVolatilityDecay(player.volatility, 1);
         volatility = reactivateVolatilityIfInactive(volatility, player.lastMatchDate, new Date(matchDate));
 
@@ -246,13 +244,6 @@ function getTeamRating(system, couple) {
     return couple.reduce((sum, id) => sum + (system.players[id]?.points ?? system.defaultRating), 0);
 }
 
-function computeVariation(system, coupleRating, otherCoupleRating, isWinner, expectedWin, importance) {
-    const actualResult = isWinner ? 1 : 0;
-
-    return importance * system.baseK * (actualResult - expectedWin);
-}
-
-
 function computeVariationPerPlayer(system, couple, coupleRating, otherCoupleRating, isWinner, expectedWin, importance) {
     const actualResult = isWinner ? 1 : 0;
 
@@ -309,20 +300,6 @@ const computeImportance = (system, match) => {
     const { importance = 1 } = match;
 
     return importance * (match.result.length === 1 ? system.oneSetImportance : system.importance);
-}
-
-function updateVolatility(player, resultDelta) {
-    const volChange = 0.05 * Math.min(1, Math.abs(resultDelta) / 10); // Escala segura
-    // let newVolatility = player.volatility + (resultDelta !== 0 ? volChange : 0);
-    const newVolatility = Math.max(
-        0.5,
-        Math.min(
-            2.0,
-            player.volatility + (resultDelta !== 0 ? volChange : 0)
-        )
-    );
-
-    return { ...player, volatility: newVolatility };
 }
 
 function calculateVolatilityDecay(volatility, matchCount) {

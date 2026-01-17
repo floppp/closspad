@@ -1,34 +1,3 @@
-function calculatePlayerStats(matches) {
-  return matches.reduce((stats, match) => {
-    const { couple_a, couple_b, result } = match;
-    const winner = determineWinner(result);
-    const allPlayers = [...couple_a, ...couple_b];
-
-    const initializedStats = allPlayers.reduce((acc, playerId) => {
-      if (acc[playerId]) return acc;
-
-      acc[playerId] = {
-        totalMatches: 0,
-        wins: 0,
-        losses: 0,
-        opponents: {}
-      };
-
-      return acc;
-    }, stats);
-
-    const afterTeamA = couple_a.reduce(
-      (acc, playerId) => updatePlayerStats(acc, playerId, couple_b, winner === 'A'),
-      initializedStats,
-    );
-
-    return couple_b.reduce(
-      (acc, playerId) => updatePlayerStats(acc, playerId, couple_a, winner === 'B'),
-      afterTeamA,
-    );
-  }, {});
-}
-
 function updatePlayerStats(stats, playerId, opponents, isWinner) {
   const currentPlayer = stats[playerId] || {
     totalMatches: 0,
@@ -120,7 +89,6 @@ function getAllPlayersOpponentStats(playerIds, matches) {
 }
 
 module.exports = {
-  calculatePlayerStats,
   getPlayerOpponentStats,
   getAllPlayersOpponentStats
 };
