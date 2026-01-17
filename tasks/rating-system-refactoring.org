@@ -1,0 +1,74 @@
+#+TITLE: Rating System Refactoring Plan
+#+AUTHOR: closspad
+#+DATE: 2025-01-17
+
+* Overview
+Refactor the JavaScript rating system in src/js/ to address code quality issues, inconsistencies, and technical debt.
+
+**Constraint**: Files must use CommonJS (module.exports) for ClojureScript interoperability.
+
+* File-by-File Issues
+
+**playerStats.js**
+- [X] Inefficient opponent stats calculation optimized (lines 79-91): replaced O(n²) filter/map with O(n) Map
+- [X] Commented-out calculatePlayerStats function already removed (no commented code found)
+
+**ratingSystem.js**
+- [X] Unused function updateVolatility() removed
+- [X] Unused computeVariation() function removed
+- [X] Commented-out code on lines 176-177 removed
+- [X] Commented-out code on line 316 removed (was inside deleted function)
+- [X] Spanish comments and strings translated to English (lines 125-160, 257-295)
+- [X] "refactor this" TODO comments removed: processSingleMatch function removed, commented export removed
+- [X] Inconsistent export pattern fixed: added exports for clampRating, getKFactor, proximityFactor, createSystem
+- [ ] processSingleMatch() function needs refactoring (line 351)
+
+* Cross-File Issues
+
+**Module System Decision**
+- DECISIONED: Use CommonJS (module.exports) for production files
+- Reason: Required for ClojureScript interoperability
+
+**Function Visibility** ✅ **RESOLVED**
+- [X] ratingSystem.js now exports helper functions: clampRating, getKFactor, proximityFactor, createSystem
+- [X] calculateExpectedWin already exported
+Impact: ✅ Functions now available for testing and reuse
+
+* Implementation Plan by File
+
+**Step 1: ratingSystem.js (Foundation)** ✅ **COMPLETED**
+1. ✅ Removed unused functions: updateVolatility, computeVariation
+2. ✅ Removed commented-out code (lines 176-177, 316)
+3. ✅ Translated Spanish comments to English (lines 125-160, 257-295)
+4. ✅ Added exports for utility functions: clampRating, getKFactor, proximityFactor, createSystem (calculateExpectedWin already exported)
+5. ✅ Refactored processSingleMatch function: removed unused function
+6. ✅ Removed "refactor this" comments and commented export line
+7. ✅ Kept CommonJS module.exports (required for ClojureScript)
+
+**Step 2: playerStats.js** ✅ **COMPLETED**
+1. ✅ Commented-out calculatePlayerStats function already removed (no commented code found)
+2. ✅ Optimized opponent stats calculation: replaced O(n²) filter/map with O(n) Map
+3. ✅ Added JSDoc comments for all exported functions
+4. ✅ Kept CommonJS module.exports (required for ClojureScript)
+
+**Step 3: Verify All Files** ✅ **COMPLETED**
+1. ✅ Rating calculations verified with test matches
+2. ✅ All exports accessible (CommonJS modules working)
+3. ✅ playerStats.js functions work correctly with match.winner property
+4. ✅ No unused code or commented-out code remains
+
+* Success Criteria ✅ **ALL MET**
+- ✅ All production files use CommonJS (module.exports)
+- ✅ All imports/exports work correctly with ClojureScript
+- ✅ playerStats.js functions work correctly
+- ✅ No unused code or commented-out code in production files
+- ✅ All comments in English
+- ✅ Utility functions properly exported for testing
+- ✅ Code is maintainable and documented (JSDoc added)
+- ✅ Rating calculations produce same results as before (verified with tests)
+
+* Notes
+- Rating system is a custom Elo-like implementation with bonuses
+- System uses K-factor with volatility adjustments
+- Includes bonus calculations: surprise wins, weak players, underdogs
+- CommonJS required for ClojureScript interoperability

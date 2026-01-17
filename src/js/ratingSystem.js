@@ -122,7 +122,7 @@ function updateSystem(system, match) {
         decayDetails: [],
     };
 
-    // Recopilar detalles de cambios para los jugadores activos
+    // Collect change details for active players
     for (const playerId of matchPlayers) {
         const initialPoints = initialPlayerRatings[playerId];
         const finalPoints = systemAfterDecay.players[playerId].points;
@@ -139,17 +139,17 @@ function updateSystem(system, match) {
             initialPoints,
             finalPoints,
             totalDelta,
-            breakdown: auditDetailForPlayer // Esto contiene el desglose (baseDelta, bonuses, etc.)
+            breakdown: auditDetailForPlayer // This contains the breakdown (baseDelta, bonuses, etc.)
         };
     }
 
-    // Recopilar detalles de la decadencia para jugadores inactivos
+    // Collect decay details for inactive players
     for (const playerId of inactivePlayersForDecay) {
-        const playerBeforeDecay = newSystem.players[playerId]; // Puntos antes de aplicar el decaimiento
-        const playerAfterDecay = systemAfterDecay.players[playerId]; // Puntos después de aplicar el decaimiento
+        const playerBeforeDecay = newSystem.players[playerId]; // Points before applying decay
+        const playerAfterDecay = systemAfterDecay.players[playerId]; // Points after applying decay
         const pointsDecayed = playerBeforeDecay.points - playerAfterDecay.points;
 
-        if (pointsDecayed > 0) { // Solo si hubo decadencia
+        if (pointsDecayed > 0) { // Only if there was decay
             auditEntry.decayDetails.push({
                 playerId: playerId,
                 initialPoints: playerBeforeDecay.points,
@@ -254,18 +254,18 @@ function computeVariationPerPlayer(system, couple, coupleRating, otherCoupleRati
 
     const baseDelta = importance * system.baseK * (actualResult - expectedWin);
 
-    // 🎲 BONUS POR SORPRESA
+    // 🎲 SURPRISE BONUS
     const surpriseBonus = isWinner ? Math.max(0, (0.5 - expectedWin)) * system.baseK * 0.5 : 0;
 
     const variations = {};
-    // Añadimos una estructura para almacenar los detalles de la auditoría por jugador
+    // Add a structure to store audit details per player
     const auditDetails = {};
 
     for (const playerId of couple) {
         const player = system.players[playerId];
         const playerWeight = Math.pow(player.points, 0.5) / totalWeightedPoints;
 
-        // 💥 RECOMPENSA AL DÉBIL
+        // 💥 WEAK PLAYER REWARD
         const reverseWeight = 1 - playerWeight;
         const weakBonus = isWinner ? reverseWeight * 2 : 0;
 
@@ -274,25 +274,25 @@ function computeVariationPerPlayer(system, couple, coupleRating, otherCoupleRati
         const underdogGap = Math.max(0, opponentAvg - player.points);
         const underdogBonus = isWinner ? Math.round(underdogGap * 0.015) : 0;
 
-        // REPARTO BONUS POR SORPRESA
+        // SURPRISE BONUS DISTRIBUTION
         const surpriseShare = isWinner ? surpriseBonus * playerWeight : 0;
         const adjustedVariation = baseDelta * playerWeight + surpriseShare + weakBonus + underdogBonus;
 
         variations[playerId] = adjustedVariation;
 
-        // Capturar los detalles para la auditoría
+        // Capture details for audit
         auditDetails[playerId] = {
-            baseDelta: Math.round(baseDelta * playerWeight), // Parte del delta base proporcional al peso
+             baseDelta: Math.round(baseDelta * playerWeight), // Base delta proportional to weight
             surpriseBonus: surpriseShare,
             weakBonus: weakBonus,
             underdogBonus: underdogBonus,
             totalChange: adjustedVariation,
             playerWeight: playerWeight,
-            originalPlayerPoints: player.points // Para referencia
+             originalPlayerPoints: player.points // For reference
         };
     }
 
-    // Devolvemos tanto las variaciones como los detalles de auditoría
+    // Return both variations and audit details
     return { variations, auditDetails };
 }
 
@@ -324,17 +324,7 @@ function reactivateVolatilityIfInactive(volatility, lastMatchDate, currentMatchD
     return volatility;
 }
 
-// refactor this.
-const processSingleMatch = (systemHistory, match) => {
-    return [match].reduce(
-        (acc, match) => {
-            const [lastState] = acc;
-            const newState = updateSystem(lastState, match);
-            return [newState, ...acc];
-        },
-        systemHistory
-    )
-}
+
 
 const processMatches = (matches) => {
     const systemHistory = matches.reduce(
@@ -359,12 +349,16 @@ const processMatches = (matches) => {
 };
 
 
-// export { processMatches };
+
 module.exports = {
     processMatches,
     determineWinner,
     getTeamRating,
     calculateExpectedWin,
     computeImportance,
-    computeVariationPerPlayer
+    computeVariationPerPlayer,
+    clampRating,
+    getKFactor,
+    proximityFactor,
+    createSystem
 };

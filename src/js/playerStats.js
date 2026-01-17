@@ -1,3 +1,11 @@
+/**
+ * Update player stats for a single match
+ * @param {Object} stats - Current player statistics
+ * @param {string} playerId - ID of the player to update
+ * @param {Array<string>} opponents - Array of opponent IDs
+ * @param {boolean} isWinner - Whether the player won the match
+ * @returns {Object} Updated player statistics
+ */
 function updatePlayerStats(stats, playerId, opponents, isWinner) {
   const currentPlayer = stats[playerId] || {
     totalMatches: 0,
@@ -19,6 +27,13 @@ function updatePlayerStats(stats, playerId, opponents, isWinner) {
   return newStats;
 }
 
+/**
+ * Update opponent statistics for a match
+ * @param {Object} opponents - Current opponent statistics
+ * @param {Array<string>} opponentIds - Array of opponent IDs
+ * @param {boolean} isWinner - Whether the player won against these opponents
+ * @returns {Object} Updated opponent statistics
+ */
 function updateOpponents(opponents, opponentIds, isWinner) {
   return opponentIds.reduce((acc, opponentId) => {
     const current = acc[opponentId] || { matches: 0, wins: 0, losses: 0 };
@@ -31,6 +46,12 @@ function updateOpponents(opponents, opponentIds, isWinner) {
   }, opponents);
 }
 
+/**
+ * Get opponent statistics for a specific player
+ * @param {Array<Object>} matches - Array of match objects
+ * @param {string} playerId - ID of the player to analyze
+ * @returns {Object} Player's match history and opponent statistics
+ */
 function getPlayerOpponentStats(matches, playerId) {
   const allMatches = matches
     .filter(match => [...match.couple_a, ...match.couple_b].includes(playerId))
@@ -44,36 +65,41 @@ function getPlayerOpponentStats(matches, playerId) {
     }))
     .sort((a, b) => new Date(b.date) - new Date(a.date));
 
-  // Calculate aggregated stats against each opponent using flatMap and map
-  const opponentEntries = allMatches.flatMap(match =>
-    match.opponents.map(opponentId => ({
-      opponentId,
-      match
-    }))
-  );
+  // Calculate aggregated stats against each opponent efficiently using Map
+  const opponentStatsMap = new Map();
 
-  const opponentStats = opponentEntries
-    .map(entry => entry.opponentId)
-    .map(opponentId => {
-      const opponentMatches = opponentEntries
-        .filter(e => e.opponentId === opponentId)
-        .map(e => e.match);
+  for (const match of allMatches) {
+    for (const opponentId of match.opponents) {
+      let stats = opponentStatsMap.get(opponentId);
+      if (!stats) {
+        stats = {
+          matches: 0,
+          wins: 0,
+          losses: 0,
+          lastPlayed: null,
+          results: []
+        };
+        opponentStatsMap.set(opponentId, stats);
+      }
 
-      return [
-        opponentId,
-        {
-          matches: opponentMatches.length,
-          wins: opponentMatches.filter(m => m.won).length,
-          losses: opponentMatches.filter(m => !m.won).length,
-          lastPlayed: opponentMatches[0]?.date || null,
-          results: opponentMatches.map(m => ({
-            date: m.date,
-            won: m.won,
-            score: m.result
-          }))
-        }
-      ];
-    });
+      stats.matches++;
+      if (match.won) stats.wins++;
+      else stats.losses++;
+
+      // Update lastPlayed (most recent date)
+      if (!stats.lastPlayed || new Date(match.date) > new Date(stats.lastPlayed)) {
+        stats.lastPlayed = match.date;
+      }
+
+      stats.results.push({
+        date: match.date,
+        won: match.won,
+        score: match.result
+      });
+    }
+  }
+
+  const opponentStats = Array.from(opponentStatsMap.entries());
 
   return {
     allMatches,
@@ -81,6 +107,12 @@ function getPlayerOpponentStats(matches, playerId) {
   };
 }
 
+/**
+ * Get opponent statistics for multiple players
+ * @param {Array<string>} playerIds - Array of player IDs
+ * @param {Array<Object>} matches - Array of match objects
+ * @returns {Array<Array>} Array of [playerId, opponentStats] pairs
+ */
 function getAllPlayersOpponentStats(playerIds, matches) {
   return playerIds.map(playerId => [
     playerId,
