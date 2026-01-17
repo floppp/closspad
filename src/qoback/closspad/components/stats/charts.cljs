@@ -17,7 +17,6 @@
         total-wins (:wins stats)
         total-losses (:losses stats)
         win-rate (js/parseFloat (:win-percentage stats))]
-    (js/console.log (:by-month stats))
     (clj->js
      {:backgroundColor "#ffffff"
       :title  {:text (str (:player stats)

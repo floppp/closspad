@@ -4,8 +4,6 @@
 (defn process
   [state args]
   (let [[action-name & args] args]
-    (js/console.log action-name)
-    (js/console.log args)
     (case action-name
       :new (let [current-ms (-> state :match :results)
                  all-ms (sort-by :played_at (concat current-ms args))
@@ -37,7 +35,6 @@
                                                             "elo"))  ; Toggle false + checkbox unchecked = bounded Elo
                                             {:keys [ratings history players stats-by-player oponent-stats matches]}
                                             (full-matches-process current-ms :system-type system-type)]
-                                        (js/console.log "Recalculation: toggle-value =" (:ui/toggle-value state) "system-type =" system-type)
                                        (-> state
                                            (assoc :is-loading? false)
                                            (assoc-in [:classification :ratings] ratings)

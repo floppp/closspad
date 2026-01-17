@@ -238,12 +238,7 @@ function getTeamRating(system, couple) {
 
 function computeVariationPerPlayer(system, couple, coupleRating, otherCoupleRating, isWinner, expectedWin, importance) {
     const actualResult = isWinner ? 1 : 0;
-
-    const totalWeightedPoints = couple.reduce(
-        (sum, id) => sum + Math.pow(Math.max(system.players[id].points, 0.1), 0.5),
-        0
-    );
-
+ 
     const baseDelta = importance * system.baseK * (actualResult - expectedWin);
 
     // 🎲 SURPRISE BONUS
@@ -255,7 +250,7 @@ function computeVariationPerPlayer(system, couple, coupleRating, otherCoupleRati
 
     for (const playerId of couple) {
         const player = system.players[playerId];
-        const playerWeight = Math.pow(Math.max(player.points, 0.1), 0.5) / totalWeightedPoints;
+        const playerWeight = 0.5;
 
         // 💥 WEAK PLAYER REWARD
         const reverseWeight = 1 - playerWeight;
