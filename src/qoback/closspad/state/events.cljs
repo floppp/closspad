@@ -56,6 +56,7 @@
       :db/login               (let [[_ value element] enrichted-event]
                                 {:new-state (assoc-in state [:db/login element] value)})
       :ui/header              {:new-state (update state :ui/header not)}
+      :ui/toggle              {:new-state (update state :ui/toggle-value not)}
       :auth/check-login       {:effects [[:auth/fx.check-login (:auth state)]]}
       :auth/check-not-logged  {:effects [[:auth/fx.check-not-logged (:auth state)]]}
       :data/error             {:new-state (assoc state :error (first args)

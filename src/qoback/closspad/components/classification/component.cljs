@@ -66,5 +66,7 @@
     [:div.bg-white.rounded-b-lg.shadow-md.px-8.pb-8
      [:div.flex.justify-between.items-center.mb-6
       [:h2.text-3xl.font-bold.text-gray-800 "Clasificación"]
-      [bui/refresh-button state]]
+      [:div.flex.gap-2
+       [bui/toggle-button state "Ocultar" "Mostrar"]
+       [bui/refresh-button state]]]
      (players-list prev-day-player-ratings players-ratings)]))

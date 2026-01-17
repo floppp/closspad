@@ -1,0 +1,91 @@
+#+TITLE: Toggle Button Implementation
+#+AUTHOR: closspad
+#+DATE: 2026-01-17
+
+* Overview
+Add a toggle button to classification view, positioned next to refresh button, accepting two text strings for on/off states.
+
+* Requirements
+- Button should be placed in classification component
+- Should be positioned next to "Actualizar" button
+- Should accept two string parameters: one for "off" state, one for "on" state
+- Should be implemented as an independent reusable component
+- Initial implementation: visual component with state tracking (no external functionality yet)
+
+* Implementation Plan
+
+**Step 1: Create Toggle Button Component**
+**File:** src/qoback/closspad/ui/button_elements.cljc
+**Status:** COMPLETED
+
+Description: Add a new toggle-button component
+- Component name: toggle-button
+- Takes three parameters:
+  - `state`: application state (to access toggle value)
+  - `off-text`: string to display when toggle is off
+  - `on-text`: string to display when toggle is on
+- Shows a visual toggle (switch-style)
+- Displays appropriate text based on toggle state
+- Triggers an event to toggle state (e.g., [:ui/toggle])
+- Uses Tailwind styling consistent with existing UI
+
+**Step 2: Add Toggle State Management**
+**File:** src/qoback/closspad/state/events.cljs
+**Status:** COMPLETED
+
+Description: Add :ui/toggle event handler
+- Toggles a boolean value in state (e.g., :ui/show-changes)
+- Flips the boolean value when triggered
+
+**Step 3: Add Toggle Button to Classification**
+**File:** src/qoback/closspad/components/classification/component.cljs
+**Status:** COMPLETED
+
+Description: Import and use toggle-button component
+- Position toggle button to the left of refresh button
+- Pass appropriate text strings (e.g., "Ocultar cambios" / "Mostrar cambios")
+- Update header layout to accommodate both buttons
+
+* Technical Details
+
+**Component Interface:**
+```clojure
+(toggle-button state "OffText" "OnText")
+```
+
+**Example Usage:**
+```clojure
+[toggle-button state "Ocultar cambios" "Mostrar cambios"]
+```
+
+**State Management:**
+- Toggle value stored in state (e.g., [:ui/show-changes])
+- Event handler flips boolean value
+- Component reads state to determine which text to show
+
+**Placement:**
+- In same container as title and refresh button
+- Layout: [Toggle Button] [Title] [Refresh Button]
+
+**Event Handler:**
+```clojure
+:ui/toggle
+```
+
+* Success Criteria
+- [x] Toggle button component created in button_elements.cljc
+- [x] Toggle button accepts two string parameters
+- [x] Toggle button displays correct text for each state
+- [x] Toggle button visible in classification view
+- [x] Button positioned next to refresh button
+- [x] Toggle state managed correctly
+- [x] Component is reusable
+- [x] No breaking changes to existing functionality
+
+* Completion Status: ALL STEPS COMPLETED ✓
+
+* Notes
+- Toggle functionality to be implemented later (what it controls)
+- Follows same pattern as refresh-button for consistency
+- Component can be reused in other views when needed
+- Two-string design allows flexible text labels for any use case
