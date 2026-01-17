@@ -12,9 +12,14 @@
                  ;; Determine system type based on toggle state
                  ;; falsy (false/nil) -> "elo" (bounded)
                  ;; truthy (true) -> "elo-unbounded" (unbounded)
-                 system-type (if (:ui/toggle-value state)
-                               "elo-unbounded"
-                               "elo")
+                  system-type (if (:ui/toggle-value state)
+                                "atp"  ; Toggle true = ATP system
+                                (if (:ui/elo-unbounded? state)
+                                  "elo-unbounded"  ; Toggle false + checkbox checked = unbounded Elo
+                                  "elo"))  ; Toggle false + checkbox unchecked = bounded Elo
+                  _ (js/console.log "Match processing - toggle:" (:ui/toggle-value state) 
+                     "checkbox:" (:ui/elo-unbounded? state) 
+                     "system-type:" system-type)
                  {:keys [ratings history players stats-by-player oponent-stats matches]}
                  (full-matches-process all-ms :system-type system-type)]
              (-> state
@@ -29,8 +34,13 @@
        :rating-system/recalculate-all (let [current-ms (-> state :match :results)
                                             ;; Recalculate all matches with current toggle state
                                             system-type (if (:ui/toggle-value state)
-                                                          "elo-unbounded"
-                                                          "elo")
+                                                          "atp"  ; Toggle true = ATP system
+                                                          (if (:ui/elo-unbounded? state)
+                                                            "elo-unbounded"  ; Toggle false + checkbox checked = unbounded Elo
+                                                            "elo"))  ; Toggle false + checkbox unchecked = bounded Elo
+                                            _ (js/console.log "Recalculation - toggle:" (:ui/toggle-value state) 
+                                               "checkbox:" (:ui/elo-unbounded? state) 
+                                               "system-type:" system-type)
                                             {:keys [ratings history players stats-by-player oponent-stats matches]}
                                             (full-matches-process current-ms :system-type system-type)]
                                         (js/console.log "Recalculation: toggle-value =" (:ui/toggle-value state) "system-type =" system-type)

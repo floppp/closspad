@@ -1,6 +1,7 @@
 (ns qoback.closspad.components.classification.component
   (:require [qoback.closspad.helpers :as h]
             [qoback.closspad.components.icons.info :as info]
+            [qoback.closspad.state.db :refer [get-dispatcher]]
             [qoback.closspad.ui.button-elements :as bui]
             [qoback.closspad.ui.text-elements :as tui]))
 
@@ -54,7 +55,8 @@
 
 (defn component
   [state]
-  (let [day (:date (:page/navigated state))
+  (let [dispatcher (get-dispatcher)
+        day (:date (:page/navigated state))
         day-str (h/format-iso-date day)
         ratings (:ratings (:classification state))
         day-ratings (filter-day-ratings <= day-str ratings)
@@ -66,7 +68,13 @@
     [:div.bg-white.rounded-b-lg.shadow-md.px-8.pb-8
      [:div.flex.justify-between.items-center.mb-6
       [:h2.text-3xl.font-bold.text-gray-800 "Clasificación"]
-      [:div.flex.gap-2
-       [bui/toggle-button {:active (:ui/toggle-value state) :on-text "Oficial" :off-text "Llorón"}]
+      [:div.flex.gap-2.items-center
+       [bui/toggle-button {:active (:ui/toggle-value state) :on-text "Elo" :off-text "ATP"}]
+       (when (not (:ui/toggle-value state))
+         [:label.flex.items-center.gap-2.cursor-pointer
+          [:input {:type "checkbox"
+                   :checked (:ui/elo-unbounded? state)
+                    :on {:click [[:ui/elo-unbounded]]}}]
+          [:span.text-sm.text-gray-600 "Llorón"]])
        [bui/refresh-button state]]]
      (players-list prev-day-player-ratings players-ratings)]))

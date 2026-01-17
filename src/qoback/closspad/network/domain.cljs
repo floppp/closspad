@@ -35,10 +35,16 @@
        :on-success (fn [ms]
                       (let [;; Get toggle state from passed state data
                             toggle-value (get-in data [:state :ui/toggle-value])
-                            ;; Determine system type based on toggle state
-                            ;; falsy (false/nil) -> "elo" (bounded)
-                            ;; truthy (true) -> "elo-unbounded" (unbounded)
-                            system-type (if toggle-value "elo-unbounded" "elo")
+                            ;; Determine system type based on toggle state and checkbox
+                            ;; toggle true -> "atp"
+                            ;; toggle false + checkbox checked -> "elo-unbounded"
+                            ;; toggle false + checkbox unchecked -> "elo"
+                            elo-unbounded? (get-in data [:state :ui/elo-unbounded?])
+                            system-type (if toggle-value
+                                          "atp"
+                                          (if elo-unbounded?
+                                            "elo-unbounded"
+                                            "elo"))
                             {:keys [ratings history players stats-by-player oponent-stats matches]}
                             (full-matches-process ms :system-type system-type)
                             dispatch (get-dispatcher)]
