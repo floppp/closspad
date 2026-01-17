@@ -1,0 +1,157 @@
+# Rating Systems Implementation - Task Tracking
+
+* Project: Closspad Padel Match Tracking
+* Date: 2026-01-17
+* Status: IN PROGRESS
+
+## Overview
+Implementation of factory pattern for dual rating systems in ClojureScript padel match tracking app.
+
+## Current Systems
+
+### 1. Elo System (Bounded)
+- **Type**: `elo`
+- **Points**: 0-100 bounded
+- **Start**: 50 points
+- **Characteristics**: Predictive/match-based with bonuses
+- **Status**: ✅ IMPLEMENTED (backward compatible)
+
+### 2. ATP System (Unbounded Additive)
+- **Type**: `atp`
+- **Points**: Unlimited, starts at 0
+- **Characteristics**: Simple additive (10 × importance)
+- **Rolling window**: 52 weeks
+- **Status**: ✅ IMPLEMENTED
+
+### 3. Unbounded Elo System (New)
+- **Type**: `elo-unbounded`
+- **Points**: Unlimited, starts at 0
+- **Characteristics**: Elo's predictive nature without upper bound
+- **Proximity factor**: Sigmoid normalization
+- **Status**: ✅ IMPLEMENTED
+
+## Implementation Status
+
+### ✅ COMPLETED
+- [x] Extracted Elo system to `eloSystem.js`
+- [x] Created ATP system in `atpSystem.js`
+- [x] Created Unbounded Elo system in `eloUnboundedSystem.js`
+- [x] Implemented factory pattern in `ratingSystemFactory.js`
+- [x] Updated constants with unbounded defaults
+- [x] Maintained backward compatibility in `ratingSystem.js`
+- [x] Fixed zero-point calculation issue (Math.pow(0, 0.5) edge case)
+- [x] Tested all three systems
+
+### 🔄 IN PROGRESS
+- [ ] Update ClojureScript integration to use toggle
+- [ ] Modify `full-matches-process` to accept system type parameter
+- [ ] Update toggle to switch between bounded/unbounded Elo
+
+### 📋 PENDING
+- [ ] Add ATP system to toggle (future enhancement)
+- [ ] UI updates for unbounded point display
+- [ ] Performance testing with large datasets
+
+## Technical Details
+
+### File Structure
+```
+src/js/
+├── ratingSystem.js              # Backward compatibility wrapper
+├── ratingSystemFactory.js       # Factory interface
+├── shared/
+│   ├── constants.js            # System defaults
+│   └── utils.js               # Shared utilities
+└── ratingSystems/
+    ├── eloSystem.js           # Bounded Elo (0-100)
+    ├── eloUnboundedSystem.js  # Unbounded Elo (0-∞)
+    └── atpSystem.js           # ATP-like (additive)
+```
+
+### Unbounded Elo Key Changes
+1. **`clampRating`**: Only enforces minimum bound (0)
+2. **`proximityFactor`**: Sigmoid normalization for unbounded ratings
+3. **Starting points**: 0 (instead of 50)
+4. **Underdog bonus**: Capped at 100 point gap
+5. **Zero-point fix**: `Math.max(points, 0.1)` for weight calculations
+
+### Factory Usage
+```javascript
+// Create systems
+const { createRatingSystem } = require('./src/js/ratingSystemFactory');
+const elo = createRatingSystem('elo');               // Bounded (0-100)
+const eloUnbounded = createRatingSystem('elo-unbounded'); // Unbounded
+const atp = createRatingSystem('atp');               // ATP additive
+
+// Backward compatibility
+const rating = require('./src/js/ratingSystem');
+rating.createEloUnboundedSystem();  // Also available
+```
+
+## Toggle Integration Plan
+
+### Current State
+- Toggle exists in classification view: "Oficial" vs "Llorón"
+- Toggle state: `:ui/toggle-value` in app state
+- Default: `nil` (falsy) → Should use bounded Elo
+
+### Planned Integration
+1. **Toggle mapping**:
+   - Falsy (`false`/`nil`) → `'elo'` (bounded, 0-100)
+   - Truthy (`true`) → `'elo-unbounded'` (unbounded, starts at 0)
+
+2. **ClojureScript changes**:
+   - Modify `full-matches-process` to accept `system-type` parameter
+   - Update `match_events.cljs` to pass toggle state
+   - Ensure recalculation when toggle changes
+
+3. **Labels** (to be decided):
+   - Keep "Oficial"/"Llorón" or change to "Elo (0-100)"/"Elo (∞)"
+
+## Testing Results
+
+### ✅ Unbounded Elo System Works
+- Points start at 0
+- No upper bound enforced
+- Points can grow beyond 100
+- Mathematical stability verified
+- Factory integration successful
+- Backward compatibility maintained
+
+### 🔧 Issues Fixed
+1. **NaN values**: Fixed zero-point calculation with `Math.max(points, 0.1)`
+2. **Duplicate exports**: Fixed in `ratingSystem.js`
+3. **Missing function**: Added `createEloUnboundedSystem` to exports
+
+## Next Steps
+
+### Immediate (Phase 1)
+1. Update ClojureScript `match.cljs` to accept system parameter
+2. Modify `full-matches-process` function signature
+3. Update event handlers to pass toggle state
+4. Test toggle functionality
+
+### Future (Phase 2)
+1. Add ATP system to toggle (3-way or separate toggle)
+2. UI improvements for unbounded point display
+3. Performance optimizations
+4. Add system preference persistence (localStorage)
+
+## Notes
+
+### Design Decisions
+1. **Three separate systems** instead of modifying existing Elo
+2. **Starting at 0** for unbounded Elo (different from bounded's 50)
+3. **Sigmoid proximity factor** for mathematical stability
+4. **Factory pattern** for clean system switching
+
+### Dependencies
+- ClojureScript app imports from `"../../../js/ratingSystem"`
+- Must maintain backward compatibility
+- Toggle state flows through event system
+
+### Risks Mitigated
+- Mathematical instability with high ratings → Sigmoid functions
+- Division by zero with 0 points → `Math.max(points, 0.1)`
+- Performance with large numbers → Capped bonuses
+- User confusion → Clear system separation

@@ -20,6 +20,18 @@ module.exports = {
     oneSetImportance: 0.6
   },
   
+  // Unbounded Elo system defaults (no upper limit, starts at 0)
+  UNBOUNDED_ELO_DEFAULTS: {
+    importance: 1.0,
+    defaultRating: 0,           // Start at 0 instead of 50
+    maxRating: Number.MAX_SAFE_INTEGER, // Very large but not infinite
+    minRating: 0,
+    baseK: 25,
+    scaleFactor: 120,
+    oneSetImportance: 0.6,
+    proximityCalculationMax: 200 // For proximity factor calculations only
+  },
+  
   // ATP system defaults
   ATP_DEFAULTS: {
     rollingWindowWeeks: 52,
@@ -30,6 +42,7 @@ module.exports = {
   // System types
   SYSTEM_TYPES: {
     ELO: 'elo',
+    ELO_UNBOUNDED: 'elo-unbounded',
     ATP: 'atp'
   }
 };

@@ -1,18 +1,21 @@
 // Factory for creating rating systems
-// Supports Elo (bounded 0-100) and ATP (unlimited points) systems
+// Supports Elo (bounded 0-100), Unbounded Elo (no upper limit), and ATP systems
 
 const { createEloSystem } = require('./ratingSystems/eloSystem');
 const { createATPSystem } = require('./ratingSystems/atpSystem');
+const { createEloUnboundedSystem } = require('./ratingSystems/eloUnboundedSystem');
 
 // Factory function
 function createRatingSystem(type = 'elo', options = {}) {
     switch (type.toLowerCase()) {
         case 'elo':
             return createEloSystem(options);
+        case 'elo-unbounded':
+            return createEloUnboundedSystem(options);
         case 'atp':
             return createATPSystem(options);
         default:
-            throw new Error(`Unknown rating system type: ${type}. Supported types: 'elo', 'atp'`);
+            throw new Error(`Unknown rating system type: ${type}. Supported types: 'elo', 'elo-unbounded', 'atp'`);
     }
 }
 
@@ -28,6 +31,7 @@ function getSystemInfo(system) {
 module.exports = {
     createRatingSystem,
     createEloSystem,
+    createEloUnboundedSystem,
     createATPSystem,
     getSystemInfo
 };

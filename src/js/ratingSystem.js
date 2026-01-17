@@ -161,20 +161,9 @@ module.exports = {
     createATPSystem: (options) => {
         const { createATPSystem: factoryCreateATPSystem } = require('./ratingSystemFactory');
         return factoryCreateATPSystem(options);
+    },
+    createEloUnboundedSystem: (options) => {
+        const { createEloUnboundedSystem: factoryCreateEloUnboundedSystem } = require('./ratingSystemFactory');
+        return factoryCreateEloUnboundedSystem(options);
     }
-};
-
-
-
-module.exports = {
-    processMatches,
-    determineWinner,
-    getTeamRating,
-    calculateExpectedWin,
-    computeImportance,
-    computeVariationPerPlayer,
-    clampRating,
-    getKFactor,
-    proximityFactor,
-    createSystem
 };
