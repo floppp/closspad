@@ -42,10 +42,13 @@ Implementation of factory pattern for dual rating systems in ClojureScript padel
 - [x] Fixed zero-point calculation issue (Math.pow(0, 0.5) edge case)
 - [x] Tested all three systems
 
-### 🔄 IN PROGRESS
-- [ ] Update ClojureScript integration to use toggle
-- [ ] Modify `full-matches-process` to accept system type parameter
-- [ ] Update toggle to switch between bounded/unbounded Elo
+### ✅ COMPLETED (Toggle Integration)
+- [x] Update ClojureScript integration to use toggle
+- [x] Modify `full-matches-process` to accept system type parameter
+- [x] Update toggle to switch between bounded/unbounded Elo
+- [x] Add `:rating-system :recalculate-all` event for toggle
+- [x] Update network/domain.cljs to use bounded Elo by default
+- [x] Test and verify backward compatibility
 
 ### 📋 PENDING
 - [ ] Add ATP system to toggle (future enhancement)

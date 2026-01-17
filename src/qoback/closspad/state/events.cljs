@@ -56,7 +56,10 @@
       :db/login               (let [[_ value element] enrichted-event]
                                 {:new-state (assoc-in state [:db/login element] value)})
       :ui/header              {:new-state (update state :ui/header not)}
-      :ui/toggle              {:new-state (update state :ui/toggle-value not)}
+       :ui/toggle              (do
+                                 (js/console.log "UI toggle event, current toggle-value:" (:ui/toggle-value state) "new toggle-value:" (not (:ui/toggle-value state)))
+                                 {:new-state (update state :ui/toggle-value not)
+                                  :effects [[:rating-system :recalculate-all]]})
       :auth/check-login       {:effects [[:auth/fx.check-login (:auth state)]]}
       :auth/check-not-logged  {:effects [[:auth/fx.check-not-logged (:auth state)]]}
       :data/error             {:new-state (assoc state :error (first args)
@@ -76,7 +79,7 @@
       ;; >>>>> Refactorizados ya
       :ui/dialog              {:new-state (ui-events/process-dialogs state args)}
       :dom/effect             {:effects [[:dom/fx.effect (first args)]]}
-      :match                  {:new-state (match-events/process state args)}
+       :match                  {:new-state (match-events/process state args)}
       ;; Routes
       :route/push             {:effects [[:route/fx.push args]]}
       :route                  {:effects [[:route/fx args state]]}

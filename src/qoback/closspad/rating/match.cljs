@@ -28,9 +28,9 @@
     (* base-importance factor)))
 
 (defn full-matches-process
-  [ms]
+  [ms & {:keys [system-type] :or {system-type "elo"}}]
   (let [[classification system] (js->clj
-                                 (rating/processMatches (clj->js ms))
+                                 (rating/processMatches (clj->js ms) system-type)
                                  {:keywordize-keys true})
         all-players (-> ms stats/get-all-players vec sort)
         js-stats (js->clj

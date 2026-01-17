@@ -32,10 +32,17 @@
                       nil
                       [[:db/assoc :error err]
                        [:db/dissoc :is-loading?]])))
-     :on-success (fn [ms]
-                   (let [{:keys [ratings history players stats-by-player oponent-stats matches]}
-                         (full-matches-process ms)
-                         dispatch (get-dispatcher)]
+       :on-success (fn [ms]
+                      (let [;; Get toggle state from passed state data
+                            toggle-value (get-in data [:state :ui/toggle-value])
+                            ;; Determine system type based on toggle state
+                            ;; falsy (false/nil) -> "elo" (bounded)
+                            ;; truthy (true) -> "elo-unbounded" (unbounded)
+                            system-type (if toggle-value "elo-unbounded" "elo")
+                            {:keys [ratings history players stats-by-player oponent-stats matches]}
+                            (full-matches-process ms :system-type system-type)
+                            dispatch (get-dispatcher)]
+                        (js/console.log "Network domain: toggle-value =" toggle-value "system-type =" system-type)
                      (dispatch
                       nil
                       [[:db/assoc-in [:classification :ratings] ratings]

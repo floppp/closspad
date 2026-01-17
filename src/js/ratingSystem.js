@@ -120,7 +120,11 @@ function reactivateVolatilityIfInactive(volatility, lastMatchDate, currentMatchD
 
 
 
-const processMatches = (matches) => {
+const processMatches = (matches, systemType = 'elo') => {
+    // If systemType is provided and different from current system, switch
+    if (systemType && systemType !== currentSystem.type) {
+        switchSystem(systemType);
+    }
     return currentSystem.processMatches(matches);
 };
 
