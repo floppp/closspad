@@ -1,3 +1,18 @@
+v0.5.0 1df5c3dab36e8ddffe3d162b6124f01375d461ce
+    >> fix: Setting simpler couple point distribution
+    >> fix: Console logs cleaned
+    >> feat: ATP/Elo selection
+    >> feat: elo unbounded
+    >> wip: elounbounded system
+    >> wip: Atp-like system
+    >> feat: Toggle ok
+    >> fix: Refresch and toggle
+    >> feat: Refresh button
+    >> fix: Docstring and imperative-performance code
+    >> fix: Cleaning old functions
+    >> Release v0.4.32
+
+
 v0.4.32 64fd5a0ce2a932f4edab74247fc499721394503c
     >> fix:
     >> Release v0.4.31
