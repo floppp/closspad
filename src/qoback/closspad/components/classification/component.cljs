@@ -64,5 +64,7 @@
         players-ratings (->> (second day-ratings)
                              (sort-by second >))]
     [:div.bg-white.rounded-b-lg.shadow-md.px-8.pb-8
-     [:h2.text-3xl.font-bold.text-center.mb-6.text-gray-800 "Clasificación"]
+     [:div.flex.justify-between.items-center.mb-6
+      [:h2.text-3xl.font-bold.text-gray-800 "Clasificación"]
+      [bui/refresh-button state]]
      (players-list prev-day-player-ratings players-ratings)]))

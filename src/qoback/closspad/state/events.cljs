@@ -63,6 +63,8 @@
                                 :effects []}
       :data/query             {:new-state (assoc state :is-loading? true :error nil)
                                 :effects [[:data/fx.query {:state state :args args}]]}
+      :data/refresh           {:new-state (assoc state :is-loading? true :error nil)
+                                :effects [[:data/fx.query {:state state :args args}]]}
       :fetch/login            {:new-state (assoc state :is-loading? true :error nil)
                                :effects [[:fetch/fx.login args]]}
       :drag                   {:new-state (drag/process state args)}

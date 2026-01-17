@@ -1,0 +1,85 @@
+#+TITLE: Refresh Button Implementation
+#+AUTHOR: closspad
+#+DATE: 2026-01-17
+
+* Overview
+Add a refresh button to the classification view to allow users to manually reload data from Supabase.
+
+* Requirements
+- Button should be placed in the classification component
+- Should display a spinner while loading
+- Should be a simple button (text label: "Actualizar")
+- Should be implemented as an independent reusable component
+- Must trigger data refresh from Supabase
+
+* Implementation Plan
+
+**Step 1: Create Refresh Button Component**
+**File:** src/qoback/closspad/ui/button_elements.cljc
+**Status:** PENDING
+
+Description: Add a new refresh-button component
+- Component name: refresh-button
+- Takes state as parameter
+- Checks (:is-loading? state) for loading state
+- Displays "Cargando..." when loading, otherwise "Actualizar"
+- Triggers [:data/refresh] event on click
+- Uses Tailwind styling: bg-blue-500, hover:bg-blue-600, disabled:opacity-50
+
+**Step 2: Add Refresh Event Handler**
+**File:** src/qoback/closspad/state/events.cljs
+**Status:** PENDING
+
+Description: Add :data/refresh event to handle data refresh
+- Sets is-loading? to true
+- Clears any existing errors
+- Triggers :data/fx.query effect with same parameters as initial load
+
+**Step 3: Use Refresh Button in Classification**
+**File:** src/qoback/closspad/components/classification/component.cljs
+**Status:** PENDING
+
+Description: Import and use refresh-button component
+- Require refresh-button from qoback.closspad.ui.button-elements
+- Add button above the "Clasificación" title
+- Pass state parameter to refresh-button
+
+* Technical Details
+
+**Event Flow:**
+1. User clicks refresh button
+2. [:data/refresh] event is dispatched
+3. Event handler sets is-loading? to true, clears errors
+4. Triggers :data/fx.query effect
+5. query-async fetches data from Supabase
+6. on-success callback updates state with fresh data
+7. is-loading? set to false
+
+**State Changes:**
+- is-loading?: true during fetch, false after completion
+- error: nil on refresh start
+- classification/ratings, system/history, stats/*, match/results: all updated from Supabase
+
+**Component Interface:**
+```clojure
+(refresh-button state)
+```
+
+**Event Handler:**
+```clojure
+:data/refresh
+```
+
+* Success Criteria
+- [ ] Refresh button visible in classification view
+- [ ] Button disabled and shows "Cargando..." during refresh
+- [ ] Clicking button triggers data reload from Supabase
+- [ ] Classification updates with fresh data after refresh
+- [ ] Component is reusable across other views
+- [ ] No breaking changes to existing functionality
+
+* Notes
+- Refresh button uses existing data query infrastructure
+- Leverages is-loading? state for UI feedback
+- Follows existing event-driven architecture patterns
+- Component design allows easy reuse in other views (stats, full-stats, etc.)
