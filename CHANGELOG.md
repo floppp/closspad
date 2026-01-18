@@ -1,3 +1,8 @@
+v0.5.1 6d9d75dc527223a8377756de92e4019a63e23e11
+    >> fix: Classification header mobile shape
+    >> Release v0.5.0
+
+
 v0.5.0 1df5c3dab36e8ddffe3d162b6124f01375d461ce
     >> fix: Setting simpler couple point distribution
     >> fix: Console logs cleaned
