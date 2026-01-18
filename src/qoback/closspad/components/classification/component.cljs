@@ -87,6 +87,26 @@
     [:div.space-y-3
      (map #(player % system-type all-points) enrichted-ratings)]))
 
+(defn- header
+  [state]
+  (let [is-mobile? (-> state :app :screen/is-mobile?)
+    classes (if is-mobile? ["flex" "flex-col" "gap-2"] ["flex"])]
+    [:div.flex.justify-between.items-center.mb-4
+      {:class classes}
+    [:h2.text-3xl.font-bold.text-gray-800 "Clasificación"]
+    [:div.flex.gap-4.items-center
+      [bui/toggle-button
+        {:active (:ui/toggle-value state)
+        :on-text "Anual"
+        :off-text "Race"}]
+      (when (not (:ui/toggle-value state))
+        [:label.flex.items-center.gap-2.cursor-pointer
+        [:input {:type "checkbox"
+                  :checked (:ui/elo-unbounded? state)
+                  :on {:click [[:ui/elo-unbounded]]}}]
+        [:span.text-sm.text-gray-600 "Llorón"]])
+      [bui/refresh-button state]]]))
+
 (defn component
   [state]
   (let [day (:date (:page/navigated state))
@@ -100,15 +120,5 @@
                              (sort-by second >))
         system-type (determine-system-type state)]
     [:div.bg-white.rounded-b-lg.shadow-md.px-8.pb-8
-     [:div.flex.justify-between.items-center.mb-6
-      [:h2.text-3xl.font-bold.text-gray-800 "Clasificación"]
-      [:div.flex.gap-2.items-center
-       [bui/toggle-button {:active (:ui/toggle-value state) :on-text "Elo" :off-text "ATP"}]
-       (when (not (:ui/toggle-value state))
-         [:label.flex.items-center.gap-2.cursor-pointer
-          [:input {:type "checkbox"
-                   :checked (:ui/elo-unbounded? state)
-                    :on {:click [[:ui/elo-unbounded]]}}]
-          [:span.text-sm.text-gray-600 "Llorón"]])
-       [bui/refresh-button state]]]
+    (header state)
      (players-list prev-day-player-ratings players-ratings system-type)]))
